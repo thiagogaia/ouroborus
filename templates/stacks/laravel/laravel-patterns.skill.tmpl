@@ -1,0 +1,50 @@
+---
+name: laravel-patterns
+description: Padrões e boas práticas para Laravel. Use quando criar controllers,
+  models, migrations, form requests, policies, jobs ou events. Também para
+  troubleshooting de Eloquent queries, queues e caching.
+---
+
+# Laravel Patterns
+
+## Arquitetura
+- **Controllers slim**: Recebem request, delegam para service/action, retornam response
+- **Form Requests**: TODA validação em Form Request classes (não no controller)
+- **Services/Actions**: Lógica de negócio reutilizável
+- **Policies**: Autorização separada de autenticação
+- **Resources**: Transformação de response em API Resources
+
+## Eloquent
+- `select()` explícito — nunca `SELECT *` em queries de produção
+- `with()` para eager loading (prevenir N+1)
+- Scopes para queries reutilizáveis
+- Casts em `$casts` para tipos automáticos
+- Observers para side effects em model events
+
+## Migrations
+- Uma migration por mudança (nunca editar migration aplicada)
+- `down()` sempre funcional para rollback
+- Índices explícitos para colunas filtradas
+- Foreign keys com `constrained()` e `cascadeOnDelete()`
+
+## API Design
+```php
+// Route
+Route::apiResource('users', UserController::class);
+
+// Controller
+public function store(StoreUserRequest $request): UserResource
+{
+    $user = $this->userService->create($request->validated());
+    return new UserResource($user);
+}
+```
+
+## Regras
+- NUNCA coloque lógica de negócio em Controllers ou Models
+- SEMPRE use Form Requests para validação
+- SEMPRE use API Resources para formatação de resposta
+- SEMPRE use Policies para autorização
+- Queues para operações lentas (email, processamento, APIs externas)
+- Cache com tags para invalidação granular
+- NUNCA use `env()` fora de config files

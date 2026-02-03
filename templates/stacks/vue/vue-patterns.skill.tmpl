@@ -1,0 +1,38 @@
+---
+name: vue-patterns
+description: Padrões e boas práticas para Vue.js e Nuxt. Use quando criar
+  componentes, composables, stores (Pinia), páginas, layouts ou middleware.
+  Também para troubleshooting de reatividade, SSR hydration e performance.
+---
+
+# Vue / Nuxt Patterns
+
+## Composition API (padrão)
+- SEMPRE use `<script setup>` para componentes
+- Composables em `composables/` com prefixo `use` (e.g. `useAuth.ts`)
+- Evite Options API em código novo
+
+## Componentes
+- Props tipados com `defineProps<T>()` — nunca runtime validation sozinho
+- Emits tipados com `defineEmits<T>()`
+- Slots nomeados para flexibilidade
+- Componentes pequenos (< 200 linhas) — extrair composables para lógica
+
+## State Management (Pinia)
+- Uma store por domínio (useUserStore, useCartStore)
+- Actions para lógica assíncrona, getters para computados
+- Nunca mute state fora de actions
+- `storeToRefs()` para manter reatividade ao desestruturar
+
+## Nuxt-Specific
+- `useFetch()` / `useAsyncData()` para data fetching (não axios direto)
+- `definePageMeta()` para middleware e layout
+- Server routes em `server/api/`
+- Auto-imports habilitados: não precisa import manual de composables e utils
+
+## Regras
+- NUNCA use `this` em Composition API
+- SEMPRE tipe props e emits
+- SEMPRE use `v-memo` ou `computed` para listas pesadas
+- Evite watchers profundos — prefira computed
+- Lazy load componentes pesados: `defineAsyncComponent()`

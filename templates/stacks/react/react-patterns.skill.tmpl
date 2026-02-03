@@ -1,0 +1,53 @@
+---
+name: react-patterns
+description: Padrões e boas práticas para React SPA (Vite/CRA). Use quando criar
+  componentes, hooks customizados, context providers, state management ou
+  roteamento. Também para troubleshooting de re-renders, performance e
+  gerenciamento de estado.
+---
+
+# React Patterns
+
+## Componentes
+- Functional components SEMPRE (nunca class components)
+- Componentes pequenos (< 150 linhas) — extrair hooks para lógica
+- Props interface explícita com TypeScript
+- Prop drilling máximo 2 níveis — depois usar Context ou state management
+
+## Hooks Customizados
+- Prefixo `use` obrigatório
+- Um hook, uma responsabilidade
+- Retornar objeto nomeado (não array) para > 2 valores
+- Memoizar callbacks e valores computados (`useCallback`, `useMemo`)
+
+```typescript
+function useDebounce<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(timer)
+  }, [value, delay])
+  return debounced
+}
+```
+
+## State Management
+- Estado local (`useState`) para UI state
+- Context para estado que cruza poucos componentes
+- Zustand/Jotai para estado global complexo
+- React Query / TanStack Query para server state (nunca useState para dados de API)
+
+## Performance
+- `React.memo()` para componentes que re-renderizam sem mudança de props
+- `useMemo` para cálculos pesados
+- `useCallback` para callbacks passados como props
+- Virtualização para listas longas (react-window)
+- Code splitting com `React.lazy()` + `Suspense`
+
+## Regras
+- NUNCA mude state diretamente — use setState/dispatch
+- NUNCA use index como key em listas que mudam
+- SEMPRE cleanup effects (return function em useEffect)
+- SEMPRE tipe props e state com TypeScript
+- Evite useEffect para derivar estado — use useMemo
+- Forms: react-hook-form + zod (nunca controlled inputs para forms complexos)

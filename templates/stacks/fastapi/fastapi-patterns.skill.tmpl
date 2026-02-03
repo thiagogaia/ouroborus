@@ -1,0 +1,50 @@
+---
+name: fastapi-patterns
+description: Padrões e boas práticas para FastAPI. Use quando criar endpoints,
+  Pydantic models, dependency injection, middleware, background tasks ou
+  WebSockets. Também para troubleshooting de async, validação e CORS.
+---
+
+# FastAPI Patterns
+
+## Pydantic Models
+- Separar schemas de request e response (não reutilizar)
+- Usar `Field()` com descrição para OpenAPI docs automáticos
+- Validação customizada com `@field_validator`
+- BaseModel para input, `model_config` para customizações
+
+## Endpoints
+- Agrupar por recurso em routers separados (`APIRouter`)
+- Tipagem explícita em request e response: `-> ResponseModel`
+- Status codes explícitos: `status_code=status.HTTP_201_CREATED`
+- Docstrings nos endpoints → aparecem na API docs
+
+## Dependency Injection
+- Use `Depends()` para: auth, DB sessions, config, rate limiting
+- Dependencies encadeáveis mas manter profundidade <= 3
+- `yield` dependencies para cleanup (DB sessions)
+
+```python
+async def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.get("/items")
+async def list_items(db: Session = Depends(get_db)):
+    ...
+```
+
+## Async
+- `async def` para I/O bound (DB queries, HTTP calls)
+- `def` normal para CPU bound (FastAPI roda em threadpool)
+- NUNCA misture sync DB calls em async endpoints sem `run_in_executor`
+
+## Regras
+- NUNCA exponha models do ORM diretamente — use Pydantic schemas
+- SEMPRE valide input via Pydantic (não manual)
+- SEMPRE documente endpoints com docstrings e response_model
+- SEMPRE use dependency injection para cross-cutting concerns
+- Error handling com `HTTPException` e exception handlers globais

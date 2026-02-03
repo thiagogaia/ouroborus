@@ -1,0 +1,39 @@
+---
+name: django-patterns
+description: Padrões e boas práticas para Django. Use quando criar views,
+  models, serializers, forms, templates, management commands, ou migrations.
+  Também para troubleshooting de problemas com ORM queries, middleware
+  e signals.
+---
+
+# Django Patterns
+
+## Models
+- Toda model deve ter `__str__`, `class Meta` com ordering, e `created_at`/`updated_at`
+- Use `choices` para campos com valores fixos
+- Índices explícitos para campos filtrados frequentemente
+- Soft delete com `is_active` em vez de delete real
+
+## Views
+- Class-Based Views para CRUD padrão
+- Function-Based Views para lógica complexa ou customizada
+- Sempre use `get_object_or_404()` em vez de try/except
+- Login required via decorator `@login_required` ou mixin
+
+## Queries
+- Use `select_related()` para ForeignKey (JOIN)
+- Use `prefetch_related()` para ManyToMany e reverse FK
+- NUNCA faça queries em loops (N+1 problem)
+- Use `F()` e `Q()` para queries complexas
+- `annotate()` e `aggregate()` para cálculos no banco
+
+## Migrations
+- SEMPRE crie migration para mudanças no model
+- Use `RunPython` para data migrations
+- Teste migration com `--plan` antes de aplicar
+
+## Regras
+- NUNCA coloque lógica de negócio em views — use services/managers
+- SEMPRE valide input em forms/serializers, não na view
+- SEMPRE use transactions para operações multi-model
+- Prefira signals com cautela (explícito > implícito)

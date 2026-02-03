@@ -1,0 +1,61 @@
+---
+name: nextjs-patterns
+description: Padrões e boas práticas para Next.js App Router. Use quando criar
+  páginas, layouts, Server Components, Client Components, Server Actions,
+  API routes, middleware, ou metadata. Também para troubleshooting de
+  problemas específicos do Next.js como hydration errors e caching.
+---
+
+# Next.js Patterns
+
+Padrões para Next.js com App Router.
+
+## Server vs Client Components
+
+Decisão padrão: **Server Component** salvo quando necessário:
+- Usar Client Component ('use client') APENAS para: event handlers, useState/useEffect,
+  browser APIs, interatividade do usuário
+- Server Components para: fetch de dados, acesso a DB, leitura de env vars,
+  renderização de conteúdo estático
+
+## Server Actions
+
+Para mutations (criar, atualizar, deletar):
+1. Criar action em `${SRC_DIR}server/actions/[entidade].ts`
+2. Marcar com `'use server'`
+3. Validar input com Zod
+4. Revalidar cache com `revalidatePath()` ou `revalidateTag()`
+5. Retornar resultado tipado (não throw — retornar error object)
+
+```typescript
+'use server'
+import { z } from 'zod'
+
+const schema = z.object({ /* ... */ })
+
+export async function createItem(data: z.infer<typeof schema>) {
+  const parsed = schema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.flatten() }
+  // ... lógica
+  revalidatePath('/items')
+  return { success: true, data: result }
+}
+```
+
+## Metadata
+
+TODAS as páginas devem exportar metadata:
+```typescript
+export const metadata: Metadata = {
+  title: 'Título',
+  description: 'Descrição',
+}
+```
+
+## Regras
+- NUNCA use `'use client'` sem necessidade real
+- SEMPRE valide input em Server Actions com Zod
+- SEMPRE revalide cache após mutations
+- SEMPRE exporte metadata em páginas
+- Prefira `loading.tsx` e `error.tsx` por rota
+- Use `Suspense` boundaries para loading granular

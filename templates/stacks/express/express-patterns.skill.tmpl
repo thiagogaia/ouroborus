@@ -1,0 +1,58 @@
+---
+name: express-patterns
+description: Padrões e boas práticas para Express.js / Node.js backend. Use
+  quando criar rotas, middleware, controllers, error handling ou integrar
+  com bancos de dados. Também para troubleshooting de async errors, CORS
+  e performance.
+---
+
+# Express Patterns
+
+## Estrutura de Projeto
+```
+src/
+├── routes/         # Definição de rotas (slim)
+├── controllers/    # Lógica de request/response
+├── services/       # Business logic (testável isoladamente)
+├── middleware/      # Auth, validation, error handling
+├── models/         # ORM models ou tipos
+└── utils/          # Helpers puros
+```
+
+## Rotas e Controllers
+- Rotas slim: apenas roteamento e middleware chain
+- Controllers: extraem dados do req, chamam service, formatam response
+- Services: lógica de negócio pura, sem dependência de req/res
+- Nunca coloque lógica de negócio no route handler
+
+```typescript
+// Route (slim)
+router.post('/users', validate(createUserSchema), userController.create)
+
+// Controller
+async create(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await userService.create(req.body)
+    res.status(201).json(user)
+  } catch (err) { next(err) }
+}
+```
+
+## Error Handling
+- SEMPRE use try/catch ou express-async-errors
+- Error handler global como último middleware
+- Errors customizados com status code (AppError class)
+- NUNCA envie stack trace em produção
+
+## Middleware
+- Ordem importa: CORS → body parser → auth → routes → error handler
+- Middleware de auth retorna 401/403 antes de chegar ao controller
+- Validation middleware com Zod/Joi ANTES do controller
+
+## Regras
+- NUNCA use `app.use(express.json())` sem limite de body size
+- SEMPRE valide input com schema (Zod/Joi) em middleware
+- SEMPRE use helmet() para headers de segurança
+- SEMPRE use rate limiting em endpoints públicos
+- Error handler global é OBRIGATÓRIO
+- Logs estruturados (pino/winston), não console.log

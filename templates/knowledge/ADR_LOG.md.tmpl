@@ -1,0 +1,20 @@
+# Architectural Decision Records
+> Última atualização: ${DATE}
+
+<!-- Formato:
+### ADR-NNN: Título da Decisão
+- **Status**: proposta | aceita | depreciada | substituída por ADR-XXX
+- **Data**: YYYY-MM-DD
+- **Contexto**: por que a decisão era necessária
+- **Decisão**: o que foi decidido
+- **Alternativas**: o que foi considerado
+- **Consequências**: trade-offs aceitos
+-->
+
+### ADR-001: Adoção do Engram
+- **Status**: aceita
+- **Data**: ${DATE}
+- **Contexto**: Sessões do Claude começavam do zero, sem memória de decisões anteriores
+- **Decisão**: Instalar Engram como sistema de memória persistente com knowledge files versionados
+- **Alternativas**: Memory Bank manual, CLAUDE.md estático, nenhum sistema
+- **Consequências**: Overhead de manter knowledge atualizado. Benefício de continuidade entre sessões.
