@@ -338,6 +338,15 @@ install_core() {
         "activations": 0,
         "last_used": null,
         "health": "active"
+      },
+      "base-ingester": {
+        "version": "1.0.0",
+        "source": "seed",
+        "created_at": "$(date -Iseconds)",
+        "updated_at": "$(date -Iseconds)",
+        "activations": 0,
+        "last_used": null,
+        "health": "active"
       }
     },
     "agents": {},
@@ -744,7 +753,7 @@ verify_installation() {
     echo -e "  ${GREEN}│   ├── schemas/${NC}                     (DNA do sistema)"
     echo -e "  ${GREEN}│   ├── manifest.json${NC}                (registro de componentes)"
     echo -e "  ${GREEN}│   ├── settings.json${NC}                (permissões)"
-    echo -e "  ${GREEN}│   ├── skills/${NC}                      (8 skills: genesis + evolution + 6 seeds)"
+    echo -e "  ${GREEN}│   ├── skills/${NC}                      (9 skills: genesis + evolution + 7 seeds)"
     echo -e "  ${GREEN}│   ├── agents/${NC}                      (3 agents: architect, domain-analyst, db-expert)"
     echo -e "  ${GREEN}│   ├── commands/${NC}                    (13 commands)"
     echo -e "  ${GREEN}│   └── knowledge/${NC}                   (6 knowledge files)"

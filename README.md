@@ -244,6 +244,65 @@ your-project/
         └── experiences/EXPERIENCE_LIBRARY.md
 ```
 
+## Anatomy — How Each Layer Works
+
+Engram distributes itself across three layers, each with a clear rule:
+
+### `core/` — The DNA (always installed in every project)
+
+| What | Purpose | How it reaches the project |
+|------|---------|---------------------------|
+| `schemas/` | Formal contracts (skill, agent, command, knowledge) | `cp -r` directly |
+| `genesis/` | Engine that analyzes project and generates components | Becomes `skills/engram-genesis/` |
+| `evolution/` | Engine that tracks usage and proposes improvements | Becomes `skills/engram-evolution/` |
+| `seeds/` (6) | Universal skills (project-analyzer, code-reviewer, etc.) | `cp -r` into `skills/` |
+| `agents/` (3) | Universal specialists (architect, db-expert, domain-analyst) | `cp` into `agents/` |
+| `commands/` (15) | Slash commands | `cp` into `commands/` |
+
+**Rule**: If it's useful in **any** project, it goes in core.
+
+### `templates/` — Scaffolding (used during install, never copied entirely)
+
+Two sub-categories:
+
+**`templates/knowledge/`** — Markdown templates with `${DATE}` replaced by setup.sh. Generate the initial files in `.claude/knowledge/`. Used **once** at install time, never again.
+
+**`templates/stacks/`** — Framework-specific skill templates. `analyze_project.py` detects the framework → genesis copies the corresponding `.skill.tmpl` as `SKILL.md` inside a new skill. They work as **pre-built recipes** that genesis customizes.
+
+| Stack | Template |
+|-------|----------|
+| Next.js | `templates/stacks/nextjs/` |
+| NestJS | `templates/stacks/nestjs/` |
+| React | `templates/stacks/react/` |
+| Vue / Nuxt | `templates/stacks/vue/` |
+| Express | `templates/stacks/express/` |
+| Django | `templates/stacks/django/` |
+| FastAPI | `templates/stacks/fastapi/` |
+| Laravel | `templates/stacks/laravel/` |
+| Flask | `templates/stacks/flask/` |
+
+**Rule**: If it's a pattern that repeats across projects of the **same stack**, it goes in templates.
+
+### `extras/` — Optional (never installed automatically)
+
+Skills and agents for specific niches. The developer installs via `/import` or manual copy.
+
+```
+extras/
+├── skills/
+│   ├── n8n-agent-builder/        # N8N + WhatsApp sales automation
+│   ├── sales-funnel-optimizer/   # Sales funnel optimization
+│   ├── microservices-navigator/  # Microservice ecosystem mapping
+│   ├── devops-patterns/          # K8s, CI/CD, GitOps patterns
+│   ├── fintech-domain/           # Payment/fintech domain knowledge
+│   └── execution-pipeline/       # 7-stage task execution methodology
+└── agents/
+    ├── prompt-engineer.md        # Prompt engineering specialist
+    └── infra-expert.md           # Infrastructure/DevOps specialist
+```
+
+**Rule**: If it's only useful for a **specific niche/domain**, it goes in extras.
+
 ## Architectural Inspirations
 
 Engram v3 combines ideas from three research projects:
