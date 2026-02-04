@@ -51,6 +51,22 @@
 
 - **Memory Labels**: Tipos de memória no grafo: Episode (episódica), Concept (semântica), Pattern (procedural), Decision (ADR), Person, Domain.
 
+- **Voyager**: Projeto NVIDIA/MineDojo de agente que joga Minecraft e constrói sua própria biblioteca de skills. Inspiração para skill library composicional do Engram.
+
+- **Darwin Gödel Machine (DGM)**: Agente Sakana AI que reescreve seu próprio código-fonte. Mantém arquivo evolutivo. Inspiração para capacidade metacircular do Engram.
+
+- **BOSS (Bootstrap Your Own Skills)**: Pesquisa USC/Google de bootstrapping bottom-up de skills. Skills emergem de prática, não de design top-down. Inspiração para pattern detection do /learn.
+
+- **Skill Library**: Conceito do Voyager - coleção de skills indexados por embedding semântico. No Engram: `.claude/skills/` + manifest.json.
+
+- **Automatic Curriculum**: Conceito do Voyager - sistema que propõe tarefas baseado no nível atual. Roadmap futuro para Engram.
+
+- **Experience Replay**: Técnica de ML - reusar experiências passadas como exemplos. No Engram: EXPERIENCE_LIBRARY.md.
+
+- **Self-Verification**: Conceito do Voyager - só commita skill se verificou sucesso. No Engram: validate.py obrigatório antes de register.py.
+
+- **Template Stack**: Arquivo `.skill.tmpl` em `templates/stacks/` que serve como ponto de partida para geração de skill customizado por framework.
+
 ## Regras de Negócio
 
 - **RN-001**: Todo componente DEVE seguir seu schema correspondente

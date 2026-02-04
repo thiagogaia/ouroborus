@@ -1,6 +1,6 @@
 # Priority Matrix
-> Última atualização: 2026-02-03 (/learn)
-> ICE = (Impacto × Confiança) / Esforço — todos 1-10
+> Ultima atualizacao: 2026-02-04 (/learn commit cb64fd73)
+> ICE = (Impacto x Confianca) / Esforco - todos 1-10
 
 ## Ativas
 
@@ -39,7 +39,10 @@
 | Adicionar .gitignore para __pycache__ | ✅ Concluído | 2026-02-03 |
 | Instalar seeds faltantes (5 de 6) | ✅ Concluído | 2026-02-03 |
 | Adicionar diagrama metacircular à doc | ✅ Concluído | 2026-02-03 |
-| Upgrade para v3.0.0 | ✅ Concluído | 2026-02-03 |
+| Upgrade para v3.0.0 | ✅ Concluido | 2026-02-03 |
+| Analisar commit cb64fd73 via /learn | ✅ Concluido | 2026-02-04 |
+| Extrair padroes PAT-020/021/022 | ✅ Concluido | 2026-02-04 |
+| Documentar EXP-016 (major upgrade) | ✅ Concluido | 2026-02-04 |
 
 ## Como Priorizar
 

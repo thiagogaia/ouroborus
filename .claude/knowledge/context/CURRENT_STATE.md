@@ -1,10 +1,10 @@
 # Estado Atual do Projeto
-> Última atualização: 2026-02-03 (/learn após implementação do cérebro)
+> Ultima atualizacao: 2026-02-04 (/learn commit bbcc8777 - commit fundacional)
 
 ## Status Geral
 - **Fase**: v3.0.0 — Engram com Cérebro Organizacional
 - **Saúde**: 🟢 Saudável (Health Score 100%)
-- **Próximo Marco**: Testar reinstalação em projeto existente
+- **Próximo Marco**: Testar em projeto real Next.js ou Python
 
 ## Identidade
 **Engram v3** — Sistema metacircular de memória persistente para Claude Code.
@@ -113,10 +113,32 @@ genesis → evolui componentes → ciclo recomeça
 | db-expert | Schema, queries, migrations |
 | domain-analyst | Regras de negócio, glossário |
 
-### Commands (13)
-/init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import
+### Commands (14)
+/init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, **/recall**
 
 ## O Que Mudou Recentemente
+- [2026-02-04] **commit bbcc8777 analisado (fundacional)**: Commit inicial do repositório com DNA conceitual completo | Impacto: CRÍTICO
+- [2026-02-04] **ADR-000 criado**: Decisão de inspiração arquitetural (Voyager + DGM + BOSS) | Impacto: ALTO
+- [2026-02-04] **PAT-028/029/030/031**: Padrões fundacionais extraídos (análise de mercado, templates, documentação, extras vs core) | Impacto: ALTO
+- [2026-02-04] **Glossário expandido**: 8 novos termos (Voyager, DGM, BOSS, Skill Library, Curriculum, etc) | Impacto: MÉDIO
+- [2026-02-04] **EXP-019**: Experiência de análise de commit fundacional documentada | Impacto: MÉDIO
+- [2026-02-04] **commit 5db29c67 analisado (/recall)**: Interface de consulta ao cerebro organizacional | Impacto: ALTO
+- [2026-02-04] **recall.py**: Busca semantica + spreading activation + fallback gracioso (228 linhas) | Impacto: ALTO
+- [2026-02-04] **/recall command**: .claude/commands/recall.md + core/commands/recall.md (156 linhas cada) | Impacto: MEDIO
+- [2026-02-04] **PAT-023/024/025/026/027**: Padroes de interface de busca extraidos | Impacto: MEDIO
+- [2026-02-04] **CLAUDE.md atualizado**: Instrucoes de quando usar /recall automaticamente | Impacto: ALTO
+- [2026-02-04] **commit cb64fd73 analisado (v3.0.0)**: Major upgrade com cerebro organizacional completo | Impacto: CRITICO
+- [2026-02-04] **Seeds completos**: 5 seeds adicionados (knowledge-manager, domain-expert, priority-engine, code-reviewer, engram-factory) | Impacto: ALTO
+- [2026-02-04] **PAT-020/021/022**: Padroes de major upgrade, seeds universais, cognitive log extraidos | Impacto: MEDIO
+- [2026-02-04] **Cerebro v3**: 68 nos, 106 arestas, 61 embeddings, health 100%, hubs: person-engram (49), domain-frontend (29) | Impacto: CRITICO
+- [2026-02-04] **commit 6d7c3077**: Conceito "Modelo de Orquestração Sequencial" documentado | Impacto: ALTO
+- [2026-02-04] **Co-ativação detectada**: engram-evolution + project-analyzer (3 sessões, 50%) | Impacto: MÉDIO
+- [2026-02-04] **commit 5da6535c analisado**: ADR-008/009/010/011 extraídos - Arquitetura v3.0 Git-Native | Impacto: CRÍTICO
+- [2026-02-04] **Cérebro atualizado**: 93 nós, 145 arestas (conceitos: Git-Native Architecture, Wikilinks Pattern) | Impacto: ALTO
+- [2026-02-04] **setup.sh**: Auto-instalação de python3-venv em Debian/Ubuntu (commit 367a4c1) | Impacto: MÉDIO
+- [2026-02-04] **[[PAT-015]]**: Padrão de auto-instalação de dependências do sistema | Impacto: MÉDIO
+- [2026-02-04] **Cérebro expandido**: 77 nós, 119 arestas (+5 commits processados) | Impacto: MÉDIO
+- [2026-02-04] **PAT-016**: Padrão de Commit de Documentação Arquitetural extraído do commit 7f7f221 | Impacto: MÉDIO
 - [2026-02-03] **populate.py**: Script para popular cérebro com ADRs, domain, patterns, commits | Impacto: ALTO
 - [2026-02-03] **Cérebro populado**: 61 nós, 97 arestas (11 ADRs, 27 conceitos, 11 patterns, 5 commits) | Impacto: CRÍTICO
 - [2026-02-03] **/learn integrado**: Fase 4 adicionada para criar memórias automaticamente | Impacto: ALTO
@@ -139,7 +161,7 @@ Nenhum bloqueio ativo.
 ## Métricas de Uso (acumulado)
 | Componente | Ativações | Status |
 |------------|-----------|--------|
-| engram-genesis | 2 | 🟢 Ativo |
+| engram-genesis | 5 | 🟢 Ativo |
 | engram-evolution | 3 | 🟢 Ativo |
 | python-scripts | 1 | 🟢 Novo |
 | project-analyzer | 2 | 🟢 Ativo |
