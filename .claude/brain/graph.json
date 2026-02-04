@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "meta": {
-    "saved_at": "2026-02-04T01:47:20.832084",
-    "node_count": 117,
-    "edge_count": 185
+    "saved_at": "2026-02-04T03:52:09.096771",
+    "node_count": 127,
+    "edge_count": 200
   },
   "nodes": {
     "a52ceda2": {
@@ -2597,6 +2597,260 @@
         "created_at": "2026-02-04T01:47:13.065144",
         "decay_rate": 0.003
       }
+    },
+    "a1396a0f": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "update readme",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-update-readme-a1396a0f.md",
+        "summary": "update readme Files changed: README.md",
+        "commit_hash": "53c9fab7",
+        "date": "2026-02-04",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418058",
+        "created_at": "2026-02-04T03:52:05.418058",
+        "decay_rate": 0.01
+      }
+    },
+    "16c24a89": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "ReadmeDomain"
+      ],
+      "props": {
+        "title": "docs(readme): update to v3 with organizational brain",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-docs-readme-update-to-v3-with-organizational-brain-16c24a89.md",
+        "summary": "docs(readme): update to v3 with organizational brain - Update title and badges to v3.0.0 Files changed: README.md",
+        "commit_hash": "a0de94bf",
+        "date": "2026-02-04",
+        "commit_type": "docs",
+        "scope": "readme",
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418518",
+        "created_at": "2026-02-04T03:52:05.418518",
+        "decay_rate": 0.01
+      }
+    },
+    "81dd2eb4": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "logo",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-logo-81dd2eb4.md",
+        "summary": "logo Files changed: logo.svg",
+        "commit_hash": "41f2ea82",
+        "date": "2026-02-04",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418664",
+        "created_at": "2026-02-04T03:52:05.418664",
+        "decay_rate": 0.01
+      }
+    },
+    "79c9405c": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "feat(knowledge): batch learn from all 11 commits + multi-project setup",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-knowledge-batch-learn-from-all-11-commits-mul-79c9405c.md",
+        "summary": "feat(knowledge): batch learn from all 11 commits + multi-project setup Process all repository commits retroactively via parallel /learn agents: Files changed: .claude/brain/cognitive-log.jsonl, .cl...",
+        "commit_hash": "a66232ab",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "knowledge",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418771",
+        "created_at": "2026-02-04T03:52:05.418771",
+        "decay_rate": 0.01
+      }
+    },
+    "1f28e04e": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "setup",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-setup-1f28e04e.md",
+        "summary": "setup Files changed: setup.sh",
+        "commit_hash": "367a4c1a",
+        "date": "2026-02-04",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418898",
+        "created_at": "2026-02-04T03:52:05.418898",
+        "decay_rate": 0.01
+      }
+    },
+    "edd2c5af": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "BrainDomain"
+      ],
+      "props": {
+        "title": "feat(brain): add /recall command for querying organizational memory",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-edd2c5af.md",
+        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
+        "commit_hash": "5db29c67",
+        "date": "2026-02-03",
+        "commit_type": "feat",
+        "scope": "brain",
+        "files_count": 4
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.418993",
+        "created_at": "2026-02-04T03:52:05.418993",
+        "decay_rate": 0.01
+      }
+    },
+    "6bd284eb": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "docs(knowledge): record architectural analysis on orchestration model",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-6bd284eb.md",
+        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
+        "commit_hash": "7f7f2215",
+        "date": "2026-02-03",
+        "commit_type": "docs",
+        "scope": "knowledge",
+        "files_count": 8
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.419099",
+        "created_at": "2026-02-04T03:52:05.419099",
+        "decay_rate": 0.01
+      }
+    },
+    "197e18a0": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "EngramDomain"
+      ],
+      "props": {
+        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-197e18a0.md",
+        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
+        "commit_hash": "cb64fd73",
+        "date": "2026-02-03",
+        "commit_type": "feat",
+        "scope": "engram",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.419221",
+        "created_at": "2026-02-04T03:52:05.419221",
+        "decay_rate": 0.01
+      }
+    },
+    "1690b3ca": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "BrainDomain"
+      ],
+      "props": {
+        "title": "feat(brain): implement organizational brain with graph and embeddings",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-1690b3ca.md",
+        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
+        "commit_hash": "d94adec4",
+        "date": "2026-02-03",
+        "commit_type": "feat",
+        "scope": "brain",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.419341",
+        "created_at": "2026-02-04T03:52:05.419341",
+        "decay_rate": 0.01
+      }
+    },
+    "957a9ce6": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "docs(knowledge): add brain architecture ADRs and update state",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-docs-knowledge-add-brain-architecture-adrs-and-upd-957a9ce6.md",
+        "summary": "docs(knowledge): add brain architecture ADRs and update state - ADR-008: Git-Native Architecture with Knowledge Graph Files changed: .claude/evolution-activations.json, .claude/knowledge/context/CU...",
+        "commit_hash": "5da6535c",
+        "date": "2026-02-03",
+        "commit_type": "docs",
+        "scope": "knowledge",
+        "files_count": 6
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T03:52:05.419447",
+        "created_at": "2026-02-04T03:52:05.419447",
+        "decay_rate": 0.01
+      }
     }
   },
   "edges": [
@@ -3346,551 +3600,656 @@
       "src": "90cb0bdf",
       "tgt": "person-Thiago Gaia",
       "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
+      "weight": 1.0,
       "props": {}
     },
     {
       "src": "90cb0bdf",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
+      "weight": 1.0,
       "props": {}
     },
     {
       "src": "b9a5cadd",
       "tgt": "person-Thiago Gaia",
       "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
+      "weight": 1.0,
       "props": {}
     },
     {
       "src": "b603724e",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
+      "weight": 1.0,
       "props": {}
     },
     {
       "src": "b603724e",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
+      "weight": 1.0,
       "props": {}
     },
     {
       "src": "d1a007bc",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "37d5e104",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "37d5e104",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "812f0768",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "812f0768",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "9a2c7d95",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "9a2c7d95",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "18847d38",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "01131eb7",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "41b69066",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "41b69066",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "b575dae2",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "b575dae2",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "acc3c8c1",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "acc3c8c1",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "1e876336",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "513df767",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "73687f19",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "73687f19",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "af8894f3",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "af8894f3",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "b27578dd",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "b27578dd",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "7425b352",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "1b0bbe62",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "68b77b30",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "68b77b30",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "58764d5e",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "58764d5e",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "929387b3",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "929387b3",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "e80219ac",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "3a7a1d3a",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "3a7a1d3a",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
+      "weight": 0.9743585500000007,
       "props": {}
     },
     {
       "src": "38e7e5af",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "af28d5a9",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "af28d5a9",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "a853f527",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "a853f527",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "d206c427",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "d206c427",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "9d011267",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "weight": 0.8857805000000005,
       "props": {}
     },
     {
       "src": "1bd620fb",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "36b94afc",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "36b94afc",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "45956986",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "45956986",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "5ed1b49e",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "5ed1b49e",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "327ffc2a",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
+      "weight": 0.7320500000000003,
       "props": {}
     },
     {
       "src": "b8ed37f9",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "0561b4fd",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "0561b4fd",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "cfb0a071",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "cfb0a071",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "5e88239a",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "5e88239a",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "f83ee31c",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
+      "weight": 0.6655000000000002,
       "props": {}
     },
     {
       "src": "3831c0b2",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "4923d0e7",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "4923d0e7",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "aa07898a",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "aa07898a",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "34209fc8",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "34209fc8",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "6fa1febd",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "9118ae21",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "9118ae21",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "8ed780cf",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "8ed780cf",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "1b7dea8c",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "1b7dea8c",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "fe7d60c8",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
-      "weight": 0.55,
+      "weight": 0.6050000000000001,
       "props": {}
     },
     {
       "src": "fe7d60c8",
       "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "a1396a0f",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "16c24a89",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "81dd2eb4",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "1f28e04e",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "edd2c5af",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "edd2c5af",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "6bd284eb",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "6bd284eb",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "197e18a0",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "197e18a0",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "1690b3ca",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "957a9ce6",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "957a9ce6",
+      "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 0.55,
       "props": {}

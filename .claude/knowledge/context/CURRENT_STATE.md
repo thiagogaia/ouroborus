@@ -1,9 +1,10 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-04 (/learn commit bbcc8777 - commit fundacional)
+> Ultima atualizacao: 2026-02-04 (/learn commit 53c9fab - update readme)
 
 ## Status Geral
-- **Fase**: v3.0.0 — Engram com Cérebro Organizacional
+- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável)
 - **Saúde**: 🟢 Saudável (Health Score 100%)
+- **Cérebro**: 127 nós, 204 arestas (crescimento +10 desde último /learn)
 - **Próximo Marco**: Testar em projeto real Next.js ou Python
 
 ## Identidade
@@ -117,6 +118,9 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, **/recall**
 
 ## O Que Mudou Recentemente
+- [2026-02-04] **/learn manutenção (commit 53c9fab)**: Cérebro expandido para 127 nós, 204 arestas | Impacto: BAIXO
+- [2026-02-04] **README atualizado para v3**: Documentação do cérebro organizacional + badges | Impacto: MÉDIO
+- [2026-02-04] **Logo adicionado**: logo.svg com design ouroboros | Impacto: BAIXO
 - [2026-02-04] **commit bbcc8777 analisado (fundacional)**: Commit inicial do repositório com DNA conceitual completo | Impacto: CRÍTICO
 - [2026-02-04] **ADR-000 criado**: Decisão de inspiração arquitetural (Voyager + DGM + BOSS) | Impacto: ALTO
 - [2026-02-04] **PAT-028/029/030/031**: Padrões fundacionais extraídos (análise de mercado, templates, documentação, extras vs core) | Impacto: ALTO
@@ -141,6 +145,13 @@ genesis → evolui componentes → ciclo recomeça
 - [2026-02-04] **PAT-016**: Padrão de Commit de Documentação Arquitetural extraído do commit 7f7f221 | Impacto: MÉDIO
 - [2026-02-03] **populate.py**: Script para popular cérebro com ADRs, domain, patterns, commits | Impacto: ALTO
 - [2026-02-03] **Cérebro populado**: 61 nós, 97 arestas (11 ADRs, 27 conceitos, 11 patterns, 5 commits) | Impacto: CRÍTICO
+
+## Sugestões Evolutivas Pendentes
+| Tipo | Descrição | Prioridade |
+|------|-----------|------------|
+| Composição | engram-evolution + project-analyzer (37% co-ativação) | 🟡 Média |
+| Embeddings | Gerar embeddings para 127 nós (0 atual) | 🟡 Média |
+| Stale | 8 componentes nunca usados - avaliar necessidade | 🟢 Baixa |
 - [2026-02-03] **/learn integrado**: Fase 4 adicionada para criar memórias automaticamente | Impacto: ALTO
 - [2026-02-03] **maintain.sh**: Script de manutenção para cron/manual | Impacto: MÉDIO
 - [2026-02-03] **[[ADR-011]]**: Arquitetura de Cérebro Organizacional implementada | Impacto: CRÍTICO
@@ -162,12 +173,20 @@ Nenhum bloqueio ativo.
 | Componente | Ativações | Status |
 |------------|-----------|--------|
 | engram-genesis | 5 | 🟢 Ativo |
-| engram-evolution | 3 | 🟢 Ativo |
+| engram-evolution | 4 | 🟢 Ativo |
 | python-scripts | 1 | 🟢 Novo |
-| project-analyzer | 2 | 🟢 Ativo |
-| architect | 0 | ⚪ Não usado |
-| db-expert | 0 | ⚪ Não usado |
-| domain-analyst | 0 | ⚪ Não usado |
+| project-analyzer | 3 | 🟢 Ativo |
+| knowledge-manager | 0 | 🟡 Stale (seed) |
+| domain-expert | 0 | 🟡 Stale (seed) |
+| priority-engine | 0 | 🟡 Stale (seed) |
+| code-reviewer | 0 | 🟡 Stale (seed) |
+| engram-factory | 0 | 🟡 Stale (seed) |
+| architect | 0 | 🟡 Stale (core) |
+| db-expert | 0 | 🟡 Stale (core) |
+| domain-analyst | 0 | 🟡 Stale (core) |
+
+### Co-ativações Detectadas
+- **engram-evolution + project-analyzer**: 3 sessões (37%) → Candidato a composição
 
 ## Contexto Para Próxima Sessão
 

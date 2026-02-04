@@ -81,6 +81,27 @@ Use `/recall <pergunta>` automaticamente quando:
 - Antes de decisões: verificar se já existe ADR relacionado
 - Debug de problemas: encontrar soluções anteriores similares
 
+### Quando Usar Domain-Expert Automaticamente
+
+O Claude DEVE invocar `domain-analyst` ou seguir `domain-expert` quando:
+1. **Termo desconhecido**: Encontrar termo de negócio NÃO documentado no DOMAIN.md
+2. **Regra implícita**: Descobrir validação/constraint que revela regra de negócio
+3. **Estados de negócio**: Ver enum/constante que define estados ou transições
+4. **Comentário "por quê"**: Encontrar comentário explicando motivação (não implementação)
+5. **Pergunta de negócio**: Usuário perguntar sobre regras, fluxos ou entidades
+6. **Lógica condicional complexa**: Analisar código com if/switch em status, permissões, etc.
+
+**Workflow de Descoberta Automática:**
+```
+1. Detectar → é conhecimento de domínio?
+2. Verificar → já está no DOMAIN.md?
+3. Se não está → extrair e propor registro
+4. Se inconsistente → reportar possível bug
+5. Validar → confirmar com dev antes de registrar
+```
+
+**Atalho:** Use `/domain [termo ou pergunta]` para análise sob demanda.
+
 ### Exemplo de Uso
 
 ```bash
