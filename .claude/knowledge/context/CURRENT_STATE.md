@@ -1,10 +1,10 @@
 # Estado Atual do Projeto
-> Última atualização: 2026-02-03 (Arquitetura Git-Native v3.0 aprovada)
+> Última atualização: 2026-02-03 (Cérebro populado e integrado)
 
 ## Status Geral
-- **Fase**: Arquitetura v3.0 — Git-native com grafo de conhecimento definida
+- **Fase**: v3.1 — Cérebro Organizacional populado e integrado
 - **Saúde**: 🟢 Saudável (Health Score 100%)
-- **Próximo Marco**: Implementar estrutura de arquivos escalável
+- **Próximo Marco**: Instalar dependências (networkx, numpy) e testar busca semântica
 
 ## Identidade
 **Engram v2** — Sistema metacircular de memória persistente para Claude Code.
@@ -70,12 +70,14 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import
 
 ## O Que Mudou Recentemente
-- [2026-02-03] **[[ADR-008]]**: Arquitetura Git-Native com Grafo de Conhecimento aprovada | Impacto: CRÍTICO
-- [2026-02-03] **[[ADR-009]]**: Estado por Desenvolvedor (state/dev.md) aprovado | Impacto: ALTO
-- [2026-02-03] **[[ADR-010]]**: Convenção de Commits de Conhecimento aprovada | Impacto: MÉDIO
-- [2026-02-03] Análise de escalabilidade: 10 devs × 5 anos = viável com camadas | Impacto: ALTO
-- [2026-02-03] Modelo Obsidian ([[wikilinks]] + backlinks) adotado | Impacto: ALTO
-- [2026-02-03] Sistema de migração de backups implementado (migrate_backup.py) | Impacto: ALTO
+- [2026-02-03] **populate.py**: Script para popular cérebro com ADRs, domain, patterns, commits | Impacto: ALTO
+- [2026-02-03] **Cérebro populado**: 61 nós, 97 arestas (11 ADRs, 27 conceitos, 11 patterns, 5 commits) | Impacto: CRÍTICO
+- [2026-02-03] **/learn integrado**: Fase 4 adicionada para criar memórias automaticamente | Impacto: ALTO
+- [2026-02-03] **maintain.sh**: Script de manutenção para cron/manual | Impacto: MÉDIO
+- [2026-02-03] **[[ADR-011]]**: Arquitetura de Cérebro Organizacional implementada | Impacto: CRÍTICO
+- [2026-02-03] **brain.py**: Grafo NetworkX com spreading activation, decay, consolidation | Impacto: CRÍTICO
+- [2026-02-03] **embeddings.py**: Busca semântica com sentence-transformers/OpenAI | Impacto: ALTO
+- [2026-02-03] **cognitive.py**: Processos cognitivos (consolidate, decay, archive) | Impacto: ALTO
 
 ## Dívidas Técnicas
 | Item | Severidade | Descrição |
@@ -100,45 +102,67 @@ Nenhum bloqueio ativo.
 
 ## Contexto Para Próxima Sessão
 
-### Arquitetura v3.0 Aprovada
-A nova arquitetura para escalabilidade foi definida em [[ADR-008]], [[ADR-009]], [[ADR-010]]:
+### Cérebro Organizacional Implementado
 
-**Estrutura de Arquivos Escalável:**
+Arquitetura definida em [[ADR-011]]. Sistema de memória com grafo de conhecimento real.
+
+**Estrutura Implementada:**
 ```
 .claude/
-├── active/              ← HOT (últimos 90 dias)
-│   ├── state/           ← 1 arquivo POR DEV
-│   ├── episodes/        ← 1 arquivo por episódio com [[links]]
-│   ├── patterns/        ← 1 arquivo por pattern
-│   ├── decisions/       ← 1 arquivo por ADR
-│   ├── concepts/        ← glossário linkável [[conceito]]
-│   └── people/          ← [[@pessoa]] sabe o quê
-├── consolidated/        ← summaries trimestrais
-├── archive/             ← episódios > 90 dias
-├── graph/               ← backlinks.json (grafo unificado)
-└── scripts/             ← automação
+├── brain/                    ← GRAFO E PROCESSOS
+│   ├── brain.py             ← Núcleo (NetworkX + operações)
+│   ├── embeddings.py        ← Busca semântica
+│   ├── cognitive.py         ← Consolidate, decay, archive
+│   ├── graph.json           ← Grafo serializado
+│   └── state/               ← Estado por dev
+│
+├── memory/                   ← CONTEÚDO LEGÍVEL
+│   ├── episodes/            ← Memória episódica
+│   ├── concepts/            ← Memória semântica
+│   ├── patterns/            ← Memória procedural
+│   ├── decisions/           ← ADRs
+│   ├── people/              ← Expertise
+│   └── domains/             ← Áreas
+│
+├── consolidated/             ← Summaries
+└── archive/                  ← Memórias arquivadas
 ```
 
-**Simplificação:** INDEX.md eliminado. O grafo (backlinks.json) com `views`
-pré-computadas serve como índice. Estratégia Obsidian pura.
+**Funcionalidades Implementadas:**
+- ✅ Grafo com nós tipados (labels) e arestas tipadas (REFERENCES, AUTHORED_BY, etc)
+- ✅ Estado de memória (strength, decay_rate, access_count)
+- ✅ Spreading activation para busca
+- ✅ Curva de esquecimento (Ebbinghaus)
+- ✅ Consolidação de conexões
+- ✅ Embeddings para busca semântica
 
-**Modelo de Links (Obsidian):**
-- `[[conceito]]` → concepts/conceito.md
-- `[[@pessoa]]` → people/pessoa.md
-- `[[ADR-NNN]]` → decisions/ADR-NNN.md
-- Backlinks gerados automaticamente
+**Uso:**
+```bash
+# Instalar dependências
+pip install networkx numpy sentence-transformers
 
-**Escalabilidade Comprovada:**
-- 10 devs × 5 anos = ~25k episódios = ~50MB
-- Git aguenta tranquilo
-- Tokens sob controle: ~$0.20/sessão (vs $37 sem otimização)
-- Consolidation job compacta episódios antigos
+# Estatísticas
+python .claude/brain/brain.py stats
 
-### Próximos Passos de Implementação
-1. [ ] Criar estrutura de diretórios (active/, consolidated/, archive/, graph/)
-2. [ ] Migrar conhecimento atual para novo formato com [[links]]
-3. [ ] Implementar build_graph.py (gera backlinks.json com views)
-4. [ ] Implementar consolidate.py (job mensal)
-5. [ ] Atualizar templates com convenção de [[links]]
-6. [ ] Integrar build_graph no /learn
-7. [ ] Testar com 2-3 devs em projeto real
+# Busca
+python .claude/brain/brain.py search "autenticação"
+
+# Processos cognitivos
+python .claude/brain/cognitive.py health
+python .claude/brain/cognitive.py decay
+python .claude/brain/cognitive.py consolidate
+
+# Embeddings
+python .claude/brain/embeddings.py build
+python .claude/brain/embeddings.py search "como resolver bugs"
+```
+
+### Próximos Passos
+1. [x] Popular o cérebro com conhecimento existente (ADRs, patterns) ✅
+2. [x] Integrar brain.py no /learn para criar memórias automaticamente ✅
+3. [ ] Integrar no /status para mostrar estado do cérebro
+4. [x] Configurar manutenção (maintain.sh + documentação cron/CI) ✅
+5. [x] Instalar dependências no venv: `.claude/brain/.venv` ✅
+6. [x] Gerar embeddings (61 vetores) e testar busca semântica ✅
+7. [x] Integrar no setup.sh e /init-engram ✅
+8. [ ] Documentar fluxo de uso para equipe

@@ -1,0 +1,1060 @@
+#!/usr/bin/env python3
+"""
+brain.py - Cerebro Organizacional do Engram
+
+Grafo de conhecimento em memoria usando NetworkX.
+Persistencia em JSON para compatibilidade com Git.
+
+Uso:
+    from brain import Brain
+
+    brain = Brain()
+    brain.load()
+
+    # Adicionar memoria
+    brain.add_memory(...)
+
+    # Buscar
+    results = brain.retrieve(query_embedding)
+
+    # Salvar
+    brain.save()
+"""
+
+import json
+import math
+import hashlib
+import subprocess
+import re
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Optional, List, Dict, Any, Tuple
+from uuid import uuid4
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+    print("Warning: numpy not installed. Embeddings disabled.")
+
+try:
+    import networkx as nx
+    HAS_NETWORKX = True
+except ImportError:
+    HAS_NETWORKX = False
+    print("Warning: networkx not installed. Using fallback graph.")
+
+
+class FallbackGraph:
+    """Grafo simples quando NetworkX nao esta disponivel."""
+
+    def __init__(self):
+        self._nodes = {}
+        self._edges = {}
+        self._adj_out = {}
+        self._adj_in = {}
+
+    def add_node(self, node_id: str, **attrs):
+        self._nodes[node_id] = attrs
+        if node_id not in self._adj_out:
+            self._adj_out[node_id] = []
+        if node_id not in self._adj_in:
+            self._adj_in[node_id] = []
+
+    def add_edge(self, source: str, target: str, **attrs):
+        edge_key = (source, target)
+        self._edges[edge_key] = attrs
+        if source not in self._adj_out:
+            self._adj_out[source] = []
+        if target not in self._adj_in:
+            self._adj_in[target] = []
+        if target not in self._adj_out[source]:
+            self._adj_out[source].append(target)
+        if source not in self._adj_in[target]:
+            self._adj_in[target].append(source)
+
+    @property
+    def nodes(self):
+        return self._nodes
+
+    @property
+    def edges(self):
+        return self._edges
+
+    def successors(self, node_id: str):
+        return self._adj_out.get(node_id, [])
+
+    def predecessors(self, node_id: str):
+        return self._adj_in.get(node_id, [])
+
+    def number_of_nodes(self):
+        return len(self._nodes)
+
+    def number_of_edges(self):
+        return len(self._edges)
+
+    def degree(self):
+        result = []
+        for node_id in self._nodes:
+            out_deg = len(self._adj_out.get(node_id, []))
+            in_deg = len(self._adj_in.get(node_id, []))
+            result.append((node_id, out_deg + in_deg))
+        return result
+
+
+class Brain:
+    """
+    Cerebro organizacional - grafo de conhecimento com processos cognitivos.
+    """
+
+    def __init__(self, base_path: Path = None):
+        if base_path is None:
+            base_path = Path(".claude/brain")
+        self.base_path = Path(base_path)
+        self.memory_path = self.base_path.parent / "memory"
+
+        # Grafo
+        if HAS_NETWORKX:
+            self.graph = nx.DiGraph()
+        else:
+            self.graph = FallbackGraph()
+
+        # Embeddings
+        self.embeddings: Dict[str, Any] = {}
+
+        # Cache de estatisticas
+        self._stats_cache = None
+        self._stats_time = None
+
+    # ══════════════════════════════════════════════════════════
+    # PERSISTENCIA
+    # ══════════════════════════════════════════════════════════
+
+    def load(self) -> bool:
+        """Carrega grafo e embeddings do disco."""
+        graph_file = self.base_path / "graph.json"
+
+        if not graph_file.exists():
+            print(f"Info: No graph found at {graph_file}")
+            return False
+
+        try:
+            data = json.loads(graph_file.read_text(encoding='utf-8'))
+
+            # Carrega nos
+            for node_id, node_data in data.get("nodes", {}).items():
+                if HAS_NETWORKX:
+                    self.graph.add_node(node_id, **node_data)
+                else:
+                    self.graph.add_node(node_id, **node_data)
+
+            # Carrega arestas
+            for edge in data.get("edges", []):
+                if HAS_NETWORKX:
+                    self.graph.add_edge(
+                        edge["src"],
+                        edge["tgt"],
+                        type=edge.get("type", "REFERENCES"),
+                        weight=edge.get("weight", 0.5),
+                        props=edge.get("props", {})
+                    )
+                else:
+                    self.graph.add_edge(
+                        edge["src"],
+                        edge["tgt"],
+                        type=edge.get("type", "REFERENCES"),
+                        weight=edge.get("weight", 0.5),
+                        props=edge.get("props", {})
+                    )
+
+            print(f"Loaded: {self.graph.number_of_nodes()} nodes, {self.graph.number_of_edges()} edges")
+        except Exception as e:
+            print(f"Error loading graph: {e}")
+            return False
+
+        # Carrega embeddings
+        if HAS_NUMPY:
+            emb_file = self.base_path / "embeddings.npz"
+            if emb_file.exists():
+                try:
+                    loaded = np.load(emb_file)
+                    self.embeddings = {k: loaded[k] for k in loaded.files}
+                    print(f"Loaded: {len(self.embeddings)} embeddings")
+                except Exception as e:
+                    print(f"Error loading embeddings: {e}")
+
+        return True
+
+    def save(self):
+        """Salva grafo e embeddings no disco."""
+        self.base_path.mkdir(parents=True, exist_ok=True)
+
+        # Serializa grafo
+        nodes_data = {}
+        for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
+            if HAS_NETWORKX:
+                nodes_data[node_id] = dict(self.graph.nodes[node_id])
+            else:
+                nodes_data[node_id] = dict(self.graph._nodes[node_id])
+
+        edges_data = []
+        if HAS_NETWORKX:
+            for u, v in self.graph.edges:
+                edge_attrs = dict(self.graph.edges[u, v])
+                edges_data.append({"src": u, "tgt": v, **edge_attrs})
+        else:
+            for (u, v), attrs in self.graph._edges.items():
+                edges_data.append({"src": u, "tgt": v, **attrs})
+
+        data = {
+            "version": "1.0",
+            "meta": {
+                "saved_at": datetime.now().isoformat(),
+                "node_count": self.graph.number_of_nodes(),
+                "edge_count": self.graph.number_of_edges()
+            },
+            "nodes": nodes_data,
+            "edges": edges_data
+        }
+
+        graph_file = self.base_path / "graph.json"
+        graph_file.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False, default=str),
+            encoding='utf-8'
+        )
+        print(f"Saved: {graph_file}")
+
+        # Salva embeddings
+        if HAS_NUMPY and self.embeddings:
+            emb_file = self.base_path / "embeddings.npz"
+            np.savez_compressed(emb_file, **self.embeddings)
+            print(f"Saved: {emb_file}")
+
+    # ══════════════════════════════════════════════════════════
+    # ENCODING (criar memoria)
+    # ══════════════════════════════════════════════════════════
+
+    def add_memory(
+        self,
+        title: str,
+        content: str,
+        labels: List[str],
+        author: str,
+        props: Dict[str, Any] = None,
+        references: List[str] = None,
+        embedding: Any = None
+    ) -> str:
+        """
+        Adiciona uma nova memoria ao cerebro.
+
+        Args:
+            title: Titulo da memoria
+            content: Conteudo completo
+            labels: Labels do no (Episode, Concept, Pattern, etc)
+            author: Autor (@username)
+            props: Propriedades adicionais
+            references: IDs de nos referenciados
+            embedding: Vetor de embedding (opcional)
+
+        Returns:
+            ID do no criado
+        """
+        node_id = str(uuid4())[:8]
+        now = datetime.now().isoformat()
+
+        # Determina tipo de conteudo e path
+        content_type = self._get_content_type(labels)
+        content_path = self._save_content(node_id, content_type, title, content, author, labels)
+
+        # Cria summary
+        summary = self._generate_summary(content)
+
+        # Propriedades do no
+        node_props = {
+            "title": title,
+            "author": author,
+            "content_path": str(content_path) if content_path else None,
+            "summary": summary,
+            **(props or {})
+        }
+
+        # Estado de memoria
+        memory_state = {
+            "strength": 1.0,
+            "access_count": 1,
+            "last_accessed": now,
+            "created_at": now,
+            "decay_rate": self._get_decay_rate(labels)
+        }
+
+        # Adiciona no
+        if HAS_NETWORKX:
+            self.graph.add_node(
+                node_id,
+                labels=labels,
+                props=node_props,
+                memory=memory_state
+            )
+        else:
+            self.graph.add_node(
+                node_id,
+                labels=labels,
+                props=node_props,
+                memory=memory_state
+            )
+
+        # Adiciona embedding
+        if embedding is not None and HAS_NUMPY:
+            self.embeddings[node_id] = np.array(embedding)
+
+        # Cria aresta de autoria
+        author_node = self._ensure_person_node(author)
+        self.add_edge(node_id, author_node, "AUTHORED_BY")
+
+        # Cria arestas de referencia
+        if references:
+            for ref_id in references:
+                if self._node_exists(ref_id):
+                    self.add_edge(node_id, ref_id, "REFERENCES")
+
+        # Extrai e cria referencias de [[links]] no conteudo
+        links = self._extract_links(content)
+        for link in links:
+            target = self._resolve_link(link)
+            if target:
+                self.add_edge(node_id, target, "REFERENCES")
+
+        # Detecta dominio
+        domain = self._infer_domain(content, labels)
+        if domain:
+            domain_node = self._ensure_domain_node(domain)
+            self.add_edge(node_id, domain_node, "BELONGS_TO")
+
+        return node_id
+
+    def add_edge(
+        self,
+        source: str,
+        target: str,
+        edge_type: str,
+        weight: float = 0.5,
+        props: Dict[str, Any] = None
+    ):
+        """Adiciona aresta ao grafo."""
+        if HAS_NETWORKX:
+            self.graph.add_edge(
+                source,
+                target,
+                type=edge_type,
+                weight=weight,
+                props=props or {},
+                created_at=datetime.now().isoformat()
+            )
+        else:
+            self.graph.add_edge(
+                source,
+                target,
+                type=edge_type,
+                weight=weight,
+                props=props or {},
+                created_at=datetime.now().isoformat()
+            )
+
+    def _get_content_type(self, labels: List[str]) -> str:
+        """Determina tipo de conteudo pelos labels."""
+        if "Episode" in labels:
+            return "episodes"
+        elif "Concept" in labels:
+            return "concepts"
+        elif "Pattern" in labels:
+            return "patterns"
+        elif "Decision" in labels:
+            return "decisions"
+        elif "Person" in labels:
+            return "people"
+        elif "Domain" in labels:
+            return "domains"
+        else:
+            return "episodes"
+
+    def _save_content(
+        self,
+        node_id: str,
+        content_type: str,
+        title: str,
+        content: str,
+        author: str,
+        labels: List[str]
+    ) -> Optional[Path]:
+        """Salva conteudo em arquivo Markdown."""
+        if not content:
+            return None
+
+        dir_path = self.memory_path / content_type
+        dir_path.mkdir(parents=True, exist_ok=True)
+
+        # Nome do arquivo
+        date_str = datetime.now().strftime("%Y-%m-%d")
+        slug = re.sub(r'[^a-z0-9]+', '-', title.lower())[:50]
+        filename = f"{date_str}-{slug}-{node_id}.md"
+
+        file_path = dir_path / filename
+
+        # Formata conteudo com metadados
+        md_content = f"""# {title}
+
+**ID**: {node_id}
+**Autor**: [[{author}]]
+**Data**: {date_str}
+**Labels**: {', '.join(labels)}
+
+---
+
+{content}
+"""
+
+        file_path.write_text(md_content, encoding='utf-8')
+        return file_path.relative_to(self.base_path.parent)
+
+    def _generate_summary(self, content: str, max_length: int = 200) -> str:
+        """Gera summary do conteudo."""
+        # Remove markdown formatting
+        text = re.sub(r'#+ ', '', content)
+        text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+        text = re.sub(r'\[\[([^\]]+)\]\]', r'\1', text)
+        text = re.sub(r'\n+', ' ', text)
+        text = text.strip()
+
+        if len(text) <= max_length:
+            return text
+        return text[:max_length-3] + "..."
+
+    def _get_decay_rate(self, labels: List[str]) -> float:
+        """Taxa de decay por tipo de memoria."""
+        if "Decision" in labels:
+            return 0.001
+        elif "Pattern" in labels:
+            return 0.005
+        elif "Concept" in labels:
+            return 0.003
+        elif "Episode" in labels:
+            return 0.01
+        elif "Person" in labels:
+            return 0.0001  # Pessoas quase nao decaem
+        else:
+            return 0.02
+
+    def _ensure_person_node(self, author: str) -> str:
+        """Garante que existe no para a pessoa."""
+        # Normaliza nome
+        if not author.startswith("@"):
+            author = f"@{author}"
+
+        person_id = f"person-{author[1:]}"
+
+        if not self._node_exists(person_id):
+            if HAS_NETWORKX:
+                self.graph.add_node(
+                    person_id,
+                    labels=["Person"],
+                    props={"name": author, "username": author},
+                    memory={
+                        "strength": 1.0,
+                        "access_count": 0,
+                        "last_accessed": datetime.now().isoformat(),
+                        "created_at": datetime.now().isoformat(),
+                        "decay_rate": 0.0001
+                    }
+                )
+            else:
+                self.graph.add_node(
+                    person_id,
+                    labels=["Person"],
+                    props={"name": author, "username": author},
+                    memory={
+                        "strength": 1.0,
+                        "access_count": 0,
+                        "last_accessed": datetime.now().isoformat(),
+                        "created_at": datetime.now().isoformat(),
+                        "decay_rate": 0.0001
+                    }
+                )
+
+        return person_id
+
+    def _ensure_domain_node(self, domain: str) -> str:
+        """Garante que existe no para o dominio."""
+        domain_id = f"domain-{domain.lower()}"
+
+        if not self._node_exists(domain_id):
+            if HAS_NETWORKX:
+                self.graph.add_node(
+                    domain_id,
+                    labels=["Domain"],
+                    props={"name": domain},
+                    memory={
+                        "strength": 1.0,
+                        "access_count": 0,
+                        "last_accessed": datetime.now().isoformat(),
+                        "created_at": datetime.now().isoformat(),
+                        "decay_rate": 0.0001
+                    }
+                )
+            else:
+                self.graph.add_node(
+                    domain_id,
+                    labels=["Domain"],
+                    props={"name": domain},
+                    memory={
+                        "strength": 1.0,
+                        "access_count": 0,
+                        "last_accessed": datetime.now().isoformat(),
+                        "created_at": datetime.now().isoformat(),
+                        "decay_rate": 0.0001
+                    }
+                )
+
+        return domain_id
+
+    def _node_exists(self, node_id: str) -> bool:
+        """Verifica se no existe."""
+        if HAS_NETWORKX:
+            return node_id in self.graph.nodes
+        else:
+            return node_id in self.graph._nodes
+
+    def _extract_links(self, content: str) -> List[str]:
+        """Extrai [[links]] do conteudo."""
+        return re.findall(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', content)
+
+    def _resolve_link(self, link: str) -> Optional[str]:
+        """Resolve link para ID de no."""
+        # Pessoa
+        if link.startswith("@"):
+            return f"person-{link[1:]}"
+
+        # ADR
+        if link.upper().startswith("ADR-"):
+            return f"decision-{link.lower()}"
+
+        # Busca por titulo
+        for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            props = node.get("props", {})
+            if props.get("title", "").lower() == link.lower():
+                return node_id
+
+        return None
+
+    def _infer_domain(self, content: str, labels: List[str]) -> Optional[str]:
+        """Infere dominio do conteudo."""
+        content_lower = content.lower()
+
+        domain_keywords = {
+            "auth": ["auth", "login", "jwt", "token", "password", "session", "oauth"],
+            "payments": ["payment", "billing", "stripe", "invoice", "subscription"],
+            "database": ["database", "sql", "postgres", "migration", "query", "index"],
+            "api": ["api", "endpoint", "rest", "graphql", "request", "response"],
+            "frontend": ["react", "vue", "component", "css", "html", "ui", "ux"],
+            "infra": ["deploy", "docker", "kubernetes", "ci", "cd", "aws", "cloud"],
+            "testing": ["test", "spec", "mock", "fixture", "coverage"]
+        }
+
+        scores = {}
+        for domain, keywords in domain_keywords.items():
+            score = sum(1 for kw in keywords if kw in content_lower)
+            if score > 0:
+                scores[domain] = score
+
+        if scores:
+            return max(scores, key=scores.get)
+        return None
+
+    # ══════════════════════════════════════════════════════════
+    # RETRIEVAL (buscar conhecimento)
+    # ══════════════════════════════════════════════════════════
+
+    def search_by_embedding(
+        self,
+        query_embedding: Any,
+        top_k: int = 10
+    ) -> List[Tuple[str, float]]:
+        """Busca por similaridade semantica."""
+        if not HAS_NUMPY or not self.embeddings:
+            return []
+
+        query_emb = np.array(query_embedding)
+        results = []
+
+        for node_id, emb in self.embeddings.items():
+            # Cosine similarity
+            dot = np.dot(query_emb, emb)
+            norm = np.linalg.norm(query_emb) * np.linalg.norm(emb)
+            if norm > 0:
+                sim = dot / norm
+                results.append((node_id, float(sim)))
+
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
+
+    def spreading_activation(
+        self,
+        seed_nodes: List[str],
+        max_depth: int = 3,
+        decay: float = 0.5
+    ) -> Dict[str, float]:
+        """
+        Spreading activation a partir de nos seed.
+        Ativa vizinhos com forca decrescente.
+        """
+        activation = {node: 1.0 for node in seed_nodes if self._node_exists(node)}
+        frontier = set(seed_nodes)
+
+        for depth in range(max_depth):
+            next_frontier = set()
+
+            for node in frontier:
+                if not self._node_exists(node):
+                    continue
+
+                current_activation = activation.get(node, 0)
+                node_data = self.graph.nodes[node] if HAS_NETWORKX else self.graph._nodes.get(node, {})
+                node_strength = node_data.get("memory", {}).get("strength", 1.0)
+
+                # Propaga para vizinhos (out-edges)
+                for neighbor in self.graph.successors(node):
+                    if HAS_NETWORKX:
+                        edge_data = self.graph.edges[node, neighbor]
+                    else:
+                        edge_data = self.graph._edges.get((node, neighbor), {})
+
+                    edge_weight = edge_data.get("weight", 0.5)
+                    neighbor_data = self.graph.nodes[neighbor] if HAS_NETWORKX else self.graph._nodes.get(neighbor, {})
+                    neighbor_strength = neighbor_data.get("memory", {}).get("strength", 1.0)
+
+                    new_activation = current_activation * edge_weight * decay * neighbor_strength
+
+                    if neighbor in activation:
+                        activation[neighbor] = max(activation[neighbor], new_activation)
+                    else:
+                        activation[neighbor] = new_activation
+                        next_frontier.add(neighbor)
+
+                # Propaga para vizinhos (in-edges)
+                for neighbor in self.graph.predecessors(node):
+                    if HAS_NETWORKX:
+                        edge_data = self.graph.edges[neighbor, node]
+                    else:
+                        edge_data = self.graph._edges.get((neighbor, node), {})
+
+                    edge_weight = edge_data.get("weight", 0.5)
+                    neighbor_data = self.graph.nodes[neighbor] if HAS_NETWORKX else self.graph._nodes.get(neighbor, {})
+                    neighbor_strength = neighbor_data.get("memory", {}).get("strength", 1.0)
+
+                    new_activation = current_activation * edge_weight * decay * 0.5 * neighbor_strength
+
+                    if neighbor in activation:
+                        activation[neighbor] = max(activation[neighbor], new_activation)
+                    else:
+                        activation[neighbor] = new_activation
+                        next_frontier.add(neighbor)
+
+            frontier = next_frontier
+            if not frontier:
+                break
+
+        return activation
+
+    def retrieve(
+        self,
+        query: str = None,
+        query_embedding: Any = None,
+        labels: List[str] = None,
+        author: str = None,
+        top_k: int = 20,
+        spread_depth: int = 2
+    ) -> List[Dict]:
+        """
+        Busca completa: embedding + spreading activation + filtros.
+        """
+        results = {}
+
+        # 1. Busca por embedding
+        if query_embedding is not None and HAS_NUMPY:
+            seeds = self.search_by_embedding(query_embedding, top_k=5)
+            seed_nodes = [node_id for node_id, _ in seeds]
+
+            # Spreading activation
+            activated = self.spreading_activation(seed_nodes, max_depth=spread_depth)
+
+            for node_id, score in seeds:
+                results[node_id] = score * 2  # Boost para seeds
+
+            for node_id, act_score in activated.items():
+                if node_id in results:
+                    results[node_id] += act_score
+                else:
+                    results[node_id] = act_score
+
+        # 2. Busca por texto simples (fallback)
+        elif query:
+            query_lower = query.lower()
+            for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
+                node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+                props = node.get("props", {})
+
+                title = props.get("title", "").lower()
+                summary = props.get("summary", "").lower()
+
+                if query_lower in title:
+                    results[node_id] = results.get(node_id, 0) + 1.0
+                if query_lower in summary:
+                    results[node_id] = results.get(node_id, 0) + 0.5
+
+        # 3. Aplica filtros
+        if labels:
+            results = {
+                nid: score for nid, score in results.items()
+                if self._has_labels(nid, labels)
+            }
+
+        if author:
+            results = {
+                nid: score for nid, score in results.items()
+                if self._has_author(nid, author)
+            }
+
+        # 4. Ordena e retorna
+        sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
+
+        # 5. Reforca memorias acessadas
+        for node_id, _ in sorted_results[:10]:
+            self._reinforce(node_id)
+
+        # 6. Formata resultado
+        output = []
+        for node_id, score in sorted_results[:top_k]:
+            if self._node_exists(node_id):
+                node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+                output.append({
+                    "id": node_id,
+                    "score": score,
+                    **node
+                })
+
+        return output
+
+    def _has_labels(self, node_id: str, labels: List[str]) -> bool:
+        """Verifica se no tem os labels."""
+        if not self._node_exists(node_id):
+            return False
+        node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+        node_labels = node.get("labels", [])
+        return any(l in node_labels for l in labels)
+
+    def _has_author(self, node_id: str, author: str) -> bool:
+        """Verifica se no foi criado pelo autor."""
+        if not self._node_exists(node_id):
+            return False
+        node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+        node_author = node.get("props", {}).get("author", "")
+        return author.lower() in node_author.lower()
+
+    def _reinforce(self, node_id: str):
+        """Reforca memoria acessada."""
+        if not self._node_exists(node_id):
+            return
+
+        node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+        memory = node.get("memory", {})
+        memory["access_count"] = memory.get("access_count", 0) + 1
+        memory["last_accessed"] = datetime.now().isoformat()
+        memory["strength"] = min(1.0, memory.get("strength", 0.5) * 1.05)
+        node["memory"] = memory
+
+    # ══════════════════════════════════════════════════════════
+    # CONSOLIDATION (fortalecer e compactar)
+    # ══════════════════════════════════════════════════════════
+
+    def consolidate(self) -> Dict:
+        """Processo de consolidacao de memorias."""
+        stats = {
+            "edges_strengthened": 0,
+            "patterns_detected": 0,
+            "summaries_created": 0
+        }
+
+        recent_cutoff = datetime.now() - timedelta(days=7)
+
+        # 1. Fortalece arestas co-ativadas recentemente
+        edges_list = list(self.graph.edges) if HAS_NETWORKX else list(self.graph._edges.keys())
+
+        for edge_key in edges_list:
+            if HAS_NETWORKX:
+                u, v = edge_key
+                u_data = self.graph.nodes.get(u, {})
+                v_data = self.graph.nodes.get(v, {})
+                edge = self.graph.edges[u, v]
+            else:
+                u, v = edge_key
+                u_data = self.graph._nodes.get(u, {})
+                v_data = self.graph._nodes.get(v, {})
+                edge = self.graph._edges.get((u, v), {})
+
+            u_accessed = u_data.get("memory", {}).get("last_accessed", "")
+            v_accessed = v_data.get("memory", {}).get("last_accessed", "")
+
+            if u_accessed and v_accessed:
+                try:
+                    u_time = datetime.fromisoformat(u_accessed.replace('Z', '+00:00').split('+')[0])
+                    v_time = datetime.fromisoformat(v_accessed.replace('Z', '+00:00').split('+')[0])
+
+                    if u_time > recent_cutoff and v_time > recent_cutoff:
+                        new_weight = min(1.0, edge.get("weight", 0.5) * 1.1)
+                        edge["weight"] = new_weight
+                        stats["edges_strengthened"] += 1
+                except:
+                    pass
+
+        # 2. Identifica hubs
+        hubs = sorted(
+            self.graph.degree(),
+            key=lambda x: x[1],
+            reverse=True
+        )[:20]
+
+        stats["hubs"] = [(h, d) for h, d in hubs]
+
+        return stats
+
+    # ══════════════════════════════════════════════════════════
+    # DECAY (esquecimento)
+    # ══════════════════════════════════════════════════════════
+
+    def apply_decay(self) -> Dict:
+        """Aplica curva de esquecimento (Ebbinghaus)."""
+        now = datetime.now()
+        weak = []
+        to_archive = []
+
+        nodes_list = list(self.graph.nodes) if HAS_NETWORKX else list(self.graph._nodes.keys())
+
+        for node_id in nodes_list:
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            memory = node.get("memory", {})
+
+            last_accessed = memory.get("last_accessed")
+            if not last_accessed:
+                continue
+
+            try:
+                last_time = datetime.fromisoformat(last_accessed.replace('Z', '+00:00').split('+')[0])
+                days_since = (now - last_time).days
+                decay_rate = memory.get("decay_rate", 0.01)
+
+                # Ebbinghaus: strength = e^(-decay * time)
+                decay_factor = math.exp(-decay_rate * days_since)
+                new_strength = memory.get("strength", 1.0) * decay_factor
+
+                memory["strength"] = new_strength
+                node["memory"] = memory
+
+                labels = node.get("labels", [])
+
+                if new_strength < 0.1:
+                    to_archive.append(node_id)
+                elif new_strength < 0.3:
+                    weak.append(node_id)
+                    if "WeakMemory" not in labels:
+                        node["labels"] = labels + ["WeakMemory"]
+                else:
+                    if "WeakMemory" in labels:
+                        node["labels"] = [l for l in labels if l != "WeakMemory"]
+            except Exception as e:
+                pass
+
+        return {
+            "weak_count": len(weak),
+            "archive_count": len(to_archive),
+            "weak_nodes": weak[:10],
+            "archive_nodes": to_archive[:10]
+        }
+
+    # ══════════════════════════════════════════════════════════
+    # QUERIES UTEIS
+    # ══════════════════════════════════════════════════════════
+
+    def get_by_label(self, label: str) -> List[str]:
+        """Retorna nos com determinado label."""
+        result = []
+        nodes_iter = self.graph.nodes if HAS_NETWORKX else self.graph._nodes
+
+        for node_id in nodes_iter:
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            if label in node.get("labels", []):
+                result.append(node_id)
+
+        return result
+
+    def get_node(self, node_id: str) -> Optional[Dict]:
+        """Retorna no pelo ID."""
+        if not self._node_exists(node_id):
+            return None
+
+        if HAS_NETWORKX:
+            return dict(self.graph.nodes[node_id])
+        else:
+            return dict(self.graph._nodes[node_id])
+
+    def get_neighbors(self, node_id: str, edge_type: str = None) -> List[str]:
+        """Retorna vizinhos de um no."""
+        neighbors = []
+
+        for neighbor in self.graph.successors(node_id):
+            if edge_type is None:
+                neighbors.append(neighbor)
+            else:
+                if HAS_NETWORKX:
+                    if self.graph.edges[node_id, neighbor].get("type") == edge_type:
+                        neighbors.append(neighbor)
+                else:
+                    if self.graph._edges.get((node_id, neighbor), {}).get("type") == edge_type:
+                        neighbors.append(neighbor)
+
+        return neighbors
+
+    def get_stats(self) -> Dict:
+        """Estatisticas do cerebro."""
+        node_count = self.graph.number_of_nodes()
+        edge_count = self.graph.number_of_edges()
+
+        # Conta por label
+        label_counts = {}
+        nodes_iter = self.graph.nodes if HAS_NETWORKX else self.graph._nodes
+        for node_id in nodes_iter:
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            for label in node.get("labels", []):
+                label_counts[label] = label_counts.get(label, 0) + 1
+
+        # Conta memorias fracas
+        weak_count = label_counts.get("WeakMemory", 0)
+
+        return {
+            "nodes": node_count,
+            "edges": edge_count,
+            "embeddings": len(self.embeddings),
+            "by_label": label_counts,
+            "weak_memories": weak_count,
+            "avg_degree": sum(d for _, d in self.graph.degree()) / max(1, node_count)
+        }
+
+
+# ══════════════════════════════════════════════════════════
+# UTILITARIOS
+# ══════════════════════════════════════════════════════════
+
+def get_current_developer() -> Dict[str, str]:
+    """Obtem identidade do desenvolvedor atual via git config."""
+    try:
+        email = subprocess.check_output(
+            ["git", "config", "user.email"],
+            text=True,
+            stderr=subprocess.DEVNULL
+        ).strip()
+
+        name = subprocess.check_output(
+            ["git", "config", "user.name"],
+            text=True,
+            stderr=subprocess.DEVNULL
+        ).strip()
+    except:
+        import getpass
+        email = f"{getpass.getuser()}@local"
+        name = getpass.getuser()
+
+    username = re.sub(r'[^a-z0-9]', '-', email.split("@")[0].lower())
+
+    return {
+        "email": email,
+        "name": name,
+        "username": f"@{username}"
+    }
+
+
+# ══════════════════════════════════════════════════════════
+# CLI
+# ══════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    import sys
+
+    brain = Brain()
+
+    if len(sys.argv) < 2:
+        print("Usage: brain.py <command> [args]")
+        print("Commands: load, save, stats, search, consolidate, decay")
+        sys.exit(1)
+
+    cmd = sys.argv[1]
+
+    if cmd == "load":
+        brain.load()
+        print(json.dumps(brain.get_stats(), indent=2))
+
+    elif cmd == "save":
+        brain.load()
+        brain.save()
+
+    elif cmd == "stats":
+        brain.load()
+        print(json.dumps(brain.get_stats(), indent=2))
+
+    elif cmd == "search":
+        if len(sys.argv) < 3:
+            print("Usage: brain.py search <query>")
+            sys.exit(1)
+
+        brain.load()
+        query = " ".join(sys.argv[2:])
+        results = brain.retrieve(query=query, top_k=10)
+
+        for r in results:
+            print(f"{r['score']:.2f} | {r.get('props', {}).get('title', 'N/A')} | {r['id']}")
+
+    elif cmd == "consolidate":
+        brain.load()
+        stats = brain.consolidate()
+        brain.save()
+        print(json.dumps(stats, indent=2))
+
+    elif cmd == "decay":
+        brain.load()
+        stats = brain.apply_decay()
+        brain.save()
+        print(json.dumps(stats, indent=2))
+
+    elif cmd == "add":
+        if len(sys.argv) < 4:
+            print("Usage: brain.py add <title> <content>")
+            sys.exit(1)
+
+        brain.load()
+        dev = get_current_developer()
+
+        title = sys.argv[2]
+        content = " ".join(sys.argv[3:])
+
+        node_id = brain.add_memory(
+            title=title,
+            content=content,
+            labels=["Episode"],
+            author=dev["username"]
+        )
+
+        brain.save()
+        print(f"Created: {node_id}")
+
+    else:
+        print(f"Unknown command: {cmd}")
+        sys.exit(1)

@@ -347,6 +347,61 @@ MANIFEST_EOF
 
     # 9. Save version
     echo "$VERSION" > "$CLAUDE_DIR/.engram-version"
+
+    # 10. Install brain (organizational memory)
+    if [[ -d "$SCRIPT_DIR/.claude/brain" ]]; then
+        mkdir -p "$CLAUDE_DIR/brain/state"
+        mkdir -p "$CLAUDE_DIR/memory"/{episodes,concepts,patterns,decisions,people,domains}
+        mkdir -p "$CLAUDE_DIR/consolidated"
+        mkdir -p "$CLAUDE_DIR/archive"
+        cp "$SCRIPT_DIR/.claude/brain/"*.py "$CLAUDE_DIR/brain/" 2>/dev/null || true
+        cp "$SCRIPT_DIR/.claude/brain/"*.sh "$CLAUDE_DIR/brain/" 2>/dev/null || true
+        cp "$SCRIPT_DIR/.claude/brain/"*.md "$CLAUDE_DIR/brain/" 2>/dev/null || true
+        cp "$SCRIPT_DIR/.claude/brain/"*.json "$CLAUDE_DIR/brain/" 2>/dev/null || true
+        chmod +x "$CLAUDE_DIR/brain/"*.py "$CLAUDE_DIR/brain/"*.sh 2>/dev/null || true
+        print_done "Brain instalado (cérebro organizacional)"
+    fi
+}
+
+# ═══════════════════════════════════════════════════════════════
+# INSTALL BRAIN DEPENDENCIES
+# ═══════════════════════════════════════════════════════════════
+
+install_brain_deps() {
+    local CLAUDE_DIR="$TARGET_DIR/.claude"
+    local VENV_DIR="$CLAUDE_DIR/brain/.venv"
+
+    if [[ ! -d "$CLAUDE_DIR/brain" ]]; then
+        return  # Brain not installed
+    fi
+
+    print_step "Instalando dependências do Brain..."
+
+    # Check if python3 is available
+    if ! command -v python3 &>/dev/null; then
+        print_warn "Python3 não encontrado. Dependências do Brain não instaladas."
+        print_warn "Instale manualmente: pip install networkx numpy sentence-transformers"
+        return
+    fi
+
+    # Create venv if it doesn't exist
+    if [[ ! -d "$VENV_DIR" ]]; then
+        python3 -m venv "$VENV_DIR" 2>/dev/null || {
+            print_warn "Não foi possível criar venv. Tente instalar manualmente."
+            return
+        }
+    fi
+
+    # Install dependencies in venv
+    (
+        source "$VENV_DIR/bin/activate" 2>/dev/null || . "$VENV_DIR/bin/activate"
+        pip install --quiet --upgrade pip 2>/dev/null || true
+        pip install --quiet networkx numpy 2>/dev/null && print_done "networkx + numpy instalados"
+        pip install --quiet sentence-transformers 2>/dev/null && print_done "sentence-transformers instalado"
+    ) || {
+        print_warn "Algumas dependências podem não ter sido instaladas."
+        print_warn "Execute: source .claude/brain/.venv/bin/activate && pip install networkx numpy sentence-transformers"
+    }
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -650,6 +705,7 @@ main() {
     detect_stack
     backup_existing_config
     install_core
+    install_brain_deps
     generate_claude_md
     customize_settings
     initialize_knowledge

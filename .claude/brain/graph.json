@@ -1,0 +1,2005 @@
+{
+  "version": "1.0",
+  "meta": {
+    "saved_at": "2026-02-03T21:34:28.051531",
+    "node_count": 61,
+    "edge_count": 97
+  },
+  "nodes": {
+    "a52ceda2": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-001: Sistema Metacircular",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-001-sistema-metacircular-a52ceda2.md",
+        "summary": "Contexto Engram v1 tinha skills fixos. Adicionar novos exigia edição manual. Cada projeto tinha os mesmos skills, mesmo que a stack fosse diferente. Decisão Implementar sistema metacircular onde ge...",
+        "adr_id": "ADR-001",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.978670",
+        "created_at": "2026-02-03T21:34:27.978670",
+        "decay_rate": 0.001
+      }
+    },
+    "person-engram": {
+      "labels": [
+        "Person"
+      ],
+      "props": {
+        "name": "@engram",
+        "username": "@engram"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:27.978963",
+        "created_at": "2026-02-03T21:34:27.978965",
+        "decay_rate": 0.0001
+      }
+    },
+    "domain-frontend": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "frontend"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:27.979044",
+        "created_at": "2026-02-03T21:34:27.979045",
+        "decay_rate": 0.0001
+      }
+    },
+    "ee7eb926": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-002: Skills com Frontmatter YAML",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-002-skills-com-frontmatter-yaml-ee7eb926.md",
+        "summary": "Contexto Precisamos de metadados estruturados (name, description) para validação e registro, mas queremos manter markdown legível. Decisão Usar frontmatter YAML (delimitado por ---) no início de SK...",
+        "adr_id": "ADR-002",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979058",
+        "created_at": "2026-02-03T21:34:27.979058",
+        "decay_rate": 0.001
+      }
+    },
+    "domain-infra": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "infra"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:27.979202",
+        "created_at": "2026-02-03T21:34:27.979203",
+        "decay_rate": 0.0001
+      }
+    },
+    "49d27394": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-003: Agents Não Invocam Outros Agents",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-003-agents-n-o-invocam-outros-agents-49d27394.md",
+        "summary": "Contexto Task tool permite invocar subagents. Se agents pudessem invocar outros agents, poderíamos ter loops infinitos ou explosão de contexto. Decisão Agents são terminais — podem usar tools (Read...",
+        "adr_id": "ADR-003",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979212",
+        "created_at": "2026-02-03T21:34:27.979212",
+        "decay_rate": 0.001
+      }
+    },
+    "442d2f41": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-004: Progressive Disclosure",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-004-progressive-disclosure-442d2f41.md",
+        "summary": "Contexto Carregar todos os skills no início desperdiça tokens e sobrecarrega o contexto. Decisão Skills são carregados sob demanda quando o Claude detecta necessidade (via triggers na description) ...",
+        "adr_id": "ADR-004",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979339",
+        "created_at": "2026-02-03T21:34:27.979339",
+        "decay_rate": 0.001
+      }
+    },
+    "domain-auth": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "auth"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:27.979447",
+        "created_at": "2026-02-03T21:34:27.979448",
+        "decay_rate": 0.0001
+      }
+    },
+    "a4d710c9": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-005: Python para Scripts Internos",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-005-python-para-scripts-internos-a4d710c9.md",
+        "summary": "Contexto Scripts de genesis/evolution precisam manipular JSON, parsear markdown, validar estruturas. Decisão Usar Python 3 sem dependências externas. Funciona em qualquer máquina com Python instala...",
+        "adr_id": "ADR-005",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979455",
+        "created_at": "2026-02-03T21:34:27.979455",
+        "decay_rate": 0.001
+      }
+    },
+    "3234b3e3": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-006: Manifest como Source of Truth",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-006-manifest-como-source-of-truth-3234b3e3.md",
+        "summary": "Contexto Precisamos saber quais componentes existem, suas versões, uso, saúde. Decisão manifest.json é o registro central. register.py mantém sincronizado. doctor.py detecta dessincronização. Conse...",
+        "adr_id": "ADR-006",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979571",
+        "created_at": "2026-02-03T21:34:27.979571",
+        "decay_rate": 0.001
+      }
+    },
+    "bcec1e40": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-007: Adoção do Engram (Bootstrap)",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-007-ado-o-do-engram-bootstrap--bcec1e40.md",
+        "summary": "Contexto Este projeto É o próprio Engram — um caso metacircular onde o sistema gerencia a si mesmo. Decisão Usar Engram para desenvolver Engram, demonstrando o conceito de auto-alimentação (ourobor...",
+        "adr_id": "ADR-007",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979683",
+        "created_at": "2026-02-03T21:34:27.979683",
+        "decay_rate": 0.001
+      }
+    },
+    "e57d240c": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-008: Arquitetura Git-Native com Grafo de Conhecimento",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-008-arquitetura-git-native-com-grafo-de-conhec-e57d240c.md",
+        "summary": "Contexto O Engram precisa escalar para: - 10+ desenvolvedores por projeto - 3-5 anos de uso contínuo - ~25.000 episódios, ~125.000 eventos ao longo do tempo - Múltiplas organizações usando o sistem...",
+        "adr_id": "ADR-008",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979796",
+        "created_at": "2026-02-03T21:34:27.979796",
+        "decay_rate": 0.001
+      }
+    },
+    "7b1fcb34": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-009: Estado Por Desenvolvedor",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-009-estado-por-desenvolvedor-7b1fcb34.md",
+        "summary": "Contexto Com múltiplos devs trabalhando no mesmo projeto, o arquivo de estado (CURRENT_STATE.md) conflitaria constantemente. Decisão Cada dev tem seu próprio arquivo de estado: ``` .claude/active/s...",
+        "adr_id": "ADR-009",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.979955",
+        "created_at": "2026-02-03T21:34:27.979955",
+        "decay_rate": 0.001
+      }
+    },
+    "2638f530": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-010: Commits de Conhecimento",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-010-commits-de-conhecimento-2638f530.md",
+        "summary": "Contexto Precisamos de convenção para commits que modificam .claude/ para facilitar histórico e blame. Decisão Usar prefixo `knowledge(@autor):` para commits de conhecimento: ``` knowledge(@joao): ...",
+        "adr_id": "ADR-010",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.980064",
+        "created_at": "2026-02-03T21:34:27.980064",
+        "decay_rate": 0.001
+      }
+    },
+    "9310bbae": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-011: Arquitetura de Cérebro Organizacional",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-03-adr-011-arquitetura-de-c-rebro-organizacional-9310bbae.md",
+        "summary": "Contexto O Engram precisa de um sistema de memória que funcione como um cérebro organizacional real: - Memória episódica (experiências), semântica (conceitos), procedural (patterns) - Consolidação ...",
+        "adr_id": "ADR-011",
+        "status": "✅ Aceito",
+        "date": "2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.980164",
+        "created_at": "2026-02-03T21:34:27.980164",
+        "decay_rate": 0.001
+      }
+    },
+    "ed9c6f35": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Engram",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-engram-ed9c6f35.md",
+        "summary": "Traço físico de memória armazenado no cérebro. No contexto deste projeto, representa o sistema de memória persistente para Claude Code."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.980860",
+        "created_at": "2026-02-03T21:34:27.980860",
+        "decay_rate": 0.003
+      }
+    },
+    "507ab390": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Ouroboros",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-ouroboros-507ab390.md",
+        "summary": "Símbolo da serpente que morde a própria cauda. Representa o ciclo de retroalimentação do sistema — cada sessão consome conhecimento da anterior e produz conhecimento para a próxima."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.980958",
+        "created_at": "2026-02-03T21:34:27.980958",
+        "decay_rate": 0.003
+      }
+    },
+    "2477137c": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Metacircular",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-metacircular-2477137c.md",
+        "summary": "Sistema que pode gerar a si mesmo. O Engram usa genesis para gerar skills, e genesis pode gerar versões atualizadas de si mesmo."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981045",
+        "created_at": "2026-02-03T21:34:27.981045",
+        "decay_rate": 0.003
+      }
+    },
+    "7f1b7fc0": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Genesis",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-genesis-7f1b7fc0.md",
+        "summary": "Motor de auto-geração. Analisa projetos, gera scaffolds de componentes, valida contra schemas, registra no manifest."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981125",
+        "created_at": "2026-02-03T21:34:27.981125",
+        "decay_rate": 0.003
+      }
+    },
+    "582c6d8e": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Evolution",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-evolution-582c6d8e.md",
+        "summary": "Motor de evolução. Rastreia uso de componentes, detecta padrões, propõe melhorias, aposenta componentes obsoletos."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981215",
+        "created_at": "2026-02-03T21:34:27.981215",
+        "decay_rate": 0.003
+      }
+    },
+    "4c95e120": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Skill",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-skill-4c95e120.md",
+        "summary": "Capacidade especializada do Claude. Diretório com SKILL.md + scripts opcionais. Carregado sob demanda (progressive disclosure)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981311",
+        "created_at": "2026-02-03T21:34:27.981311",
+        "decay_rate": 0.003
+      }
+    },
+    "f37972df": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Agent",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-agent-f37972df.md",
+        "summary": "Especialista invocado via Task tool. Arquivo .md com instruções e tools permitidas. NÃO pode invocar outros agents."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981402",
+        "created_at": "2026-02-03T21:34:27.981402",
+        "decay_rate": 0.003
+      }
+    },
+    "83389b13": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Command",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-command-83389b13.md",
+        "summary": "Atalho para invocar skill ou sequência de ações. Arquivo .md em .claude/commands/. Usuário digita /nome."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981493",
+        "created_at": "2026-02-03T21:34:27.981493",
+        "decay_rate": 0.003
+      }
+    },
+    "b7eeca3f": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Seed",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-seed-b7eeca3f.md",
+        "summary": "Skill universal que vem com toda instalação. Não depende de stack específica."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981585",
+        "created_at": "2026-02-03T21:34:27.981585",
+        "decay_rate": 0.003
+      }
+    },
+    "domain-testing": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "testing"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:27.981663",
+        "created_at": "2026-02-03T21:34:27.981663",
+        "decay_rate": 0.0001
+      }
+    },
+    "aa7df3e8": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Schema",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-schema-aa7df3e8.md",
+        "summary": "Definição formal da estrutura de um componente. Usado por genesis e validate.py para garantir componentes corretos."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981669",
+        "created_at": "2026-02-03T21:34:27.981669",
+        "decay_rate": 0.003
+      }
+    },
+    "bc660740": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Manifest",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-manifest-bc660740.md",
+        "summary": "Registro central de todos os componentes (.claude/manifest.json). Rastreia versão, uso, saúde."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981757",
+        "created_at": "2026-02-03T21:34:27.981757",
+        "decay_rate": 0.003
+      }
+    },
+    "130b74cb": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Knowledge File",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-knowledge-file-130b74cb.md",
+        "summary": "Arquivo markdown em .claude/knowledge/ que persiste entre sessões. Seis tipos: context, priorities, patterns, decisions, domain, experiences."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981843",
+        "created_at": "2026-02-03T21:34:27.981843",
+        "decay_rate": 0.003
+      }
+    },
+    "be485898": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "ICE Score",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-ice-score-be485898.md",
+        "summary": "Método de priorização. ICE = (Impacto × Confiança) / Esforço. Cada fator de 1-10."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.981932",
+        "created_at": "2026-02-03T21:34:27.981932",
+        "decay_rate": 0.003
+      }
+    },
+    "03f48948": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "ADR",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-adr-03f48948.md",
+        "summary": "Architecture Decision Record. Registro formal de decisão arquitetural com contexto, opções e consequências."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982021",
+        "created_at": "2026-02-03T21:34:27.982021",
+        "decay_rate": 0.003
+      }
+    },
+    "4c8fe0fb": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Runtime Component",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-runtime-component-4c8fe0fb.md",
+        "summary": "Componente criado durante uma sessão de trabalho (source=runtime). Avaliado no próximo /learn."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982104",
+        "created_at": "2026-02-03T21:34:27.982104",
+        "decay_rate": 0.003
+      }
+    },
+    "76918b1d": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Progressive Disclosure",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-progressive-disclosure-76918b1d.md",
+        "summary": "Técnica de UX onde informação é revelada gradualmente. Skills são carregados só quando necessários."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982191",
+        "created_at": "2026-02-03T21:34:27.982191",
+        "decay_rate": 0.003
+      }
+    },
+    "805185e1": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Feedback Loop",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-feedback-loop-805185e1.md",
+        "summary": "Ciclo de retroalimentação. No Engram: trabalhar → registrar aprendizado → consultar na próxima vez."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982285",
+        "created_at": "2026-02-03T21:34:27.982285",
+        "decay_rate": 0.003
+      }
+    },
+    "4d3e2c93": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-001",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-001-4d3e2c93.md",
+        "summary": "Todo componente DEVE seguir seu schema correspondente",
+        "rule_id": "RN-001"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982378",
+        "created_at": "2026-02-03T21:34:27.982378",
+        "decay_rate": 0.003
+      }
+    },
+    "006a5881": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-002",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-002-006a5881.md",
+        "summary": "Skills DEVEM ter description com 50-500 caracteres incluindo trigger explícito",
+        "rule_id": "RN-002"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982466",
+        "created_at": "2026-02-03T21:34:27.982466",
+        "decay_rate": 0.003
+      }
+    },
+    "166da41d": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-003",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-003-166da41d.md",
+        "summary": "Agents NÃO PODEM invocar outros agents (evita loops)",
+        "rule_id": "RN-003"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982554",
+        "created_at": "2026-02-03T21:34:27.982554",
+        "decay_rate": 0.003
+      }
+    },
+    "46a30545": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-004",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-004-46a30545.md",
+        "summary": "Componentes runtime são avaliados no próximo /learn",
+        "rule_id": "RN-004"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982640",
+        "created_at": "2026-02-03T21:34:27.982640",
+        "decay_rate": 0.003
+      }
+    },
+    "e1d6fff2": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-005",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-005-e1d6fff2.md",
+        "summary": "Máximo 2 componentes runtime por sessão (evita explosão)",
+        "rule_id": "RN-005"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982723",
+        "created_at": "2026-02-03T21:34:27.982723",
+        "decay_rate": 0.003
+      }
+    },
+    "7a135a62": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-006",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-006-7a135a62.md",
+        "summary": "Componentes nunca usados após 14 dias são candidatos a archive",
+        "rule_id": "RN-006"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982804",
+        "created_at": "2026-02-03T21:34:27.982804",
+        "decay_rate": 0.003
+      }
+    },
+    "0c94c63e": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-007",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-007-0c94c63e.md",
+        "summary": "Knowledge files devem ser atualizados após cada tarefa significativa",
+        "rule_id": "RN-007"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982886",
+        "created_at": "2026-02-03T21:34:27.982886",
+        "decay_rate": 0.003
+      }
+    },
+    "1ae74437": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-008",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-008-1ae74437.md",
+        "summary": "Decisões arquiteturais DEVEM ser registradas em ADR_LOG.md",
+        "rule_id": "RN-008"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.982968",
+        "created_at": "2026-02-03T21:34:27.982968",
+        "decay_rate": 0.003
+      }
+    },
+    "e6447296": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-009",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-009-e6447296.md",
+        "summary": "Padrões repetidos DEVEM virar skills (DRY para prompts)",
+        "rule_id": "RN-009"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983054",
+        "created_at": "2026-02-03T21:34:27.983054",
+        "decay_rate": 0.003
+      }
+    },
+    "635af67f": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-010",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-03-rn-010-635af67f.md",
+        "summary": "Backups de componentes vão para .claude/versions/",
+        "rule_id": "RN-010"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983135",
+        "created_at": "2026-02-03T21:34:27.983135",
+        "decay_rate": 0.003
+      }
+    },
+    "55501c4b": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-001: Feedback Loop do Engram",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-001-feedback-loop-do-engram-55501c4b.md",
+        "summary": "- Contexto: ao final de qualquer tarefa - Solução: executar /learn para registrar mudanças, padrões e decisões - Descoberto em: 2026-02-03"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983575",
+        "created_at": "2026-02-03T21:34:27.983575",
+        "decay_rate": 0.005
+      }
+    },
+    "848cbb2d": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-002: Estrutura de Skill",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-002-estrutura-de-skill-848cbb2d.md",
+        "summary": "- Contexto: ao criar um novo skill - Solução: seguir schema em `.claude/schemas/skill.schema.md`   - Diretório kebab-case com SKILL.md obrigatório   - Frontmatter YAML com name + description (50-50..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983686",
+        "created_at": "2026-02-03T21:34:27.983686",
+        "decay_rate": 0.005
+      }
+    },
+    "43f7e06f": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-003: Estrutura de Agent",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-003-estrutura-de-agent-43f7e06f.md",
+        "summary": "- Contexto: ao criar um novo agent - Solução: seguir schema em `.claude/schemas/agent.schema.md`   - Arquivo único .md em .claude/agents/   - Frontmatter YAML com name, description, tools   - Body ..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983793",
+        "created_at": "2026-02-03T21:34:27.983793",
+        "decay_rate": 0.005
+      }
+    },
+    "3b9b10fd": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-004: Estrutura de Command",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-004-estrutura-de-command-3b9b10fd.md",
+        "summary": "- Contexto: ao criar um novo slash command - Solução: seguir schema em `.claude/schemas/command.schema.md`   - Arquivo único .md em .claude/commands/   - SEM frontmatter (diferente de skills/agents..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983889",
+        "created_at": "2026-02-03T21:34:27.983889",
+        "decay_rate": 0.005
+      }
+    },
+    "6f740934": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-005: Scripts Python Padrão",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-005-scripts-python-padr-o-6f740934.md",
+        "summary": "- Contexto: ao criar scripts para skills - Solução:   - Shebang `#!/usr/bin/env python3`   - Docstring com usage   - argparse para CLI   - Funções isoladas e testáveis   - main() no final com if __..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.983989",
+        "created_at": "2026-02-03T21:34:27.983989",
+        "decay_rate": 0.005
+      }
+    },
+    "02a48240": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-006: Registro em Manifest",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-006-registro-em-manifest-02a48240.md",
+        "summary": "- Contexto: ao criar/modificar componentes - Solução: usar register.py para manter manifest.json sincronizado   - `python3 register.py --type skill --name nome --source genesis`   - Sources válidos..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984092",
+        "created_at": "2026-02-03T21:34:27.984092",
+        "decay_rate": 0.005
+      }
+    },
+    "c8be5372": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-007: Validação Antes de Registro",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-007-valida-o-antes-de-registro-c8be5372.md",
+        "summary": "- Contexto: antes de registrar componente - Solução: rodar validate.py primeiro   - `python3 validate.py --type skill --path .claude/skills/nome/`   - Corrigir todos os erros antes de registrar - D..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984190",
+        "created_at": "2026-02-03T21:34:27.984190",
+        "decay_rate": 0.005
+      }
+    },
+    "69c0e925": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-008: Knowledge Files Organization",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-008-knowledge-files-organization-69c0e925.md",
+        "summary": "- Contexto: ao organizar conhecimento persistente - Solução:   - context/CURRENT_STATE.md → estado vivo do projeto   - priorities/PRIORITY_MATRIX.md → ICE Score   - patterns/PATTERNS.md → padrões a..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984281",
+        "created_at": "2026-02-03T21:34:27.984281",
+        "decay_rate": 0.005
+      }
+    },
+    "c3ac2a3a": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-009: Versionamento de Componentes",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-009-versionamento-de-componentes-c3ac2a3a.md",
+        "summary": "- Contexto: ao evoluir um componente existente - Solução:   - archive.py faz backup em .claude/versions/   - Incrementar versão no manifest   - Registrar mudança no evolution-log.md - Descoberto em..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984379",
+        "created_at": "2026-02-03T21:34:27.984379",
+        "decay_rate": 0.005
+      }
+    },
+    "96f2c2d1": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-010: Runtime Component Creation",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-010-runtime-component-creation-96f2c2d1.md",
+        "summary": "- Contexto: quando Claude precisa de expertise inexistente durante tarefa - Solução:   - Anunciar ao dev o que vai criar e por quê   - Usar genesis para gerar scaffold   - Customizar para o caso es..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984478",
+        "created_at": "2026-02-03T21:34:27.984478",
+        "decay_rate": 0.005
+      }
+    },
+    "389d2742": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-011: Migração Inteligente de Backups",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-03-pat-011-migra-o-inteligente-de-backups-389d2742.md",
+        "summary": "- Contexto: ao reinstalar Engram em projeto com instalação anterior - Solução: migrate_backup.py com estratégia smart   - Fase 0 do /init-engram: detectar → analisar → apresentar → migrar   - Prese..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:27.984578",
+        "created_at": "2026-02-03T21:34:27.984578",
+        "decay_rate": 0.005
+      }
+    },
+    "50ec5f8c": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "EngramgenesisDomain"
+      ],
+      "props": {
+        "title": "feat(engram-genesis): add backup migration system for /init-engram",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-03-feat-engram-genesis-add-backup-migration-system-fo-50ec5f8c.md",
+        "summary": "feat(engram-genesis): add backup migration system for /init-engram Implements intelligent backup detection, analysis and migration: Files changed: .claude/commands/init-engram.md, .claude/settings....",
+        "commit_hash": "c76aa256",
+        "date": "2026-02-03",
+        "commit_type": "feat",
+        "scope": "engram-genesis",
+        "files_count": 5
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:28.050709",
+        "created_at": "2026-02-03T21:34:28.050709",
+        "decay_rate": 0.01
+      }
+    },
+    "person-thiagogaia": {
+      "labels": [
+        "Person"
+      ],
+      "props": {
+        "name": "@thiagogaia",
+        "username": "@thiagogaia"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:28.050978",
+        "created_at": "2026-02-03T21:34:28.050980",
+        "decay_rate": 0.0001
+      }
+    },
+    "domain-database": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "database"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-03T21:34:28.051007",
+        "created_at": "2026-02-03T21:34:28.051007",
+        "decay_rate": 0.0001
+      }
+    },
+    "c0408c0f": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "docs(knowledge): record architectural analysis on orchestration model",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-03-docs-knowledge-record-architectural-analysis-on-or-c0408c0f.md",
+        "summary": "docs(knowledge): record architectural analysis on orchestration model - Document analysis of sequential vs parallel execution model Files changed: .claude/evolution-activations.json, .claude/knowle...",
+        "commit_hash": "6d7c3077",
+        "date": "2026-02-03",
+        "commit_type": "docs",
+        "scope": "knowledge",
+        "files_count": 4
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:28.051028",
+        "created_at": "2026-02-03T21:34:28.051028",
+        "decay_rate": 0.01
+      }
+    },
+    "28e6f731": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "chore: add .gitignore and update knowledge after /learn",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-03-chore-add-gitignore-and-update-knowledge-after-lea-28e6f731.md",
+        "summary": "chore: add .gitignore and update knowledge after /learn - Add .gitignore for __pycache__, IDE files, env files Files changed: .claude/evolution-activations.json, .claude/knowledge/context/CURRENT_S...",
+        "commit_hash": "774b6c58",
+        "date": "2026-02-03",
+        "commit_type": "chore",
+        "scope": null,
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:28.051171",
+        "created_at": "2026-02-03T21:34:28.051171",
+        "decay_rate": 0.01
+      }
+    },
+    "a1516559": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "EngramDomain"
+      ],
+      "props": {
+        "title": "feat(engram): complete /init-engram with populated knowledge and new skill",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-03-feat-engram-complete-init-engram-with-populated-kn-a1516559.md",
+        "summary": "feat(engram): complete /init-engram with populated knowledge and new skill - Populate all 6 knowledge files with real project data: Files changed: .claude/.engram-version, .claude/agents/architect....",
+        "commit_hash": "264072a6",
+        "date": "2026-02-03",
+        "commit_type": "feat",
+        "scope": "engram",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:28.051289",
+        "created_at": "2026-02-03T21:34:28.051289",
+        "decay_rate": 0.01
+      }
+    },
+    "13ef8a7c": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "a",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-03-a-13ef8a7c.md",
+        "summary": "a Files changed: N/A",
+        "commit_hash": "bbcc8777",
+        "date": "2026-02-03",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 0
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-03T21:34:28.051400",
+        "created_at": "2026-02-03T21:34:28.051400",
+        "decay_rate": 0.01
+      }
+    }
+  },
+  "edges": [
+    {
+      "src": "a52ceda2",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.978967"
+    },
+    {
+      "src": "a52ceda2",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979047"
+    },
+    {
+      "src": "ee7eb926",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979181"
+    },
+    {
+      "src": "ee7eb926",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979204"
+    },
+    {
+      "src": "49d27394",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979316"
+    },
+    {
+      "src": "49d27394",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979333"
+    },
+    {
+      "src": "442d2f41",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979428"
+    },
+    {
+      "src": "442d2f41",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979449"
+    },
+    {
+      "src": "a4d710c9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979550"
+    },
+    {
+      "src": "a4d710c9",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979566"
+    },
+    {
+      "src": "3234b3e3",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979661"
+    },
+    {
+      "src": "3234b3e3",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979677"
+    },
+    {
+      "src": "bcec1e40",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979773"
+    },
+    {
+      "src": "bcec1e40",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979791"
+    },
+    {
+      "src": "e57d240c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979902"
+    },
+    {
+      "src": "e57d240c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.979950"
+    },
+    {
+      "src": "7b1fcb34",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980036"
+    },
+    {
+      "src": "7b1fcb34",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980060"
+    },
+    {
+      "src": "2638f530",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980139"
+    },
+    {
+      "src": "2638f530",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980159"
+    },
+    {
+      "src": "9310bbae",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980251"
+    },
+    {
+      "src": "9310bbae",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980288"
+    },
+    {
+      "src": "ed9c6f35",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.980944"
+    },
+    {
+      "src": "507ab390",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981029"
+    },
+    {
+      "src": "507ab390",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981040"
+    },
+    {
+      "src": "2477137c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981114"
+    },
+    {
+      "src": "7f1b7fc0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981197"
+    },
+    {
+      "src": "7f1b7fc0",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981209"
+    },
+    {
+      "src": "582c6d8e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981297"
+    },
+    {
+      "src": "582c6d8e",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981306"
+    },
+    {
+      "src": "4c95e120",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981389"
+    },
+    {
+      "src": "4c95e120",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981398"
+    },
+    {
+      "src": "f37972df",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981481"
+    },
+    {
+      "src": "f37972df",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981489"
+    },
+    {
+      "src": "83389b13",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981572"
+    },
+    {
+      "src": "83389b13",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981580"
+    },
+    {
+      "src": "b7eeca3f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981655"
+    },
+    {
+      "src": "b7eeca3f",
+      "tgt": "domain-testing",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981665"
+    },
+    {
+      "src": "aa7df3e8",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981744"
+    },
+    {
+      "src": "aa7df3e8",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981753"
+    },
+    {
+      "src": "bc660740",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981831"
+    },
+    {
+      "src": "bc660740",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981839"
+    },
+    {
+      "src": "130b74cb",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981918"
+    },
+    {
+      "src": "130b74cb",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.981927"
+    },
+    {
+      "src": "be485898",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982011"
+    },
+    {
+      "src": "03f48948",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982092"
+    },
+    {
+      "src": "03f48948",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982100"
+    },
+    {
+      "src": "4c8fe0fb",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982177"
+    },
+    {
+      "src": "4c8fe0fb",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982185"
+    },
+    {
+      "src": "76918b1d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982273"
+    },
+    {
+      "src": "76918b1d",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982281"
+    },
+    {
+      "src": "805185e1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982365"
+    },
+    {
+      "src": "805185e1",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982373"
+    },
+    {
+      "src": "4d3e2c93",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982452"
+    },
+    {
+      "src": "4d3e2c93",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982458"
+    },
+    {
+      "src": "006a5881",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982542"
+    },
+    {
+      "src": "006a5881",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982550"
+    },
+    {
+      "src": "166da41d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982630"
+    },
+    {
+      "src": "46a30545",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982713"
+    },
+    {
+      "src": "46a30545",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982719"
+    },
+    {
+      "src": "e1d6fff2",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982793"
+    },
+    {
+      "src": "e1d6fff2",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982800"
+    },
+    {
+      "src": "7a135a62",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982875"
+    },
+    {
+      "src": "7a135a62",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982882"
+    },
+    {
+      "src": "0c94c63e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.982958"
+    },
+    {
+      "src": "1ae74437",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983042"
+    },
+    {
+      "src": "1ae74437",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983049"
+    },
+    {
+      "src": "e6447296",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983125"
+    },
+    {
+      "src": "635af67f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983312"
+    },
+    {
+      "src": "635af67f",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983318"
+    },
+    {
+      "src": "55501c4b",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983669"
+    },
+    {
+      "src": "55501c4b",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983680"
+    },
+    {
+      "src": "848cbb2d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983770"
+    },
+    {
+      "src": "848cbb2d",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983787"
+    },
+    {
+      "src": "43f7e06f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983870"
+    },
+    {
+      "src": "43f7e06f",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983885"
+    },
+    {
+      "src": "3b9b10fd",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983971"
+    },
+    {
+      "src": "3b9b10fd",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.983985"
+    },
+    {
+      "src": "6f740934",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984073"
+    },
+    {
+      "src": "6f740934",
+      "tgt": "domain-testing",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984087"
+    },
+    {
+      "src": "02a48240",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984172"
+    },
+    {
+      "src": "02a48240",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984186"
+    },
+    {
+      "src": "c8be5372",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984266"
+    },
+    {
+      "src": "c8be5372",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984276"
+    },
+    {
+      "src": "69c0e925",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984358"
+    },
+    {
+      "src": "69c0e925",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984375"
+    },
+    {
+      "src": "c3ac2a3a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984461"
+    },
+    {
+      "src": "c3ac2a3a",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984473"
+    },
+    {
+      "src": "96f2c2d1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984561"
+    },
+    {
+      "src": "96f2c2d1",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984574"
+    },
+    {
+      "src": "389d2742",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:27.984701"
+    },
+    {
+      "src": "50ec5f8c",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.050982"
+    },
+    {
+      "src": "50ec5f8c",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.051009"
+    },
+    {
+      "src": "c0408c0f",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.051147"
+    },
+    {
+      "src": "28e6f731",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.051267"
+    },
+    {
+      "src": "a1516559",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.051381"
+    },
+    {
+      "src": "13ef8a7c",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-03T21:34:28.051479"
+    }
+  ]
+}
