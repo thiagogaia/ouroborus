@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "meta": {
-    "saved_at": "2026-02-04T03:52:09.096771",
-    "node_count": 127,
-    "edge_count": 200
+    "saved_at": "2026-02-04T04:48:01.123137",
+    "node_count": 134,
+    "edge_count": 208
   },
   "nodes": {
     "a52ceda2": {
@@ -2851,6 +2851,168 @@
         "created_at": "2026-02-04T03:52:05.419447",
         "decay_rate": 0.01
       }
+    },
+    "279fee03": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "DomainDomain"
+      ],
+      "props": {
+        "title": "feat(domain): add /domain command and proactive usage instructions",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-domain-add-domain-command-and-proactive-usage-279fee03.md",
+        "summary": "feat(domain): add /domain command and proactive usage instructions - Create /domain command for domain knowledge analysis Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings....",
+        "commit_hash": "bfc9ef12",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "domain",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:47:04.007942",
+        "created_at": "2026-02-04T04:47:04.007942",
+        "decay_rate": 0.01
+      }
+    },
+    "29f506e4": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "update readme",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-update-readme-29f506e4.md",
+        "summary": "update readme Files changed: README.md",
+        "commit_hash": "53c9fab7",
+        "date": "2026-02-04",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:47:04.008483",
+        "created_at": "2026-02-04T04:47:04.008483",
+        "decay_rate": 0.01
+      }
+    },
+    "e6d65084": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "ReadmeDomain"
+      ],
+      "props": {
+        "title": "docs(readme): update to v3 with organizational brain",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-docs-readme-update-to-v3-with-organizational-brain-e6d65084.md",
+        "summary": "docs(readme): update to v3 with organizational brain - Update title and badges to v3.0.0 Files changed: README.md",
+        "commit_hash": "a0de94bf",
+        "date": "2026-02-04",
+        "commit_type": "docs",
+        "scope": "readme",
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:47:04.008645",
+        "created_at": "2026-02-04T04:47:04.008645",
+        "decay_rate": 0.01
+      }
+    },
+    "9d48a9da": {
+      "labels": [
+        "Episode",
+        "Commit"
+      ],
+      "props": {
+        "title": "logo",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-logo-9d48a9da.md",
+        "summary": "logo Files changed: logo.svg",
+        "commit_hash": "41f2ea82",
+        "date": "2026-02-04",
+        "commit_type": "other",
+        "scope": null,
+        "files_count": 1
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:47:04.008771",
+        "created_at": "2026-02-04T04:47:04.008771",
+        "decay_rate": 0.01
+      }
+    },
+    "d6049aff": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "feat(knowledge): batch learn from all 11 commits + multi-project setup",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-04-feat-knowledge-batch-learn-from-all-11-commits-mul-d6049aff.md",
+        "summary": "feat(knowledge): batch learn from all 11 commits + multi-project setup Process all repository commits retroactively via parallel /learn agents: Files changed: .claude/brain/cognitive-log.jsonl, .cl...",
+        "commit_hash": "a66232ab",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "knowledge",
+        "files_count": 10
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:47:04.008880",
+        "created_at": "2026-02-04T04:47:04.008880",
+        "decay_rate": 0.01
+      }
+    },
+    "75a55c6d": {
+      "labels": [
+        "Episode",
+        "Feature",
+        "DomainDomain"
+      ],
+      "props": {
+        "title": "feat(domain): add /domain command and proactive usage instructions",
+        "author": "@thigato",
+        "content_path": "memory/episodes/2026-02-04-feat-domain-add-domain-command-and-proactive-usage-75a55c6d.md",
+        "summary": "Sessão de análise e implementação do sistema de domínio: 1. PROBLEMA IDENTIFICADO: Sistema de domínio existia (domain-expert skill, domain-analyst agent, DOMAIN.md) mas faltava instrução proativa d..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-04T04:48:01.122151",
+        "created_at": "2026-02-04T04:48:01.122151",
+        "decay_rate": 0.01
+      }
+    },
+    "person-thigato": {
+      "labels": [
+        "Person"
+      ],
+      "props": {
+        "name": "@thigato",
+        "username": "@thigato"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-04T04:48:01.122645",
+        "created_at": "2026-02-04T04:48:01.122647",
+        "decay_rate": 0.0001
+      }
     }
   },
   "edges": [
@@ -4253,6 +4415,64 @@
       "type": "BELONGS_TO",
       "weight": 0.55,
       "props": {}
+    },
+    {
+      "src": "279fee03",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "29f506e4",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "e6d65084",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "9d48a9da",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d6049aff",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d6049aff",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "75a55c6d",
+      "tgt": "person-thigato",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-04T04:48:01.122649"
+    },
+    {
+      "src": "75a55c6d",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-04T04:48:01.122967"
     }
   ]
 }

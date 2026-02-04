@@ -1,10 +1,10 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-04 (/learn commit 53c9fab - update readme)
+> Ultima atualizacao: 2026-02-04 (/learn commit bfc9ef1 - feat domain)
 
 ## Status Geral
 - **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável)
 - **Saúde**: 🟢 Saudável (Health Score 100%)
-- **Cérebro**: 127 nós, 204 arestas (crescimento +10 desde último /learn)
+- **Cérebro**: 132 nós, 206 arestas (crescimento +5 desde último /learn)
 - **Próximo Marco**: Testar em projeto real Next.js ou Python
 
 ## Identidade
@@ -114,10 +114,13 @@ genesis → evolui componentes → ciclo recomeça
 | db-expert | Schema, queries, migrations |
 | domain-analyst | Regras de negócio, glossário |
 
-### Commands (14)
-/init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, **/recall**
+### Commands (15)
+/init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, /recall, **/domain**
 
 ## O Que Mudou Recentemente
+- [2026-02-04] **/domain command criado (commit bfc9ef1)**: Command para análise de domínio + instrução proativa no CLAUDE.md | Impacto: ALTO
+- [2026-02-04] **CLAUDE.md expandido**: Seção "Quando Usar Domain-Expert Automaticamente" com 6 triggers | Impacto: ALTO
+- [2026-02-04] **domain-expert ativado**: Primeira ativação do skill (sessão de análise) | Impacto: MÉDIO
 - [2026-02-04] **/learn manutenção (commit 53c9fab)**: Cérebro expandido para 127 nós, 204 arestas | Impacto: BAIXO
 - [2026-02-04] **README atualizado para v3**: Documentação do cérebro organizacional + badges | Impacto: MÉDIO
 - [2026-02-04] **Logo adicionado**: logo.svg com design ouroboros | Impacto: BAIXO
@@ -177,7 +180,7 @@ Nenhum bloqueio ativo.
 | python-scripts | 1 | 🟢 Novo |
 | project-analyzer | 3 | 🟢 Ativo |
 | knowledge-manager | 0 | 🟡 Stale (seed) |
-| domain-expert | 0 | 🟡 Stale (seed) |
+| domain-expert | 1 | 🟢 Ativo |
 | priority-engine | 0 | 🟡 Stale (seed) |
 | code-reviewer | 0 | 🟡 Stale (seed) |
 | engram-factory | 0 | 🟡 Stale (seed) |

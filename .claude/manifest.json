@@ -1,7 +1,7 @@
 {
   "engram_version": "3.0.0",
   "installed_at": "2026-02-03T16:22:02-03:00",
-  "last_updated": "2026-02-04T03:52:50.679641",
+  "last_updated": "2026-02-04T11:21:10.112987",
   "components": {
     "skills": {
       "engram-genesis": {
@@ -45,8 +45,8 @@
         "source": "seed",
         "created_at": "2026-02-03T21:55:00.000000",
         "updated_at": "2026-02-03T21:55:00.000000",
-        "activations": 0,
-        "last_used": null,
+        "activations": 1,
+        "last_used": "2026-02-04T04:47:11.658724",
         "health": "active"
       },
       "priority-engine": {
@@ -110,8 +110,8 @@
         "source": "core",
         "created_at": "2026-02-03T16:22:02-03:00",
         "updated_at": "2026-02-03T16:22:02-03:00",
-        "activations": 0,
-        "last_used": null,
+        "activations": 1,
+        "last_used": "2026-02-04T11:21:10.112980",
         "health": "active"
       }
     },
@@ -120,8 +120,8 @@
         "version": "1.0.0",
         "source": "runtime",
         "created_at": "2026-02-04T12:00:00.000000",
-        "activations": 0,
-        "last_used": null,
+        "activations": 1,
+        "last_used": "2026-02-04T11:21:09.370054",
         "health": "active",
         "description": "Analisar e registrar conhecimento de domínio"
       }

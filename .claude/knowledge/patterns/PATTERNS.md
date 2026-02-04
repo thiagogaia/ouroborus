@@ -1,5 +1,5 @@
 # Padrões do Projeto
-> Última atualização: 2026-02-04 (/learn commit 367a4c1)
+> Última atualização: 2026-02-04 (/learn commit bfc9ef1)
 
 ## Padrões Aprovados
 
@@ -404,3 +404,20 @@
   - Extras requer cópia manual ou flag específica
 - **Exemplo**: n8n-agent-builder é extra (poucos projetos usam n8n)
 - **Descoberto em**: 2026-02-03 (commit bbcc8777)
+
+### PAT-032: Instrução Proativa para Skills
+- **Contexto**: skill existe mas não está sendo usado automaticamente pelo Claude
+- **Solução**: adicionar seção "Quando Usar X Automaticamente" no CLAUDE.md
+  - Definir triggers claros (lista de situações que ativam o skill)
+  - Definir workflow estruturado (passos a seguir)
+  - Opcionalmente criar /command como atalho
+- **Exemplo**: domain-expert → seção "Quando Usar Domain-Expert Automaticamente" com 6 triggers
+  ```markdown
+  O Claude DEVE invocar domain-analyst quando:
+  1. Termo desconhecido: não documentado no DOMAIN.md
+  2. Regra implícita: validação/constraint revela regra
+  3. Estados de negócio: enum/constante define estados
+  ...
+  ```
+- **Anti-padrão**: skill definido mas sem instrução de quando usar (fica dormindo)
+- **Descoberto em**: 2026-02-04 (commit bfc9ef1 - /domain)
