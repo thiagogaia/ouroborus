@@ -8,7 +8,7 @@
 |---|--------|---|---|---|-----|--------|
 | 1 | Testar em projeto real Next.js | 9 | 8 | 3 | 24.0 | 🔵 pendente |
 | 2 | Testar em projeto real Python | 9 | 8 | 3 | 24.0 | 🔵 pendente |
-| 3 | Adicionar .gitignore para __pycache__ | 8 | 10 | 1 | 80.0 | 🔵 pendente |
+| 3 | Integrar /status com cérebro | 7 | 9 | 3 | 21.0 | 🔵 pendente |
 | 4 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🔵 pendente |
 | 5 | Documentar exemplos de uso | 6 | 8 | 4 | 12.0 | 🔵 pendente |
 
@@ -36,6 +36,10 @@
 | Popular cérebro com ADRs/patterns/commits | ✅ Concluído | 2026-02-03 |
 | Integrar brain no /learn e /init-engram | ✅ Concluído | 2026-02-03 |
 | Gerar embeddings para busca semântica | ✅ Concluído | 2026-02-03 |
+| Adicionar .gitignore para __pycache__ | ✅ Concluído | 2026-02-03 |
+| Instalar seeds faltantes (5 de 6) | ✅ Concluído | 2026-02-03 |
+| Adicionar diagrama metacircular à doc | ✅ Concluído | 2026-02-03 |
+| Upgrade para v3.0.0 | ✅ Concluído | 2026-02-03 |
 
 ## Como Priorizar
 
