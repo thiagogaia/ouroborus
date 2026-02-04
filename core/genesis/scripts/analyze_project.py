@@ -76,6 +76,8 @@ def detect_stack(project_dir: str) -> dict:
             # Framework
             if "next" in deps:
                 stack["framework"] = "nextjs"
+            elif "@nestjs/core" in deps:
+                stack["framework"] = "nestjs"
             elif "nuxt" in deps:
                 stack["framework"] = "nuxt"
             elif "@angular/core" in deps:
@@ -138,6 +140,18 @@ def detect_stack(project_dir: str) -> dict:
 
         except (json.JSONDecodeError, KeyError):
             pass
+
+    # PHP frameworks (from composer.json)
+    if "php" in stack["languages"]:
+        composer_path = p / "composer.json"
+        if composer_path.exists():
+            try:
+                composer = json.loads(composer_path.read_text())
+                require = {**composer.get("require", {}), **composer.get("require-dev", {})}
+                if "laravel/framework" in require:
+                    stack["framework"] = "laravel"
+            except (json.JSONDecodeError, KeyError):
+                pass
 
     # Python frameworks
     if "python" in stack["languages"]:
@@ -217,6 +231,12 @@ def suggest_components(stack: dict) -> dict:
             "reason": f"{fw} detected — component patterns, state management, routing",
             "priority": "high",
         })
+    elif fw == "nestjs":
+        suggestions["skills"].append({
+            "name": "nestjs-patterns",
+            "reason": "NestJS detected — Modules, DTOs, Guards, TypeORM/Sequelize, Swagger patterns",
+            "priority": "high",
+        })
     elif fw == "express":
         suggestions["skills"].append({
             "name": "express-patterns",
@@ -229,14 +249,18 @@ def suggest_components(stack: dict) -> dict:
             "reason": "Fastify detected (using Express patterns as base) — routing, plugins, validation",
             "priority": "high",
         })
-
-    if stack.get("languages") and "php" in stack["languages"]:
-        if fw == "laravel":
-            suggestions["skills"].append({
-                "name": "laravel-patterns",
-                "reason": "Laravel detected — Eloquent, Form Requests, Services, Queues",
-                "priority": "high",
-            })
+    elif fw == "laravel":
+        suggestions["skills"].append({
+            "name": "laravel-patterns",
+            "reason": "Laravel detected — Eloquent, Form Requests, Services, Queues",
+            "priority": "high",
+        })
+    elif fw == "flask":
+        suggestions["skills"].append({
+            "name": "flask-patterns",
+            "reason": "Flask detected — Blueprints, Marshmallow, SQLAlchemy patterns",
+            "priority": "high",
+        })
 
     # ORM skills
     orm = stack.get("orm")

@@ -133,13 +133,18 @@ detect_stack() {
     if $LANG_NODE && [[ -f "$TARGET_DIR/package.json" ]]; then
         PKG=$(cat "$TARGET_DIR/package.json")
         echo "$PKG" | grep -q '"next"' && FRAMEWORK="nextjs"
-        echo "$PKG" | grep -q '"nuxt"' && FRAMEWORK="nuxt"
-        echo "$PKG" | grep -q '"@angular/core"' && FRAMEWORK="angular"
-        echo "$PKG" | grep -q '"svelte"' && FRAMEWORK="sveltekit"
+        echo "$PKG" | grep -q '"@nestjs/core"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="nestjs"
+        echo "$PKG" | grep -q '"nuxt"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="nuxt"
+        echo "$PKG" | grep -q '"@angular/core"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="angular"
+        echo "$PKG" | grep -q '"svelte"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="sveltekit"
         echo "$PKG" | grep -q '"vue"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="vue"
         echo "$PKG" | grep -q '"react"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="react"
         echo "$PKG" | grep -q '"express"' && [[ -z "$FRAMEWORK" ]] && FRAMEWORK="express"
         [[ "$FRAMEWORK" == "nextjs" ]] && FRAMEWORK_VERSION=$(echo "$PKG" | grep -oP '"next":\s*"[^"]*"' | grep -oP '[\d.]+' | head -1) || true
+    fi
+    if $LANG_PHP && [[ -f "$TARGET_DIR/composer.json" ]]; then
+        COMPOSER=$(cat "$TARGET_DIR/composer.json")
+        echo "$COMPOSER" | grep -q '"laravel/framework"' && FRAMEWORK="laravel"
     fi
     $LANG_PYTHON && [[ -f "$TARGET_DIR/manage.py" ]] && FRAMEWORK="django"
     $LANG_PYTHON && grep -ql "fastapi" "$TARGET_DIR/requirements.txt" 2>/dev/null && FRAMEWORK="fastapi"
@@ -149,6 +154,7 @@ detect_stack() {
     if $LANG_NODE && [[ -f "$TARGET_DIR/package.json" ]]; then
         echo "$PKG" | grep -q '"drizzle-orm"' && ORM="drizzle"
         echo "$PKG" | grep -q '"typeorm"' && ORM="typeorm"
+        echo "$PKG" | grep -q '"sequelize"' && [[ -z "$ORM" ]] && ORM="sequelize"
         echo "$PKG" | grep -q '"mongoose"' && ORM="mongoose" && DB="mongodb"
     fi
     [[ -f "$TARGET_DIR/.env.example" ]] && grep -qi "postgres" "$TARGET_DIR/.env.example" 2>/dev/null && DB="postgresql"

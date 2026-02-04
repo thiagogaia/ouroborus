@@ -1,0 +1,326 @@
+---
+name: nestjs-patterns
+description: Padrões e boas práticas para NestJS. Use quando criar modules, controllers,
+  services, DTOs, guards, interceptors, pipes, ou integrar com bancos de dados,
+  mensageria (Kafka/SQS) e API docs (Swagger). Também para troubleshooting de
+  dependency injection, lifecycle hooks e performance.
+---
+
+# NestJS Patterns
+
+## Arquitetura Modular
+
+Cada domínio = 1 módulo isolado. Módulo agrupa controller + service + DTOs + entities.
+
+```
+src/
+├── app.module.ts              # Root module (imports only)
+├── main.ts                    # Bootstrap + global config
+├── common/                    # Shared pipes, guards, interceptors, filters
+│   ├── guards/
+│   ├── interceptors/
+│   ├── filters/
+│   ├── pipes/
+│   └── decorators/
+└── modules/
+    └── {domain}/
+        ├── {domain}.module.ts
+        ├── {domain}.controller.ts
+        ├── {domain}.service.ts
+        ├── dto/
+        │   ├── create-{domain}.dto.ts
+        │   └── update-{domain}.dto.ts
+        └── entities/
+            └── {domain}.entity.ts
+```
+
+## Controllers
+
+Controllers slim — apenas roteamento, validação via pipes, delegam para services.
+
+```typescript
+@Controller('items')
+@ApiTags('Items')
+export class ItemsController {
+  constructor(private readonly itemsService: ItemsService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create item' })
+  @ApiResponse({ status: 201, type: ItemResponseDto })
+  create(@Body() dto: CreateItemDto): Promise<ItemResponseDto> {
+    return this.itemsService.create(dto);
+  }
+
+  @Get()
+  @ApiQuery({ name: 'status', required: false })
+  findAll(@Query() query: FilterItemDto): Promise<ItemResponseDto[]> {
+    return this.itemsService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiParam({ name: 'id', type: 'string' })
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ItemResponseDto> {
+    return this.itemsService.findOne(id);
+  }
+}
+```
+
+## DTOs e Validação
+
+Separar DTOs de request e response. SEMPRE usar `class-validator` + `class-transformer`.
+
+```typescript
+// create-item.dto.ts
+export class CreateItemDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'Item name' })
+  name: string;
+
+  @IsEnum(ItemStatus)
+  @IsOptional()
+  @ApiPropertyOptional({ enum: ItemStatus, default: ItemStatus.ACTIVE })
+  status?: ItemStatus;
+
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @ApiProperty({ example: 99.90 })
+  price: number;
+}
+
+// update-item.dto.ts
+export class UpdateItemDto extends PartialType(CreateItemDto) {}
+```
+
+**Regra**: Nunca usar a entity como DTO. Nunca expor campos internos (id sequencial, timestamps de audit, hashes) no response DTO sem necessidade.
+
+## Services
+
+Lógica de negócio isolada. Testável sem HTTP.
+
+```typescript
+@Injectable()
+export class ItemsService {
+  constructor(
+    @InjectRepository(Item)
+    private readonly repo: Repository<Item>,
+  ) {}
+
+  async create(dto: CreateItemDto): Promise<Item> {
+    const entity = this.repo.create(dto);
+    return this.repo.save(entity);
+  }
+
+  async findOne(id: string): Promise<Item> {
+    const item = await this.repo.findOne({ where: { id } });
+    if (!item) throw new NotFoundException(`Item ${id} not found`);
+    return item;
+  }
+}
+```
+
+## Guards e Auth
+
+```typescript
+// jwt-auth.guard.ts
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  canActivate(context: ExecutionContext) {
+    return super.canActivate(context);
+  }
+}
+
+// Aplicar globalmente ou por controller
+@UseGuards(JwtAuthGuard)
+@Controller('protected')
+export class ProtectedController {}
+```
+
+Para headers customizados (client-id, request-id), usar custom decorators:
+
+```typescript
+export const ClientId = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.headers['client-id'];
+  },
+);
+```
+
+## ORM (TypeORM / Sequelize)
+
+### TypeORM
+
+```typescript
+@Entity('items')
+export class Item {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
+  name: string;
+
+  @Column({ type: 'enum', enum: ItemStatus, default: ItemStatus.ACTIVE })
+  status: ItemStatus;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;  // soft delete
+}
+```
+
+### Sequelize
+
+```typescript
+@Table({ tableName: 'items', paranoid: true })
+export class Item extends Model {
+  @Column({ type: DataType.UUID, defaultValue: DataType.UUIDV4, primaryKey: true })
+  id: string;
+
+  @Column({ type: DataType.STRING, allowNull: false })
+  name: string;
+
+  @Column({ type: DataType.ENUM(...Object.values(ItemStatus)), defaultValue: ItemStatus.ACTIVE })
+  status: ItemStatus;
+}
+```
+
+**Regra**: Escolher UM ORM por projeto e manter consistência. Soft deletes por padrão.
+
+## Kafka / Mensageria
+
+```typescript
+// Consumer
+@Controller()
+export class EventsController {
+  @EventPattern('order-created')
+  async handleOrderCreated(@Payload() data: OrderCreatedEvent) {
+    // process event
+  }
+
+  @MessagePattern('get-order')
+  async getOrder(@Payload() id: string): Promise<Order> {
+    // request-reply pattern
+  }
+}
+
+// Producer
+@Injectable()
+export class EventsService {
+  constructor(@Inject('KAFKA_SERVICE') private kafka: ClientKafka) {}
+
+  async emit(topic: string, payload: any) {
+    return this.kafka.emit(topic, payload);
+  }
+}
+```
+
+## Health Checks
+
+SEMPRE implementar health check com `@nestjs/terminus`:
+
+```typescript
+@Controller('health')
+export class HealthController {
+  constructor(
+    private health: HealthCheckService,
+    private db: TypeOrmHealthIndicator,
+  ) {}
+
+  @Get()
+  @HealthCheck()
+  check() {
+    return this.health.check([
+      () => this.db.pingCheck('database'),
+    ]);
+  }
+}
+```
+
+## Swagger / OpenAPI
+
+Configurar globalmente no `main.ts`:
+
+```typescript
+const config = new DocumentBuilder()
+  .setTitle('Service Name')
+  .setVersion('1.0')
+  .addBearerAuth()
+  .build();
+const document = SwaggerModule.createDocument(app, config);
+SwaggerModule.setup('docs', app, document);
+```
+
+**Regra**: SEMPRE decorar controllers e DTOs com `@Api*` decorators. Swagger é documentação viva.
+
+## Global Config (main.ts)
+
+```typescript
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Global pipes
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,           // strip unknown properties
+    forbidNonWhitelisted: true, // throw on unknown properties
+    transform: true,           // auto-transform types
+  }));
+
+  // Global prefix
+  app.setGlobalPrefix('api');
+
+  // CORS
+  app.enableCors();
+
+  // Helmet
+  app.use(helmet());
+
+  await app.listen(process.env.PORT || 3000);
+}
+```
+
+## Error Handling
+
+Global exception filter para respostas consistentes:
+
+```typescript
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+
+    const status = exception instanceof HttpException
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const message = exception instanceof HttpException
+      ? exception.getResponse()
+      : 'Internal server error';
+
+    response.status(status).json({
+      statusCode: status,
+      message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+```
+
+## Regras
+
+- NUNCA coloque lógica de negócio em Controllers — use Services
+- SEMPRE use DTOs com class-validator para validação de input
+- SEMPRE use ValidationPipe global com `whitelist: true`
+- SEMPRE implemente health check com @nestjs/terminus
+- SEMPRE documente endpoints com decorators Swagger
+- NUNCA exponha entities diretamente — use DTOs de response
+- Soft deletes por padrão (`@DeleteDateColumn` ou `paranoid: true`)
+- Um módulo por domínio — não misture responsabilidades
+- Guards para auth, Interceptors para transformação, Pipes para validação
+- Kafka consumers em controllers separados dos HTTP controllers
