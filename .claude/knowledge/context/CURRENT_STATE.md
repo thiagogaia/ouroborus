@@ -1,10 +1,10 @@
 # Estado Atual do Projeto
-> Última atualização: 2026-02-03 (/learn sessão de análise arquitetural)
+> Última atualização: 2026-02-03 (Arquitetura Git-Native v3.0 aprovada)
 
 ## Status Geral
-- **Fase**: Produção v2.0.0 — testado e pronto para uso
+- **Fase**: Arquitetura v3.0 — Git-native com grafo de conhecimento definida
 - **Saúde**: 🟢 Saudável (Health Score 100%)
-- **Próximo Marco**: Testar em projetos reais de produção
+- **Próximo Marco**: Implementar estrutura de arquivos escalável
 
 ## Identidade
 **Engram v2** — Sistema metacircular de memória persistente para Claude Code.
@@ -46,7 +46,7 @@ genesis → evolui componentes → ciclo recomeça
 ### Skills Core (2)
 | Nome | Função | Scripts |
 |------|--------|---------|
-| engram-genesis | Motor de auto-geração | analyze_project.py, generate_component.py, validate.py, register.py, compose.py |
+| engram-genesis | Motor de auto-geração | analyze_project.py, generate_component.py, validate.py, register.py, compose.py, migrate_backup.py |
 | engram-evolution | Motor de evolução | track_usage.py, doctor.py, archive.py, curriculum.py, co_activation.py, global_memory.py |
 
 ### Seeds (6 skills universais)
@@ -70,11 +70,12 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import
 
 ## O Que Mudou Recentemente
-- [2026-02-03] Análise arquitetural profunda: subagentes e orquestração | Impacto: MÉDIO
-- [2026-02-03] Documentação das vantagens do modelo sequencial | Impacto: MÉDIO
-- [2026-02-03] /learn executado — tracking de uso funcionando | Impacto: MÉDIO
-- [2026-02-03] Commit feat(engram) — 61 arquivos, 6002 linhas | Impacto: ALTO
-- [2026-02-03] Skill python-scripts criado via genesis | Impacto: MÉDIO
+- [2026-02-03] **[[ADR-008]]**: Arquitetura Git-Native com Grafo de Conhecimento aprovada | Impacto: CRÍTICO
+- [2026-02-03] **[[ADR-009]]**: Estado por Desenvolvedor (state/dev.md) aprovado | Impacto: ALTO
+- [2026-02-03] **[[ADR-010]]**: Convenção de Commits de Conhecimento aprovada | Impacto: MÉDIO
+- [2026-02-03] Análise de escalabilidade: 10 devs × 5 anos = viável com camadas | Impacto: ALTO
+- [2026-02-03] Modelo Obsidian ([[wikilinks]] + backlinks) adotado | Impacto: ALTO
+- [2026-02-03] Sistema de migração de backups implementado (migrate_backup.py) | Impacto: ALTO
 
 ## Dívidas Técnicas
 | Item | Severidade | Descrição |
@@ -98,8 +99,46 @@ Nenhum bloqueio ativo.
 | domain-analyst | 0 | ⚪ Não usado |
 
 ## Contexto Para Próxima Sessão
-- Sistema 100% funcional, Health Score 100%
-- Análise arquitetural concluída: modelo sequencial é vantagem deliberada
-- Agents (architect, db-expert, domain-analyst) marcados como stale mas são novos — testar em próxima sessão
-- Próximo passo: testar em projeto real (Next.js ou Python) para validar o ciclo completo
-- Considerar adicionar mais templates em templates/stacks/
+
+### Arquitetura v3.0 Aprovada
+A nova arquitetura para escalabilidade foi definida em [[ADR-008]], [[ADR-009]], [[ADR-010]]:
+
+**Estrutura de Arquivos Escalável:**
+```
+.claude/
+├── active/              ← HOT (últimos 90 dias)
+│   ├── state/           ← 1 arquivo POR DEV
+│   ├── episodes/        ← 1 arquivo por episódio com [[links]]
+│   ├── patterns/        ← 1 arquivo por pattern
+│   ├── decisions/       ← 1 arquivo por ADR
+│   ├── concepts/        ← glossário linkável [[conceito]]
+│   └── people/          ← [[@pessoa]] sabe o quê
+├── consolidated/        ← summaries trimestrais
+├── archive/             ← episódios > 90 dias
+├── graph/               ← backlinks.json (grafo unificado)
+└── scripts/             ← automação
+```
+
+**Simplificação:** INDEX.md eliminado. O grafo (backlinks.json) com `views`
+pré-computadas serve como índice. Estratégia Obsidian pura.
+
+**Modelo de Links (Obsidian):**
+- `[[conceito]]` → concepts/conceito.md
+- `[[@pessoa]]` → people/pessoa.md
+- `[[ADR-NNN]]` → decisions/ADR-NNN.md
+- Backlinks gerados automaticamente
+
+**Escalabilidade Comprovada:**
+- 10 devs × 5 anos = ~25k episódios = ~50MB
+- Git aguenta tranquilo
+- Tokens sob controle: ~$0.20/sessão (vs $37 sem otimização)
+- Consolidation job compacta episódios antigos
+
+### Próximos Passos de Implementação
+1. [ ] Criar estrutura de diretórios (active/, consolidated/, archive/, graph/)
+2. [ ] Migrar conhecimento atual para novo formato com [[links]]
+3. [ ] Implementar build_graph.py (gera backlinks.json com views)
+4. [ ] Implementar consolidate.py (job mensal)
+5. [ ] Atualizar templates com convenção de [[links]]
+6. [ ] Integrar build_graph no /learn
+7. [ ] Testar com 2-3 devs em projeto real

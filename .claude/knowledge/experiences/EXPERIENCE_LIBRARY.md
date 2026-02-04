@@ -95,6 +95,17 @@
 
 ---
 
+## EXP-011: Implementar Sistema de Migração de Backups
+- **Contexto**: /init-engram não tinha lógica para migrar backups criados pelo setup.sh
+- **Stack**: Python, engram-genesis scripts
+- **Padrão**: PAT-011
+- **Abordagem**: 1) Analisar como setup.sh cria backups 2) Criar migrate_backup.py com --detect, --analyze, --migrate, --cleanup 3) Atualizar init-engram.md com Fase 0 e Fase 6
+- **Descoberta**: Merge semântico é melhor que sobrescrita — preserva EXP entries, PAT entries, ADRs únicos
+- **Resultado**: Sucesso — testado com backups simulados, todas as fases funcionam
+- **Data**: 2026-02-03
+
+---
+
 ## Regras da Library
 - Máximo 50 experiências (descartar as mais antigas se necessário)
 - Cada experiência: máximo 10 linhas

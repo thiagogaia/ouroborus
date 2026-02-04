@@ -139,12 +139,406 @@ Usar Engram para desenvolver Engram, demonstrando o conceito de auto-alimentaç�
 
 ---
 
+## ADR-008: Arquitetura Git-Native com Grafo de Conhecimento
+**Data**: 2026-02-03
+**Status**: ✅ Aceito
+**Decisores**: Análise de escalabilidade para multi-dev/multi-org
+
+### Contexto
+
+O Engram precisa escalar para:
+- 10+ desenvolvedores por projeto
+- 3-5 anos de uso contínuo
+- ~25.000 episódios, ~125.000 eventos ao longo do tempo
+- Múltiplas organizações usando o sistema
+
+Problemas a resolver:
+1. **Sync entre devs**: Como compartilhar conhecimento sem conflitos?
+2. **Custo de tokens**: Claude não pode ler 25k arquivos (12.5M tokens = $37/sessão)
+3. **Assertividade**: Como encontrar conhecimento relevante em massa de dados?
+4. **Simplicidade**: Evitar infraestrutura cloud complexa
+
+### Decisão
+
+Adotar arquitetura **Git-native com grafo de conhecimento estilo Obsidian**:
+
+#### 1. Git como Backend (não cloud custom)
+
+```
+.claude/ é Git-tracked e compartilhada entre todos os devs
+Git fornece: sync, histórico, review (PR), rollback, blame
+Zero infraestrutura adicional
+```
+
+#### 2. Estrutura de Arquivos Escalável
+
+```
+.claude/
+├── active/              ← HOT (sempre carregado, ~90 dias)
+│   ├── state/           ← 1 arquivo POR DEV (nunca conflita)
+│   ├── episodes/        ← 1 arquivo por episódio
+│   ├── patterns/        ← 1 arquivo por pattern
+│   ├── decisions/       ← 1 arquivo por ADR
+│   ├── concepts/        ← glossário linkável [[conceito]]
+│   └── people/          ← quem sabe o quê [[@pessoa]]
+│
+├── consolidated/        ← WARM (summaries trimestrais)
+│   └── YYYY-QN.md       ← 50 episódios → 1 resumo
+│
+├── archive/             ← COLD (busca sob demanda)
+│   └── YYYY/QN/         ← episódios originais > 90 dias
+│
+├── graph/               ← GRAFO UNIFICADO (substitui index/)
+│   ├── backlinks.json   ← fonte de verdade (grafo + metadados + views)
+│   └── embeddings.db    ← opcional, busca semântica
+│
+└── scripts/             ← AUTOMAÇÃO
+    ├── build_graph.py   ← gera backlinks.json
+    ├── consolidate.py   ← compacta episódios antigos
+    └── search.py        ← busca no grafo
+```
+
+**Nota**: INDEX.md foi eliminado. O grafo (backlinks.json) com `views` pré-computadas
+serve como índice. Se necessário para humanos, INDEX.md pode ser gerado do grafo.
+
+#### 3. Links Estilo Obsidian (Grafo Emergente)
+
+Todos os arquivos usam [[wikilinks]] para criar conexões:
+
+```markdown
+# Bug de Refresh Token
+
+**Autor**: [[@joao]]
+**Tags**: #auth #bug #jwt
+
+Seguindo [[ADR-002-jwt]], o [[refresh-token]] não invalidava.
+Resolvi com [[Redis]] usando pattern [[token-blacklist]].
+Ver também: [[2024-01-15-maria-auth-setup]]
+```
+
+Convenções:
+- `[[@pessoa]]` → people/pessoa.md
+- `[[ADR-NNN]]` → decisions/ADR-NNN.md
+- `[[conceito]]` → concepts/conceito.md
+- `[[pattern-name]]` → patterns/pattern-name.md
+
+#### 4. Grafo Unificado (backlinks.json)
+
+O grafo substitui índices separados. Um único `graph/backlinks.json` contém:
+
+```json
+{
+  "meta": {
+    "generated_at": "2026-02-03T17:00:00",
+    "total_nodes": 342,
+    "total_edges": 1247
+  },
+  "nodes": {
+    "2024-02-03-joao-refresh-bug": {
+      "path": "active/episodes/...",
+      "type": "episode",
+      "author": "@joao",
+      "date": "2024-02-03",
+      "tags": ["auth", "bug"],
+      "title": "Bug de Refresh Token"
+    }
+  },
+  "edges": [...],
+  "backlinks": {
+    "ADR-002-jwt": ["episode-1", "episode-2", "pattern-x"]
+  },
+  "views": {
+    "recent_episodes": ["...", "..."],
+    "hubs": [{"id": "autenticação", "connections": 67}],
+    "clusters": {"auth": ["jwt", "@maria", "ADR-002"]},
+    "team_state": {"@joao": {"focus": "auth"}}
+  }
+}
+```
+
+**O grafo É o índice.** INDEX.md eliminado (ou gerado opcionalmente para humanos).
+
+#### 5. Estratégia de Escalabilidade
+
+| Camada | Conteúdo | Tokens | Quando Carrega |
+|--------|----------|--------|----------------|
+| backlinks.json | Grafo completo | ~3-5k | Sempre (início) |
+| state/*.md | Contexto por dev | ~500/dev | Sempre |
+| active/* | Últimos 90 dias | Sob demanda | Navegação por [[link]] |
+| consolidated/* | Summaries | Sob demanda | Busca profunda |
+| archive/* | Originais antigos | Sob demanda | grep encontra |
+
+**Fluxo de navegação**:
+1. Claude recebe backlinks.json (sabe o que existe + conexões)
+2. Identifica nós relevantes pelos metadados e hubs
+3. Lê arquivos específicos seguindo [[links]]
+4. Backlinks mostram impacto de mudanças
+5. Custo: ~$0.15/sessão (grafo mais eficiente que índice texto)
+
+#### 6. Consolidation (Job Mensal)
+
+```python
+# consolidate.py
+# Episódios > 90 dias → summaries trimestrais
+# Originais movidos para archive/
+# INDEX.md atualizado
+```
+
+### Alternativas Consideradas
+
+1. ❌ **Cloud custom (API + PostgreSQL)**
+   - Complexidade alta
+   - Custo de infraestrutura
+   - Vendor lock-in
+   - Não funciona offline
+
+2. ❌ **.claude/ por desenvolvedor (não compartilhado)**
+   - Conhecimento não flui entre devs
+   - Cada um reinventa a roda
+   - Perde valor de memória coletiva
+
+3. ❌ **Arquivo monolítico (um grande KNOWLEDGE.md)**
+   - Conflitos de merge constantes
+   - Não escala (arquivo gigante)
+   - Difícil buscar
+
+4. ✅ **Git-native + arquivos granulares + grafo de links**
+   - Zero infraestrutura
+   - Merge automático (arquivos diferentes)
+   - Grafo emerge dos links
+   - Escala com consolidation
+   - Funciona offline
+
+### Consequências
+
+**Benefícios:**
+- ✅ Zero custo de infraestrutura (Git já existe)
+- ✅ Funciona 100% offline
+- ✅ Histórico completo grátis (git log)
+- ✅ Review de conhecimento via PR
+- ✅ Rollback grátis (git revert)
+- ✅ Escala para 10+ devs, 5+ anos
+- ✅ Tokens sob controle (~$0.20/sessão)
+- ✅ Grafo de conhecimento emerge naturalmente
+- ✅ Backlinks identificam especialistas e impacto
+
+**Trade-offs:**
+- ⚠️ Requer disciplina de [[links]] nos arquivos
+- ⚠️ Tags obrigatórias em episódios
+- ⚠️ Job de consolidation deve rodar mensalmente
+- ⚠️ build_graph.py deve rodar após mudanças (ou no /learn)
+- ⚠️ Conflitos possíveis em concepts/ (raro, resolvível)
+
+**Métricas de Sucesso:**
+- Custo/sessão < $0.50
+- Merge conflicts < 5% dos PRs
+- Tempo de busca < 5s
+- Onboarding de dev novo < 1 semana
+
+### Referências
+
+- Obsidian: https://obsidian.md (modelo de links)
+- Zettelkasten: método de notas interconectadas
+- Git como database: https://git-scm.com
+
+---
+
+## ADR-009: Estado Por Desenvolvedor
+**Data**: 2026-02-03
+**Status**: ✅ Aceito
+**Relacionado**: [[ADR-008]]
+
+### Contexto
+
+Com múltiplos devs trabalhando no mesmo projeto, o arquivo de estado (CURRENT_STATE.md) conflitaria constantemente.
+
+### Decisão
+
+Cada dev tem seu próprio arquivo de estado:
+
+```
+.claude/active/state/
+├── joao.md       ← contexto do @joao
+├── maria.md      ← contexto da @maria
+└── _team.md      ← GERADO (merge de todos)
+```
+
+- Dev edita só seu arquivo → nunca conflita
+- `_team.md` é gerado por script → nunca editado manualmente
+- Script roda no /status ou /learn
+
+### Consequências
+
+- ✅ Zero conflitos de merge em estado
+- ✅ Cada dev tem contexto personalizado
+- ✅ _team.md dá visão geral da equipe
+- ⚠️ Precisa identificar dev (identity.json ou git config)
+
+---
+
+## ADR-010: Commits de Conhecimento
+**Data**: 2026-02-03
+**Status**: ✅ Aceito
+**Relacionado**: [[ADR-008]]
+
+### Contexto
+
+Precisamos de convenção para commits que modificam .claude/ para facilitar histórico e blame.
+
+### Decisão
+
+Usar prefixo `knowledge(@autor):` para commits de conhecimento:
+
+```
+knowledge(@joao): auth bug resolution session
+knowledge(@maria): new billing patterns discovered
+decision(@team): ADR-008 approved - git-native architecture
+pattern(@pedro): add circuit-breaker pattern
+episode(@joao): production incident post-mortem
+```
+
+### Consequências
+
+- ✅ Fácil filtrar: `git log --grep="knowledge(@joao)"`
+- ✅ Blame mostra quem contribuiu conhecimento
+- ✅ Consistente com conventional commits
+- ⚠️ Requer disciplina da equipe
+
+---
+
+## ADR-011: Arquitetura de Cérebro Organizacional
+**Data**: 2026-02-03
+**Status**: ✅ Aceito
+**Relacionado**: [[ADR-008]], [[ADR-009]]
+
+### Contexto
+
+O Engram precisa de um sistema de memória que funcione como um cérebro organizacional real:
+- Memória episódica (experiências), semântica (conceitos), procedural (patterns)
+- Consolidação (fortalecer memórias importantes)
+- Esquecimento (decay de memórias não acessadas)
+- Busca semântica (por significado, não só texto)
+- Grafo de conhecimento (relações tipadas entre conceitos)
+
+Escala alvo: dezenas de desenvolvedores trabalhando por anos.
+
+### Decisão
+
+Implementar arquitetura híbrida:
+
+#### 1. Storage em Camadas
+
+```
+.claude/
+├── brain/                    ← GRAFO E ÍNDICES
+│   ├── graph.json           ← Nós e arestas (NetworkX serializado)
+│   ├── embeddings.npz       ← Vetores semânticos (numpy)
+│   └── state/               ← Estado por desenvolvedor
+│       └── @{username}.json
+│
+├── memory/                   ← CONTEÚDO LEGÍVEL (Markdown)
+│   ├── episodes/            ← Memória episódica
+│   ├── concepts/            ← Memória semântica
+│   ├── patterns/            ← Memória procedural
+│   ├── decisions/           ← ADRs
+│   ├── people/              ← Expertise por pessoa
+│   └── domains/             ← Áreas de conhecimento
+│
+├── consolidated/             ← MEMÓRIAS COMPACTADAS
+│   └── {YYYY-QN}-summary.md
+│
+└── archive/                  ← MEMÓRIAS ARQUIVADAS
+    └── {YYYY}/
+```
+
+#### 2. Estrutura de Nós
+
+```json
+{
+  "id": "uuid",
+  "labels": ["Episode", "BugFix", "AuthDomain"],
+  "props": {
+    "title": "...",
+    "author": "@joao",
+    "content_path": "memory/episodes/uuid.md",
+    "summary": "..."
+  },
+  "memory": {
+    "strength": 0.85,
+    "access_count": 12,
+    "last_accessed": "2024-02-10",
+    "decay_rate": 0.01
+  }
+}
+```
+
+#### 3. Tipos de Relações (Arestas)
+
+| Tipo | Descrição |
+|------|-----------|
+| AUTHORED_BY | Pessoa criou o nó |
+| REFERENCES | Menção explícita |
+| SOLVED_BY | Problema resolvido por pattern/decisão |
+| CAUSED_BY | Causalidade |
+| BELONGS_TO | Pertence a domínio |
+| SUPERSEDES | Nova versão substitui antiga |
+| SIMILAR_TO | Similaridade semântica (auto-detectado) |
+
+#### 4. Processos Cognitivos
+
+| Processo | Frequência | Função |
+|----------|------------|--------|
+| Encode | Cada /learn | Criar memória, gerar embedding, criar arestas |
+| Retrieve | Cada busca | Spreading activation + similaridade |
+| Consolidate | Semanal | Fortalecer conexões, detectar patterns |
+| Decay | Diário | Aplicar curva de esquecimento |
+
+#### 5. Stack Técnica
+
+- **Grafo em memória**: NetworkX (Python)
+- **Persistência**: JSON (Git-friendly)
+- **Embeddings**: numpy + sentence-transformers (local) ou OpenAI
+- **Busca vetorial**: Bruta para <100k, FAISS/Annoy para mais
+
+### Alternativas Consideradas
+
+1. ❌ **Neo4j** — Muito pesado (JVM), não Git-friendly
+2. ❌ **SQLite com tabelas** — JOINs lentos para travessia de grafo
+3. ❌ **Só arquivos Markdown** — Sem grafo real, busca limitada
+4. ✅ **NetworkX + JSON + embeddings** — Leve, Git-friendly, grafo real
+
+### Consequências
+
+**Benefícios:**
+- ✅ Grafo real com travessia O(1) em memória
+- ✅ Git-friendly (JSON é texto, embeddings usa LFS)
+- ✅ Busca semântica por significado
+- ✅ Memórias decaem naturalmente (menos ruído)
+- ✅ Spreading activation encontra conhecimento relacionado
+- ✅ Escala para ~1M nós confortavelmente
+- ✅ Dependência leve (só NetworkX e numpy)
+
+**Trade-offs:**
+- ⚠️ Precisa carregar grafo em memória (~200MB para 50k nós)
+- ⚠️ Embeddings requerem regeneração se mudar modelo
+- ⚠️ Merge de graph.json pode conflitar (resolver com rebuild)
+- ⚠️ LFS necessário para embeddings.npz em repos grandes
+
+**Métricas de Sucesso:**
+- Tempo de carregamento < 2s
+- Busca com spreading activation < 100ms
+- Memórias relevantes no top 10 > 80% das vezes
+- Decay remove >50% de ruído após 90 dias
+
+---
+
 ## Template para Novas Decisões
 
 ```markdown
 ## ADR-NNN: Título
 **Data**: YYYY-MM-DD
 **Status**: 🟡 Proposto | ✅ Aceito | ❌ Rejeitado | ⚠️ Superseded
+**Relacionado**: [[ADR-XXX]] (se aplicável)
 
 ### Contexto
 [Qual problema estamos resolvendo?]
