@@ -201,7 +201,7 @@ install_core() {
     print_step "Instalando core (DNA + Genesis + Seeds)..."
 
     local CLAUDE_DIR="$TARGET_DIR/.claude"
-    mkdir -p "$CLAUDE_DIR"/{skills,agents,commands,knowledge/{context,priorities,patterns,decisions,domain,experiences},schemas,versions}
+    mkdir -p "$CLAUDE_DIR"/{skills,agents,commands,knowledge/{context,priorities,patterns,decisions,domain,experiences,services},schemas,versions}
 
     # 1. Schemas (DNA)
     cp -r "$SCRIPT_DIR/core/schemas/"* "$CLAUDE_DIR/schemas/"
@@ -248,6 +248,7 @@ install_core() {
             ADR_LOG) SUBDIR="decisions" ;;
             DOMAIN) SUBDIR="domain" ;;
             EXPERIENCE_LIBRARY) SUBDIR="experiences" ;;
+            SERVICE_MAP) SUBDIR="services" ;;
         esac
         if [[ -n "$SUBDIR" ]]; then
             local DEST="$CLAUDE_DIR/knowledge/$SUBDIR/$BASENAME.md"
@@ -256,7 +257,7 @@ install_core() {
             fi
         fi
     done
-    print_done "Knowledge templates inicializados (6 arquivos)"
+    print_done "Knowledge templates inicializados (7 arquivos)"
 
     # 8. Initialize manifest
     if [[ ! -f "$CLAUDE_DIR/manifest.json" ]]; then
