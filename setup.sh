@@ -201,7 +201,7 @@ install_core() {
     print_step "Instalando core (DNA + Genesis + Seeds)..."
 
     local CLAUDE_DIR="$TARGET_DIR/.claude"
-    mkdir -p "$CLAUDE_DIR"/{skills,agents,commands,knowledge/{context,priorities,patterns,decisions,domain,experiences,services},schemas,versions}
+    mkdir -p "$CLAUDE_DIR"/{skills,agents,commands,knowledge,schemas,versions}
 
     # 1. Schemas (DNA)
     cp -r "$SCRIPT_DIR/core/schemas/"* "$CLAUDE_DIR/schemas/"
@@ -235,29 +235,19 @@ install_core() {
     cp "$SCRIPT_DIR/core/commands/"*.md "$CLAUDE_DIR/commands/" 2>/dev/null || true
     print_done "Commands instalados (13 commands)"
 
-    # 7. Knowledge templates
+    # 7. Knowledge templates (mirror copy — folder structure matches destination)
     local TODAY=$(date +%Y-%m-%d)
-    for tmpl in "$SCRIPT_DIR/templates/knowledge/"*.tmpl; do
-        [[ -f "$tmpl" ]] || continue
-        local BASENAME=$(basename "$tmpl" .md.tmpl)
-        local SUBDIR=""
-        case "$BASENAME" in
-            CURRENT_STATE) SUBDIR="context" ;;
-            PRIORITY_MATRIX) SUBDIR="priorities" ;;
-            PATTERNS) SUBDIR="patterns" ;;
-            ADR_LOG) SUBDIR="decisions" ;;
-            DOMAIN) SUBDIR="domain" ;;
-            EXPERIENCE_LIBRARY) SUBDIR="experiences" ;;
-            SERVICE_MAP) SUBDIR="services" ;;
-        esac
-        if [[ -n "$SUBDIR" ]]; then
-            local DEST="$CLAUDE_DIR/knowledge/$SUBDIR/$BASENAME.md"
-            if [[ ! -f "$DEST" ]]; then
-                sed "s/\${DATE}/$TODAY/g" "$tmpl" > "$DEST"
-            fi
+    local TMPL_COUNT=0
+    while IFS= read -r tmpl; do
+        local REL="${tmpl#$SCRIPT_DIR/templates/knowledge/}"
+        local DEST="$CLAUDE_DIR/knowledge/${REL%.tmpl}"
+        mkdir -p "$(dirname "$DEST")"
+        if [[ ! -f "$DEST" ]]; then
+            sed "s/\${DATE}/$TODAY/g" "$tmpl" > "$DEST"
+            ((TMPL_COUNT++))
         fi
-    done
-    print_done "Knowledge templates inicializados (7 arquivos)"
+    done < <(find "$SCRIPT_DIR/templates/knowledge" -name "*.tmpl" -type f)
+    print_done "Knowledge templates inicializados ($TMPL_COUNT arquivos)"
 
     # 8. Initialize manifest
     if [[ ! -f "$CLAUDE_DIR/manifest.json" ]]; then
