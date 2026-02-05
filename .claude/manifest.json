@@ -1,7 +1,7 @@
 {
   "engram_version": "3.0.0",
   "installed_at": "2026-02-03T16:22:02-03:00",
-  "last_updated": "2026-02-05T16:05:24.738647",
+  "last_updated": "2026-02-05T17:21:39.542456",
   "components": {
     "skills": {
       "engram-genesis": {
@@ -9,8 +9,8 @@
         "source": "core",
         "created_at": "2026-02-03T16:22:02-03:00",
         "updated_at": "2026-02-03T16:22:02-03:00",
-        "activations": 6,
-        "last_used": "2026-02-05T16:05:24.707405",
+        "activations": 7,
+        "last_used": "2026-02-05T17:21:39.542451",
         "health": "active"
       },
       "engram-evolution": {

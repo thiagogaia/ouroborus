@@ -1,0 +1,14 @@
+# chore: add .gitignore and update knowledge after /learn
+
+**ID**: b1dba059
+**Autor**: [[@thiagogaia]]
+**Data**: 2026-02-05
+**Labels**: Episode, Commit
+
+---
+
+chore: add .gitignore and update knowledge after /learn
+
+- Add .gitignore for __pycache__, IDE files, env files
+
+**Files changed:** .claude/evolution-activations.json, .claude/knowledge/context/CURRENT_STATE.md, .claude/knowledge/experiences/EXPERIENCE_LIBRARY.md, .claude/knowledge/priorities/PRIORITY_MATRIX.md, .claude/manifest.json

@@ -1,11 +1,11 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-05 (/learn commit 4ea39bc - brain sleep cycle)
+> Ultima atualizacao: 2026-02-05 (/learn sessao 4 - lifecycle guide + push)
 
 ## Status Geral
-- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável, pós-sleep)
-- **Saúde**: 🟡 Needs Attention (Health Score 0.75)
-- **Cérebro**: 165 nós, 322 arestas (68 semânticas), 151 embeddings
-- **Próximo Marco**: Gerar embeddings para nós novos + melhorar threshold do relate
+- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável, documentado)
+- **Saúde**: 🟡 Needs Attention (Health Score 0.79)
+- **Cérebro**: 167 nós, 330 arestas (75 semânticas), 167 embeddings
+- **Próximo Marco**: Testes unitários + melhorar REFERENCES (atualmente só 3)
 
 ## Identidade
 **Engram v3** — Sistema metacircular de memória persistente para Claude Code.
@@ -118,6 +118,8 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, /recall, **/domain**
 
 ## O Que Mudou Recentemente
+- [2026-02-05] **LIFECYCLE_GUIDE.md criado**: Guia completo do ciclo de vida (instalar → trabalhar → aprender → evoluir → dormir). Documenta relação .md ↔ cérebro. | Impacto: ALTO
+- [2026-02-05] **CLAUDE.md como fonte primária (commit d5d40ce)**: Cérebro promovido a consulta primária, .md como fallback. Push de 4 commits ao origin. | Impacto: ALTO
 - [2026-02-05] **Ciclo de Sono do Cérebro (commit 4ea39bc)**: sleep.py com 5 fases (dedup/connect/relate/themes/calibrate). IDs determinísticos, upsert, _resolve_link corrigido, auto-ativação de venv. De 0 para 68 arestas semânticas, 134 duplicatas removidas. [[ADR-014]], [[PAT-036]], [[EXP-022]] | Impacto: CRÍTICO
 - [2026-02-05] **Detecção de infra (commit c5b8efa)**: analyze_project.py detecta CI/CD, K8s, ArgoCD, Terraform + sugere devops-patterns | Impacto: ALTO
 - [2026-02-05] **Remoção de 3 órfãos**: execution-pipeline, microservices-navigator, SERVICE_MAP.md.tmpl — não participavam do ciclo ouroboros | Impacto: MÉDIO
@@ -270,7 +272,7 @@ python .claude/brain/embeddings.py search "como resolver bugs"
 5. [x] Instalar dependências no venv: `.claude/brain/.venv` ✅
 6. [x] Gerar embeddings (61 vetores) e testar busca semântica ✅
 7. [x] Integrar no setup.sh e /init-engram ✅
-8. [ ] Documentar fluxo de uso para equipe
+8. [x] Documentar fluxo de uso para equipe ✅ (LIFECYCLE_GUIDE.md)
 9. [x] Ciclo de Sono — consolidação semântica com 5 fases ✅
-10. [ ] Gerar embeddings para nós novos (14 sem embedding)
-11. [ ] Integrar sleep no workflow do Claude — usar o grafo como fonte primária
+10. [x] Gerar embeddings para todos os nós ✅ (167/167)
+11. [x] Integrar sleep no workflow do Claude — cérebro como fonte primária ✅ (CLAUDE.md atualizado)

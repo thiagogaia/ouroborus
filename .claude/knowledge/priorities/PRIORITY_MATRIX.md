@@ -1,5 +1,5 @@
 # Priority Matrix
-> Ultima atualizacao: 2026-02-05 (/learn commit c5b8efa)
+> Ultima atualizacao: 2026-02-05 (/learn sessao 4)
 > ICE = (Impacto x Confianca) / Esforco - todos 1-10
 
 ## Ativas
@@ -7,7 +7,7 @@
 | # | Tarefa | I | C | E | ICE | Status |
 |---|--------|---|---|---|-----|--------|
 | 1 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🔵 pendente |
-| 2 | Documentar exemplos de uso | 6 | 8 | 4 | 12.0 | 🔵 pendente |
+| 2 | Melhorar REFERENCES no sleep (atualmente 3) | 6 | 8 | 4 | 12.0 | 🔵 pendente |
 
 ## Backlog
 
@@ -48,6 +48,9 @@
 | Testar em projeto real Next.js | ✅ Já em uso | 2026-02-05 |
 | Testar em projeto real Python | ✅ Já em uso | 2026-02-05 |
 | Integrar /status com cérebro | ❌ Desnecessário — CURRENT_STATE.md já cobre, /doctor faz diagnóstico | 2026-02-05 |
+| Documentar exemplos de uso | ✅ Concluído — LIFECYCLE_GUIDE.md | 2026-02-05 |
+| Integrar sleep no workflow Claude | ✅ Concluído — CLAUDE.md atualizado | 2026-02-05 |
+| Gerar embeddings completos | ✅ Concluído — 167/167 nós | 2026-02-05 |
 
 ## Como Priorizar
 

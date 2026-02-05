@@ -1,5 +1,5 @@
 # Conhecimento de Domínio
-> Última atualização: 2026-02-05 (/learn commit 4ea39bc)
+> Última atualização: 2026-02-05 (/learn sessao 4)
 
 ## Glossário
 
@@ -44,6 +44,8 @@
 - **FallbackGraph**: Implementação simplificada de grafo quando NetworkX não está disponível. Fornece operações básicas (add_node, add_edge, successors, predecessors) sem dependências externas.
 
 - **Feedback Loop**: Ciclo de retroalimentação. No Engram: trabalhar → registrar aprendizado → consultar na próxima vez.
+
+- **Fonte Canônica vs Índice**: Os .md files são a fonte canônica (humano lê/edita). O cérebro é o índice conectado (máquina busca/navega). populate.py transforma .md → nós do grafo. sleep.py adiciona conexões semânticas. Se apagar o cérebro, `populate.py all` recria. Se apagar os .md, o cérebro fica órfão.
 
 - **Frontmatter**: Metadados YAML no início de arquivos Markdown (entre ---). Contém name, description, tools, etc.
 
@@ -188,6 +190,15 @@
   - Fonte: `brain.py:add_memory()`
 - **RN-037**: Threshold de similaridade para RELATED_TO: cosine >= 0.75
   - Fonte: `sleep.py:phase_relate()`
+
+### Dados e Conhecimento (RN-038 a RN-040)
+
+- **RN-038**: Os .md files são a fonte canônica. O cérebro é derivado e recriável via `populate.py all`.
+  - Fonte: LIFECYCLE_GUIDE.md, populate.py
+- **RN-039**: O cérebro é a fonte PRIMÁRIA para consultas do Claude (recall primeiro, .md como fallback).
+  - Fonte: CLAUDE.md (workflow "Antes de Codificar")
+- **RN-040**: Os nomes dos .md files NÃO mapeiam para a estrutura do cérebro. O mapeamento é por conteúdo: populate.py parseia cada .md e extrai entidades tipadas por labels.
+  - Fonte: populate.py (populate_adrs, populate_patterns, populate_domain, etc.)
 
 ## Entidades Principais
 
