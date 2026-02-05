@@ -1,5 +1,5 @@
 # Experience Library
-> Última atualização: 2026-02-04 (/learn commit c7a67be)
+> Última atualização: 2026-02-05 (/learn commit c5b8efa)
 > Soluções reutilizáveis descobertas durante o trabalho
 
 ## EXP-001: Validar Componente Antes de Registrar
@@ -225,6 +225,19 @@
 - **Descoberta**: Revert cirúrgico de arquivo + criação de wrapper é melhor que refatorar in-place
 - **Resultado**: setup.sh -175 linhas, batch-setup.sh 177 linhas, README corrigido
 - **Data**: 2026-02-04
+
+## EXP-021: Auditar Componentes com Teste do Ciclo Ouroboros
+- **Contexto**: ANALISE_IMPLEMENTA.md listou 9 itens, todos implementados, mas 3 eram órfãos
+- **Stack**: Engram, análise de arquitetura
+- **Abordagem**:
+  1. Para cada componente: grep por referências em skills, commands, scripts, /learn
+  2. Se nenhum consumidor referencia o componente → é órfão
+  3. Avaliar: integrar no ciclo ou remover?
+  4. Para templates de knowledge: verificar se /learn lê/atualiza
+  5. Para extras: verificar se analyze_project.py sugere quando contexto detectado
+- **Descoberta**: "implementado" != "integrado" — componente pode existir e não participar do ciclo
+- **Resultado**: 3 componentes removidos (execution-pipeline, microservices-navigator, SERVICE_MAP.md.tmpl)
+- **Data**: 2026-02-05
 
 ---
 

@@ -1,11 +1,11 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-04 (/learn commit c7a67be - docs readme)
+> Ultima atualizacao: 2026-02-05 (/learn commit c5b8efa - refactor extras + infra detection)
 
 ## Status Geral
-- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável)
+- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável, pós-limpeza)
 - **Saúde**: 🟢 Saudável (Health Score 100%)
 - **Cérebro**: 134 nós, 208 arestas, 134 embeddings
-- **Próximo Marco**: Testar em projeto real Next.js ou Python
+- **Próximo Marco**: Testes unitários nos scripts Python (ICE 12.6)
 
 ## Identidade
 **Engram v3** — Sistema metacircular de memória persistente para Claude Code.
@@ -118,6 +118,9 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, /recall, **/domain**
 
 ## O Que Mudou Recentemente
+- [2026-02-05] **Detecção de infra (commit c5b8efa)**: analyze_project.py detecta CI/CD, K8s, ArgoCD, Terraform + sugere devops-patterns | Impacto: ALTO
+- [2026-02-05] **Remoção de 3 órfãos**: execution-pipeline, microservices-navigator, SERVICE_MAP.md.tmpl — não participavam do ciclo ouroboros | Impacto: MÉDIO
+- [2026-02-05] **ANALISE_IMPLEMENTA.md encerrada**: 9/9 itens implementados, análise revelou 4 gaps, 3 componentes removidos por falta de integração | Impacto: ALTO
 - [2026-02-04] **ADR-012 + PAT-033 + EXP-020**: Separação setup.sh / batch-setup.sh (SRP) | Impacto: ALTO
 - [2026-02-04] **README corrigido (commit c7a67be)**: Seeds 8→6, batch docs, /domain, CLI split | Impacto: MÉDIO
 - [2026-02-04] **setup.sh revertido (commit bbcf725)**: 958→783 linhas, batch extraído | Impacto: ALTO

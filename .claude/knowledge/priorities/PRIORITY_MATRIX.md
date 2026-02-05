@@ -1,16 +1,13 @@
 # Priority Matrix
-> Ultima atualizacao: 2026-02-04 (/learn commit cb64fd73)
+> Ultima atualizacao: 2026-02-05 (/learn commit c5b8efa)
 > ICE = (Impacto x Confianca) / Esforco - todos 1-10
 
 ## Ativas
 
 | # | Tarefa | I | C | E | ICE | Status |
 |---|--------|---|---|---|-----|--------|
-| 1 | Testar em projeto real Next.js | 9 | 8 | 3 | 24.0 | 🔵 pendente |
-| 2 | Testar em projeto real Python | 9 | 8 | 3 | 24.0 | 🔵 pendente |
-| 3 | Integrar /status com cérebro | 7 | 9 | 3 | 21.0 | 🔵 pendente |
-| 4 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🔵 pendente |
-| 5 | Documentar exemplos de uso | 6 | 8 | 4 | 12.0 | 🔵 pendente |
+| 1 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🔵 pendente |
+| 2 | Documentar exemplos de uso | 6 | 8 | 4 | 12.0 | 🔵 pendente |
 
 ## Backlog
 
@@ -43,6 +40,14 @@
 | Analisar commit cb64fd73 via /learn | ✅ Concluido | 2026-02-04 |
 | Extrair padroes PAT-020/021/022 | ✅ Concluido | 2026-02-04 |
 | Documentar EXP-016 (major upgrade) | ✅ Concluido | 2026-02-04 |
+| ANALISE_IMPLEMENTA.md — 9/9 itens | ✅ Concluído | 2026-02-05 |
+| Fix detecção infra analyze_project.py | ✅ Concluído | 2026-02-05 |
+| Remover execution-pipeline (órfão) | ✅ Concluído | 2026-02-05 |
+| Remover microservices-navigator (fora escopo) | ✅ Concluído | 2026-02-05 |
+| Remover SERVICE_MAP.md.tmpl (órfão) | ✅ Concluído | 2026-02-05 |
+| Testar em projeto real Next.js | ✅ Já em uso | 2026-02-05 |
+| Testar em projeto real Python | ✅ Já em uso | 2026-02-05 |
+| Integrar /status com cérebro | ❌ Desnecessário — CURRENT_STATE.md já cobre, /doctor faz diagnóstico | 2026-02-05 |
 
 ## Como Priorizar
 

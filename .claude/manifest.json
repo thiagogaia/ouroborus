@@ -1,7 +1,7 @@
 {
   "engram_version": "3.0.0",
   "installed_at": "2026-02-03T16:22:02-03:00",
-  "last_updated": "2026-02-04T19:18:29.281625",
+  "last_updated": "2026-02-05T16:05:24.738647",
   "components": {
     "skills": {
       "engram-genesis": {
@@ -9,8 +9,8 @@
         "source": "core",
         "created_at": "2026-02-03T16:22:02-03:00",
         "updated_at": "2026-02-03T16:22:02-03:00",
-        "activations": 5,
-        "last_used": "2026-02-04T01:39:53.654334",
+        "activations": 6,
+        "last_used": "2026-02-05T16:05:24.707405",
         "health": "active"
       },
       "engram-evolution": {
@@ -27,8 +27,8 @@
         "source": "seed",
         "created_at": "2026-02-03T16:28:18.942919",
         "updated_at": "2026-02-03T16:28:18.942919",
-        "activations": 4,
-        "last_used": "2026-02-04T19:18:29.281618",
+        "activations": 5,
+        "last_used": "2026-02-05T16:05:24.738638",
         "health": "active"
       },
       "knowledge-manager": {

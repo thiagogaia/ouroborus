@@ -1,5 +1,5 @@
 # Architecture Decision Records
-> Última atualização: 2026-02-04 (/learn commit c7a67be)
+> Última atualização: 2026-02-05 (/learn commit c5b8efa)
 
 ## ADR-001: Sistema Metacircular
 **Data**: 2026-02-03
@@ -614,6 +614,33 @@ Reverter setup.sh para versão single-project e criar batch-setup.sh como wrappe
 ## Template para Novas Decisões
 
 ```markdown
+## ADR-013: Remoção de Componentes Órfãos (Ciclo Ouroboros)
+**Data**: 2026-02-05
+**Status**: ✅ Aceito
+**Relacionado**: [[ADR-001]] (Sistema Metacircular), [[PAT-034]]
+
+### Contexto
+Análise da ANALISE_IMPLEMENTA.md revelou que 3 componentes não participavam do ciclo ouroboros:
+- `execution-pipeline`: duplicava /plan→/review→/commit→/learn, assumia Docker obrigatório
+- `microservices-navigator`: fora do escopo local (análise cross-repo), overlap de 40% com base-ingester
+- `SERVICE_MAP.md.tmpl`: nenhum skill, command ou workflow o lia ou atualizava
+
+### Decisão
+Remover os 3 componentes. O Engram é local e metaprogramável — usuários criam skills sob demanda com `/create` se precisarem de pipeline rígido ou navegação de microserviços.
+
+### Alternativas Consideradas
+1. ❌ Reenquadrar execution-pipeline como task-planner — ainda duplicaria /plan
+2. ❌ Reescrever microservices-navigator como complementar ao ingester — foge do escopo local
+3. ✅ Remover — o sistema já cobre os casos de uso via componentes existentes + /create sob demanda
+
+### Consequências
+- ✅ Menos peso morto em extras/ (362 linhas removidas)
+- ✅ Princípio claro: componente sem consumidor = remover
+- ✅ Reforça filosofia de geração sob demanda vs pré-fabricação
+- ⚠️ Usuários que esperavam esses extras precisam criar via /create
+
+---
+
 ## ADR-NNN: Título
 **Data**: YYYY-MM-DD
 **Status**: 🟡 Proposto | ✅ Aceito | ❌ Rejeitado | ⚠️ Superseded

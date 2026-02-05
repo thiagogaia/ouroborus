@@ -1,5 +1,5 @@
 # Padrões do Projeto
-> Última atualização: 2026-02-04 (/learn commit c7a67be)
+> Última atualização: 2026-02-05 (/learn commit c5b8efa)
 
 ## Padrões Aprovados
 
@@ -431,3 +431,26 @@
 - **Anti-padrão**: feature creep em scripts core (adicionar batch, arrays, progress ao setup.sh)
 - **Exemplo**: `setup.sh` revertido de 958 → 783 linhas; `batch-setup.sh` criado com 177 linhas
 - **Descoberto em**: 2026-02-04 (commit bbcf725 - refactor setup)
+
+### PAT-034: Componente Deve Participar do Ciclo Ouroboros
+- **Contexto**: componentes (skills, templates, extras) criados sem consumidor no workflow
+- **Regra**: todo componente deve ter pelo menos um consumidor que o lê/atualiza automaticamente
+  - Skills: devem ser ativados por algum command ou workflow
+  - Templates de knowledge: devem ser lidos por /learn, /status, ou algum skill
+  - Extras: devem ser sugeríveis pelo analyze_project.py quando o contexto é detectado
+- **Anti-padrão**: criar componente porque "pode ser útil" sem integrar no ciclo (gerar → usar → aprender → evoluir)
+- **Teste**: se nenhum script/command/skill referencia o componente, ele é órfão — remover ou integrar
+- **Exemplo**: SERVICE_MAP.md.tmpl, execution-pipeline, microservices-navigator removidos (commit c5b8efa)
+- **Descoberto em**: 2026-02-05
+
+### PAT-035: Detecção de Stack Deve Cobrir Infra
+- **Contexto**: analyze_project.py detectava linguagens, frameworks, ORMs, mas ignorava infra
+- **Regra**: detectar arquivos de infra (CI/CD, K8s, IaC) e mapear para sugestões de extras
+  - `.gitlab-ci.yml` → gitlab-ci
+  - `.github/workflows/` → github-actions
+  - `k8s/` ou `kubernetes/` → kubernetes
+  - `kustomization.yaml` → kustomize
+  - `argocd/` → argocd
+  - `*.tf` ou `terraform/` → terraform
+- **Anti-padrão**: skill existente que nunca é sugerido (skill invisível)
+- **Descoberto em**: 2026-02-05 (commit c5b8efa)
