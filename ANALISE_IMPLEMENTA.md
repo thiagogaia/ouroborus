@@ -1,120 +1,220 @@
-# Análise de Implementação — Engram v3
+---                                                                                    
+  Anatomia do Engram — Como cada camada funciona
+                                                                                         
+  core/ — O DNA (sempre instalado em todo projeto)
+  O que: schemas/
+  Para que: Contratos formais (skill, agent, command, knowledge)
+  Como chega ao projeto: cp -r direto
+  ────────────────────────────────────────
+  O que: genesis/
+  Para que: Motor que analisa projeto e gera componentes
+  Como chega ao projeto: Vira skills/engram-genesis/
+  ────────────────────────────────────────
+  O que: evolution/
+  Para que: Motor que rastreia uso e propõe melhorias
+  Como chega ao projeto: Vira skills/engram-evolution/
+  ────────────────────────────────────────
+  O que: seeds/ (6)
+  Para que: Skills universais (project-analyzer, code-reviewer, etc.)
+  Como chega ao projeto: cp -r para skills/
+  ────────────────────────────────────────
+  O que: agents/ (3)
+  Para que: Especialistas universais (architect, db-expert, domain-analyst)
+  Como chega ao projeto: cp para agents/
+  ────────────────────────────────────────
+  O que: commands/ (15)
+  Para que: Slash commands
+  Como chega ao projeto: cp para commands/
+  Regra: Se é útil em qualquer projeto, vai no core.
 
-> Baseado na análise da base CenterPag (Monetizze) — 39 markdowns, 28+ microserviços
+  templates/ — Scaffolding (usado durante install, nunca copiado inteiro)
 
----
+  Duas sub-categorias:
 
-## Bugs Encontrados
+  templates/knowledge/ — Templates de .md com ${DATE} substituído pelo setup.sh. Geram os
+   arquivos iniciais em .claude/knowledge/. Usados uma vez na instalação, nunca mais.
 
-### Bug 1: Laravel nunca é detectado ✅ CORRIGIDO
+  templates/stacks/ — Templates de skills por framework. O analyze_project.py detecta o
+  framework → o genesis copia o .skill.tmpl correspondente como SKILL.md dentro de um
+  novo skill. Funcionam como receitas pré-prontas que o genesis customiza.
 
-O `detect_stack()` detectava PHP (`composer.json` existe) mas nunca setava `framework = "laravel"`.
-O check `if fw == "laravel"` era dead code. O `setup.sh` tinha o mesmo bug.
+  Regra: Se é um padrão que se repete entre projetos da mesma stack, vai em templates.
 
-**Fix**: Parser de `composer.json` para `laravel/framework` em `analyze_project.py` e `setup.sh`.
-**Commit**: `9cbb313`
+  extras/ — Opcionais (nunca instalados automaticamente)
 
-### Bug 2: Faltam detecções ✅ CORRIGIDO
+  Skills e agents para nichos específicos. Hoje tem:
+  - n8n-agent-builder — para quem automatiza vendas via N8N/WhatsApp
+  - sales-funnel-optimizer — para quem otimiza funis de venda
+  - prompt-engineer (agent) — para engenharia de prompts
 
-- NestJS — adicionado via `@nestjs/core` em `analyze_project.py` e `setup.sh`
-- Sequelize — adicionado em `setup.sh`
-- Guards `[[ -z "$FRAMEWORK" ]]` — corrigidos no `setup.sh` para nuxt/angular/sveltekit
+  Regra: Se é útil só para um nicho/domínio específico, vai em extras. O dev instala via
+  /import ou copia manual.
 
-**Commit**: `9cbb313`
+  ---
+  Bugs encontrados na análise
 
----
+  Bug 1: Laravel nunca é detectado pelo analyze_project.py
 
-## Plano de Implementação — Status
+  O detect_stack() detecta PHP (composer.json existe) mas nunca seta framework =
+  "laravel". O check na linha 233 (if fw == "laravel") é dead code — nunca é True.
 
-### templates/stacks/ (receitas por framework)
+  # Linha 44: detecta PHP mas não Laravel
+  if (p / "composer.json").exists():
+      stack["languages"].append("php")
 
-| # | Item | Status | Commit |
-|---|------|--------|--------|
-| 1 | `nestjs/nestjs-patterns.skill.tmpl` | ✅ Done | `9cbb313` |
-| 2 | `flask/flask-patterns.skill.tmpl` | ✅ Done | — |
-| 3 | `laravel/` (já existia, fix no detection) | ✅ Done | `9cbb313` |
+  # Linha 233: NUNCA TRUE porque nenhum código seta framework="laravel"
+  if stack.get("languages") and "php" in stack["languages"]:
+      if fw == "laravel":  # ← fw nunca é "laravel"!
 
-### core/ (melhorias universais)
+  O setup.sh tem o mesmo bug — detecta LANG_PHP=true mas nunca seta FRAMEWORK="laravel".
 
-| # | Item | Status | Commit |
-|---|------|--------|--------|
-| 4 | Fix `analyze_project.py` — NestJS/Laravel/Flask detection | ✅ Done | `9cbb313` |
-| 5 | `base-ingester` seed skill + `/ingest` command | ✅ Done | `e9841a0` |
+  Bug 2: Faltam detecções no detect_stack()
 
-### templates/knowledge/ (knowledge files)
+  - NestJS — nem detectado (CenterPag tem 10 serviços NestJS)
+  - Flask — detectado mas sem template
+  - Sequelize — detectado mas sem template/sugestão específica
+  - MongoDB — detectado via mongoose mas não via composer.json (PHP)
 
-| # | Item | Status | Commit |
-|---|------|--------|--------|
-| 6 | `SERVICE_MAP.md.tmpl` | ✅ Done | — |
+  ---
+  Sugestões revisadas (core / templates / extras)
 
-### extras/skills/ (skills de nicho)
+  Para templates/stacks/ (novas receitas)
 
-| # | Item | Status | Notas |
-|---|------|--------|-------|
-| 7 | `microservices-navigator/` | ⏳ Esqueleto criado | Falta SKILL.md + references |
-| 8 | `devops-patterns/` | ⏳ Esqueleto criado | Falta SKILL.md + references |
-| 9 | `fintech-domain/` | ⏳ Esqueleto criado | Falta SKILL.md + references |
-| 10 | `execution-pipeline/` | ⏳ Esqueleto criado | Falta SKILL.md + references |
+  1. templates/stacks/nestjs/nestjs-patterns.skill.tmpl
 
-### extras/agents/ (agents de nicho)
+  NestJS é o framework mais popular de Node backend. CenterPag tem 10 serviços nele. O
+  template deve cobrir:
+  - Modules, Controllers, Services, Providers
+  - DTOs com class-validator / class-transformer
+  - Guards, Interceptors, Pipes
+  - TypeORM/Sequelize/Mongoose integration patterns
+  - Kafka consumers, SQS workers
+  - Health checks (@nestjs/terminus)
+  - Swagger decorators
 
-| # | Item | Status | Notas |
-|---|------|--------|-------|
-| 11 | `infra-expert.md` | ❌ Não iniciado | — |
+  2. templates/stacks/flask/flask-patterns.skill.tmpl
 
----
+  Flask é legado mas ainda amplamente usado. Template cobrindo:
+  - Blueprints, Factory pattern (create_app)
+  - Marshmallow schemas
+  - SQLAlchemy session management
+  - Error handlers
 
-## Descrição dos Itens Pendentes
+  3. templates/stacks/laravel/ (já existe, mas fix no detection)
 
-### 7. microservices-navigator (extras/skills/)
+  O template existe e é bom. O que falta é o detect_stack() e o setup.sh detectarem
+  Laravel corretamente (ler composer.json e checar por laravel/framework).
 
-Para ecossistemas de microserviços (como CenterPag). Cobre:
-- Mapa de dependências entre serviços
-- Detecção de comunicação (REST, Kafka, SQS, gRPC)
-- Identificação de duplicidades
-- Padrões de orquestração (conductor, saga, choreography)
+  Para core/ (melhorias universais)
 
-### 8. devops-patterns (extras/skills/)
+  4. Fix no analyze_project.py — detecção PHP/Laravel/NestJS
 
-Padrões de infra e DevOps:
-- GitOps (ArgoCD, Flux)
-- Kubernetes (HPA, PDB, Rollouts, Ingress)
-- CI/CD pipelines (GitLab, GitHub Actions)
-- Secrets management (External Secrets, IRSA)
-- Canary/Blue-Green deployments
+  Adicionar no detect_stack():
+  # PHP frameworks via composer.json
+  if "php" in stack["languages"]:
+      composer_path = p / "composer.json"
+      if composer_path.exists():
+          composer = json.loads(composer_path.read_text())
+          require = {**composer.get("require", {}), **composer.get("require-dev", {})}
+          if "laravel/framework" in require:
+              stack["framework"] = "laravel"
 
-### 9. fintech-domain (extras/skills/)
+  # NestJS detection
+  if "node" in stack["languages"] and "@nestjs/core" in deps:
+      stack["framework"] = "nestjs"
 
-Para projetos de pagamento/fintech:
-- Entidades: Client, Payment Operator, Business Operator, Seller
-- Fluxos: Order → Charge → Transaction → Settlement
-- Compliance: CERC, PCI, PLD, KYC
-- Padrões: Split de pagamento, antifraude, chargeback
+  5. Skill: base-ingester (seed universal)
 
-### 10. execution-pipeline (extras/skills/)
+  O Engram hoje só absorve conhecimento incrementalmente via /learn. Não tem mecanismo
+  para ingerir uma base de documentação inteira de uma vez (como a base CenterPag com 40+
+   markdowns).
 
-Inspirado no metodo-execucao.md da Monetizze:
-- 7 estágios: Planejamento → Implementação → Teste → Avaliação → Doc → Release → Wiki
-- Artefatos rastreáveis (cenarios-teste.md, resultado-teste.md)
-- Loop de correção com retry limit
-- Integra com /plan, /review, /commit
+  Proposta como novo seed em core/seeds/base-ingester/:
+  - Lê diretório de .md
+  - Parseia tabelas, hierarquias, endpoints
+  - Cria nós tipados no brain (Service, Entity, Rule, Endpoint)
+  - Gera arestas automáticas (DEPENDS_ON, BELONGS_TO)
+  - Gera embeddings incrementais
+  - Command: /ingest [path] --type [domain|infra|services]
 
-### 11. infra-expert agent (extras/agents/)
+  Isso é universal — qualquer projeto pode ter docs externas para ingerir.
 
-Agent especializado em infraestrutura:
-- Kubernetes, Docker, CI/CD
-- AWS/GCP/Azure patterns
-- Monitoramento (Prometheus, Grafana)
-- Debugging de deploy/scaling
+  6. Template: templates/knowledge/SERVICE_MAP.md.tmpl
 
----
+  Novo knowledge file para projetos com múltiplos serviços/módulos:
+  # Mapa de Serviços
+  ## Serviços
+  | Serviço | Stack | Responsabilidade | Dependências |
+  ## Comunicação
+  | De | Para | Protocolo | Tópico/Rota |
+  ## Bancos de Dados
+  | Serviço | Tipo | Schema |
 
-## Prioridade Sugerida (restantes)
+  Para extras/ (skills de nicho)
 
-| Prioridade | Item | Esforço | Impacto |
-|------------|------|---------|---------|
-| 1 | microservices-navigator | Médio | Alto (nicho) |
-| 2 | devops-patterns | Médio | Alto (nicho) |
-| 3 | fintech-domain | Médio | Alto (nicho) |
-| 4 | execution-pipeline | Alto | Médio |
-| 5 | infra-expert agent | Baixo | Médio |
+  7. extras/skills/microservices-navigator/
+
+  Para projetos que são ecossistemas de microserviços (como CenterPag). Não é universal o
+   suficiente para seed, mas muito útil para quem trabalha com:
+  - Mapa de dependências entre serviços
+  - Detecção de comunicação (REST, Kafka, SQS, gRPC)
+  - Identificação de duplicidades
+  - Padrões de orquestração (conductor, saga, choreography)
+
+  8. extras/skills/devops-patterns/
+
+  Padrões de infra e DevOps:
+  - GitOps (ArgoCD, Flux)
+  - Kubernetes (HPA, PDB, Rollouts, Ingress)
+  - CI/CD pipelines (GitLab, GitHub Actions)
+  - Secrets management (External Secrets, IRSA)
+  - Canary/Blue-Green deployments
+
+  9. extras/skills/fintech-domain/
+
+  Para projetos de pagamento/fintech:
+  - Entidades: Client, Payment Operator, Business Operator, Seller
+  - Fluxos: Order → Charge → Transaction → Settlement
+  - Compliance: CERC, PCI, PLD, KYC
+  - Padrões: Split de pagamento, antifraude, chargeback
+
+  10. extras/skills/execution-pipeline/
+
+  Inspirado no metodo-execucao.md da Monetizze. Para equipes que querem pipeline
+  estruturado de tarefas:
+  - 7 estágios: Planejamento → Implementação → Teste → Avaliação → Doc → Release → Wiki
+  - Artefatos rastreáveis (cenarios-teste.md, resultado-teste.md)
+  - Loop de correção com retry limit
+  - Integra com /plan, /review, /commit
+
+  11. extras/agents/infra-expert.md
+
+  Agent especializado em infraestrutura:
+  - Kubernetes, Docker, CI/CD
+  - AWS/GCP/Azure patterns
+  - Monitoramento (Prometheus, Grafana)
+  - Debugging de deploy/scaling
+
+  ---
+  Prioridade de implementação
+  ┌─────┬─────────────────────────────┬────────────┬─────────┬──────────────┐
+  │  #  │            Item             │   Camada   │ Esforço │   Impacto    │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 1   │ Fix detecção Laravel/NestJS │ core (bug) │ Baixo   │ Alto         │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 2   │ Template NestJS             │ templates  │ Médio   │ Alto         │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 3   │ base-ingester seed          │ core       │ Alto    │ Muito Alto   │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 4   │ Template SERVICE_MAP        │ templates  │ Baixo   │ Médio        │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 5   │ microservices-navigator     │ extras     │ Médio   │ Alto (nicho) │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 6   │ devops-patterns             │ extras     │ Médio   │ Alto (nicho) │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 7   │ fintech-domain              │ extras     │ Médio   │ Alto (nicho) │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 8   │ execution-pipeline          │ extras     │ Alto    │ Médio        │
+  ├─────┼─────────────────────────────┼────────────┼─────────┼──────────────┤
+  │ 9   │ Flask template              │ templates  │ Baixo   │ Baixo        │
+  └─────┴─────────────────────────────┴────────────┴─────────┴──────────────┘
