@@ -235,7 +235,15 @@ install_core() {
     cp "$SCRIPT_DIR/core/commands/"*.md "$CLAUDE_DIR/commands/" 2>/dev/null || true
     print_done "Commands instalados (13 commands)"
 
-    # 7. Knowledge templates (mirror copy — folder structure matches destination)
+    # 7. Skill templates (staging area — /init-engram will evaluate and prune)
+    if [[ -d "$SCRIPT_DIR/templates/skills" ]]; then
+        mkdir -p "$CLAUDE_DIR/templates/skills"
+        cp -r "$SCRIPT_DIR/templates/skills/"* "$CLAUDE_DIR/templates/skills/" 2>/dev/null || true
+        local SKILL_TMPL_COUNT=$(find "$CLAUDE_DIR/templates/skills" -name "*.skill.tmpl" -type f | wc -l | tr -d ' ')
+        print_done "Skill templates copiados para staging ($SKILL_TMPL_COUNT templates)"
+    fi
+
+    # 8. Knowledge templates (mirror copy — folder structure matches destination)
     local TODAY=$(date +%Y-%m-%d)
     local TMPL_COUNT=0
     while IFS= read -r tmpl; do
@@ -716,6 +724,13 @@ do_update() {
     # Update commands
     cp "$SCRIPT_DIR/core/commands/"*.md "$TARGET_DIR/.claude/commands/" 2>/dev/null || true
     print_done "Commands atualizados"
+
+    # Update skill templates (staging area)
+    if [[ -d "$SCRIPT_DIR/templates/skills" ]]; then
+        mkdir -p "$TARGET_DIR/.claude/templates/skills"
+        cp -r "$SCRIPT_DIR/templates/skills/"* "$TARGET_DIR/.claude/templates/skills/" 2>/dev/null || true
+        print_done "Skill templates atualizados (rode /init-engram para reavaliar)"
+    fi
 
     echo "$VERSION" > "$TARGET_DIR/.claude/.engram-version"
     print_done "Engram atualizado para v${VERSION} (knowledge preservado)"
