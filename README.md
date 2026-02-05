@@ -292,10 +292,8 @@ extras/
 ├── skills/
 │   ├── n8n-agent-builder/        # N8N + WhatsApp sales automation
 │   ├── sales-funnel-optimizer/   # Sales funnel optimization
-│   ├── microservices-navigator/  # Microservice ecosystem mapping
 │   ├── devops-patterns/          # K8s, CI/CD, GitOps patterns
-│   ├── fintech-domain/           # Payment/fintech domain knowledge
-│   └── execution-pipeline/       # 7-stage task execution methodology
+│   └── fintech-domain/           # Payment/fintech domain knowledge
 └── agents/
     ├── prompt-engineer.md        # Prompt engineering specialist
     └── infra-expert.md           # Infrastructure/DevOps specialist

@@ -58,6 +58,26 @@ def detect_stack(project_dir: str) -> dict:
         stack["has_docker"] = True
         stack["infra"].append("docker")
 
+    # CI/CD
+    if (p / ".gitlab-ci.yml").exists():
+        stack["infra"].append("gitlab-ci")
+    if (p / ".github" / "workflows").is_dir():
+        stack["infra"].append("github-actions")
+
+    # Kubernetes
+    if (p / "k8s").is_dir() or (p / "kubernetes").is_dir():
+        stack["infra"].append("kubernetes")
+    if any(p.glob("**/kustomization.yaml")) or any(p.glob("**/kustomization.yml")):
+        stack["infra"].append("kustomize")
+
+    # ArgoCD
+    if (p / "argocd").is_dir() or any(p.glob("**/argocd-app*.yaml")):
+        stack["infra"].append("argocd")
+
+    # Terraform / IaC
+    if any(p.glob("*.tf")) or (p / "terraform").is_dir():
+        stack["infra"].append("terraform")
+
     # Package manager
     if (p / "pnpm-lock.yaml").exists():
         stack["pkg_manager"] = "pnpm"
@@ -76,6 +96,8 @@ def detect_stack(project_dir: str) -> dict:
             # Framework
             if "next" in deps:
                 stack["framework"] = "nextjs"
+            elif "@nestjs/core" in deps:
+                stack["framework"] = "nestjs"
             elif "nuxt" in deps:
                 stack["framework"] = "nuxt"
             elif "@angular/core" in deps:
@@ -138,6 +160,18 @@ def detect_stack(project_dir: str) -> dict:
 
         except (json.JSONDecodeError, KeyError):
             pass
+
+    # PHP frameworks (from composer.json)
+    if "php" in stack["languages"]:
+        composer_path = p / "composer.json"
+        if composer_path.exists():
+            try:
+                composer = json.loads(composer_path.read_text())
+                require = {**composer.get("require", {}), **composer.get("require-dev", {})}
+                if "laravel/framework" in require:
+                    stack["framework"] = "laravel"
+            except (json.JSONDecodeError, KeyError):
+                pass
 
     # Python frameworks
     if "python" in stack["languages"]:
@@ -217,6 +251,12 @@ def suggest_components(stack: dict) -> dict:
             "reason": f"{fw} detected — component patterns, state management, routing",
             "priority": "high",
         })
+    elif fw == "nestjs":
+        suggestions["skills"].append({
+            "name": "nestjs-patterns",
+            "reason": "NestJS detected — Modules, DTOs, Guards, TypeORM/Sequelize, Swagger patterns",
+            "priority": "high",
+        })
     elif fw == "express":
         suggestions["skills"].append({
             "name": "express-patterns",
@@ -229,14 +269,18 @@ def suggest_components(stack: dict) -> dict:
             "reason": "Fastify detected (using Express patterns as base) — routing, plugins, validation",
             "priority": "high",
         })
-
-    if stack.get("languages") and "php" in stack["languages"]:
-        if fw == "laravel":
-            suggestions["skills"].append({
-                "name": "laravel-patterns",
-                "reason": "Laravel detected — Eloquent, Form Requests, Services, Queues",
-                "priority": "high",
-            })
+    elif fw == "laravel":
+        suggestions["skills"].append({
+            "name": "laravel-patterns",
+            "reason": "Laravel detected — Eloquent, Form Requests, Services, Queues",
+            "priority": "high",
+        })
+    elif fw == "flask":
+        suggestions["skills"].append({
+            "name": "flask-patterns",
+            "reason": "Flask detected — Blueprints, Marshmallow, SQLAlchemy patterns",
+            "priority": "high",
+        })
 
     # ORM skills
     orm = stack.get("orm")
@@ -275,6 +319,19 @@ def suggest_components(stack: dict) -> dict:
             "name": "docker-workflow",
             "reason": "Docker detected — compose management, build optimization",
             "priority": "low",
+        })
+
+    # DevOps patterns (extras) — suggested when infra files detected
+    infra = stack.get("infra", [])
+    infra_signals = [i for i in infra if i in (
+        "kubernetes", "kustomize", "argocd", "gitlab-ci", "github-actions", "terraform",
+    )]
+    if infra_signals:
+        suggestions["skills"].append({
+            "name": "devops-patterns",
+            "reason": f"Infra detected ({', '.join(infra_signals)}) — K8s, CI/CD, GitOps, secrets patterns",
+            "priority": "medium",
+            "source": "extras",
         })
 
     # TypeScript skill
@@ -351,6 +408,9 @@ def main():
             print(f"  ✅ TypeScript")
         if stack["has_docker"]:
             print(f"  ✅ Docker")
+        infra_extra = [i for i in stack.get("infra", []) if i != "docker"]
+        for item in infra_extra:
+            print(f"  ✅ Infra: {item}")
 
         print("\n🎯 Skills Sugeridos:")
         for s in suggestions["skills"]:

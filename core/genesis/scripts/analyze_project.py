@@ -58,6 +58,26 @@ def detect_stack(project_dir: str) -> dict:
         stack["has_docker"] = True
         stack["infra"].append("docker")
 
+    # CI/CD
+    if (p / ".gitlab-ci.yml").exists():
+        stack["infra"].append("gitlab-ci")
+    if (p / ".github" / "workflows").is_dir():
+        stack["infra"].append("github-actions")
+
+    # Kubernetes
+    if (p / "k8s").is_dir() or (p / "kubernetes").is_dir():
+        stack["infra"].append("kubernetes")
+    if any(p.glob("**/kustomization.yaml")) or any(p.glob("**/kustomization.yml")):
+        stack["infra"].append("kustomize")
+
+    # ArgoCD
+    if (p / "argocd").is_dir() or any(p.glob("**/argocd-app*.yaml")):
+        stack["infra"].append("argocd")
+
+    # Terraform / IaC
+    if any(p.glob("*.tf")) or (p / "terraform").is_dir():
+        stack["infra"].append("terraform")
+
     # Package manager
     if (p / "pnpm-lock.yaml").exists():
         stack["pkg_manager"] = "pnpm"
@@ -301,6 +321,19 @@ def suggest_components(stack: dict) -> dict:
             "priority": "low",
         })
 
+    # DevOps patterns (extras) — suggested when infra files detected
+    infra = stack.get("infra", [])
+    infra_signals = [i for i in infra if i in (
+        "kubernetes", "kustomize", "argocd", "gitlab-ci", "github-actions", "terraform",
+    )]
+    if infra_signals:
+        suggestions["skills"].append({
+            "name": "devops-patterns",
+            "reason": f"Infra detected ({', '.join(infra_signals)}) — K8s, CI/CD, GitOps, secrets patterns",
+            "priority": "medium",
+            "source": "extras",
+        })
+
     # TypeScript skill
     if stack.get("has_typescript") and fw not in ("nextjs",):
         suggestions["skills"].append({
@@ -375,6 +408,9 @@ def main():
             print(f"  ✅ TypeScript")
         if stack["has_docker"]:
             print(f"  ✅ Docker")
+        infra_extra = [i for i in stack.get("infra", []) if i != "docker"]
+        for item in infra_extra:
+            print(f"  ✅ Infra: {item}")
 
         print("\n🎯 Skills Sugeridos:")
         for s in suggestions["skills"]:
