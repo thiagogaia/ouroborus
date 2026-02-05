@@ -31,6 +31,11 @@ case "${1:-health}" in
         python3 .claude/brain/cognitive.py archive
         ;;
 
+    sleep)
+        echo "=== Running Sleep Cycle ==="
+        python3 .claude/brain/sleep.py ${@:2}
+        ;;
+
     health)
         echo "=== Brain Health Check ==="
         python3 .claude/brain/cognitive.py health
@@ -39,6 +44,7 @@ case "${1:-health}" in
     full)
         echo "=== Full Maintenance ==="
         python3 .claude/brain/cognitive.py decay
+        python3 .claude/brain/sleep.py
         python3 .claude/brain/cognitive.py consolidate
         python3 .claude/brain/cognitive.py health
 
@@ -54,12 +60,13 @@ case "${1:-health}" in
         ;;
 
     *)
-        echo "Usage: $0 {daily|weekly|monthly|health|full}"
+        echo "Usage: $0 {daily|weekly|monthly|sleep|health|full}"
         echo ""
         echo "Commands:"
         echo "  daily    - Run memory decay (Ebbinghaus curve)"
         echo "  weekly   - Run connection consolidation"
         echo "  monthly  - Archive weak memories"
+        echo "  sleep    - Run sleep cycle (semantic consolidation)"
         echo "  health   - Check brain health status"
         echo "  full     - Run all processes + commit"
         exit 1

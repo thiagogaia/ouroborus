@@ -98,6 +98,16 @@ Fortalecer conexões acessadas nesta sessão:
 python3 .claude/brain/cognitive.py consolidate
 ```
 
+### 4.4b Rodar Ciclo de Sono (Consolidação Semântica)
+
+Criar arestas semânticas entre nós relacionados:
+```bash
+python3 .claude/brain/sleep.py
+```
+
+Isso roda 5 fases: dedup, connect, relate, themes, calibrate.
+Transforma o grafo de topologia estrela em rede rica com conexões semânticas.
+
 ### 4.5 Verificar Saúde do Cérebro
 ```bash
 python3 .claude/brain/cognitive.py health

@@ -20,11 +20,16 @@ sys.path.insert(0, str(BRAIN_PATH))
 
 try:
     from brain import Brain
-    import embeddings
     HAS_DEPS = True
 except ImportError as e:
     HAS_DEPS = False
     IMPORT_ERROR = str(e)
+
+try:
+    import embeddings
+    HAS_EMBEDDINGS = True
+except (ImportError, SystemExit):
+    HAS_EMBEDDINGS = False
 
 
 def search_brain(
@@ -76,12 +81,12 @@ def search_brain(
         labels = type_map.get(filter_type.lower(), [filter_type])
 
     # Gerar embedding da query
-    try:
-        query_embedding = embeddings.get_embedding(query)
-    except Exception as e:
-        # Fallback para busca textual
-        query_embedding = None
-        sys.stderr.write(f"Aviso: Usando busca textual (embedding falhou: {e})\n")
+    query_embedding = None
+    if HAS_EMBEDDINGS:
+        try:
+            query_embedding = embeddings.get_embedding(query)
+        except Exception as e:
+            sys.stderr.write(f"Aviso: Usando busca textual (embedding falhou: {e})\n")
 
     # Executar busca
     if query_embedding is not None:
@@ -125,16 +130,55 @@ def search_brain(
             elif "concept" in labels_list or "Concept" in labels_list:
                 file_path = f".claude/memory/concepts/{node_id}.md"
 
+        # Collect semantic connections for this node
+        semantic_connections = []
+        semantic_types = {"REFERENCES", "INFORMED_BY", "APPLIES", "RELATED_TO",
+                          "SAME_SCOPE", "MODIFIES_SAME", "BELONGS_TO_THEME", "CLUSTERED_IN"}
+        node_id = item.get("id", "")
+
+        try:
+            for neighbor in brain.graph.successors(node_id):
+                edge = brain.get_edge(node_id, neighbor)
+                if edge and edge.get("type") in semantic_types:
+                    nb_node = brain.get_node(neighbor)
+                    nb_title = nb_node.get("props", {}).get("title", neighbor) if nb_node else neighbor
+                    semantic_connections.append({
+                        "target": neighbor,
+                        "title": nb_title,
+                        "type": edge.get("type"),
+                        "weight": round(edge.get("weight", 0.5), 2)
+                    })
+            for neighbor in brain.graph.predecessors(node_id):
+                edge = brain.get_edge(neighbor, node_id)
+                if edge and edge.get("type") in semantic_types:
+                    nb_node = brain.get_node(neighbor)
+                    nb_title = nb_node.get("props", {}).get("title", neighbor) if nb_node else neighbor
+                    semantic_connections.append({
+                        "source": neighbor,
+                        "title": nb_title,
+                        "type": edge.get("type"),
+                        "weight": round(edge.get("weight", 0.5), 2)
+                    })
+        except Exception:
+            pass
+
+        # Boost score for well-connected nodes
+        connection_boost = min(0.3, len(semantic_connections) * 0.05)
+
         formatted.append({
             "id": item.get("id"),
             "title": props.get("title", item.get("id", "Sem título")),
             "type": item_type,
             "labels": labels_list,
             "summary": props.get("summary", "")[:200],
-            "score": round(item.get("score", 0), 3),
+            "score": round(item.get("score", 0) + connection_boost, 3),
             "file": file_path if file_path and Path(file_path).exists() else None,
-            "author": props.get("author")
+            "author": props.get("author"),
+            "connections": semantic_connections[:10]
         })
+
+    # Re-sort after connection boost
+    formatted.sort(key=lambda x: x["score"], reverse=True)
 
     return {
         "query": query,
@@ -178,6 +222,13 @@ def format_human_readable(data: dict) -> str:
                 lines.append(f"   📄 {item['file']}")
             if item["author"]:
                 lines.append(f"   👤 {item['author']}")
+            # Show semantic connections
+            connections = item.get("connections", [])
+            if connections:
+                lines.append(f"   🔗 {len(connections)} conexões:")
+                for conn in connections[:5]:
+                    direction = "→" if "target" in conn else "←"
+                    lines.append(f"      {direction} [{conn['type']}] {conn['title']}")
             lines.append("")
 
     return "\n".join(lines)

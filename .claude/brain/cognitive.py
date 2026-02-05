@@ -119,20 +119,58 @@ def archive(brain: Brain, threshold: float = 0.1) -> dict:
     }
 
 
+def sleep(brain: Brain, phases: list = None) -> dict:
+    """
+    Run brain sleep cycle for semantic consolidation.
+    """
+    try:
+        from sleep import run_sleep
+        stats = run_sleep(brain, phases)
+        stats["ran_at"] = datetime.now().isoformat()
+        stats["type"] = "sleep"
+        return stats
+    except ImportError as e:
+        return {"error": f"sleep.py not available: {e}", "type": "sleep"}
+
+
 def health_check(brain: Brain) -> dict:
     """
     Verifica saude do cerebro.
+
+    Score composition:
+    - 30% weak memory ratio (fewer weak = better)
+    - 40% semantic connectivity (more semantic edges = better)
+    - 30% embedding coverage
     """
     stats = brain.get_stats()
 
-    # Calcula metricas de saude
     total_nodes = stats.get("nodes", 0)
+    total_edges = stats.get("edges", 0)
     weak_count = stats.get("weak_memories", 0)
+    semantic_edges = stats.get("semantic_edges", 0)
+    embeddings_count = stats.get("embeddings", 0)
 
-    if total_nodes > 0:
-        health_score = 1.0 - (weak_count / total_nodes)
-    else:
+    if total_nodes == 0:
         health_score = 1.0
+    else:
+        # 30% - Weak memory ratio
+        weak_score = 1.0 - (weak_count / total_nodes)
+
+        # 40% - Semantic connectivity
+        # Target: at least 1 semantic edge per content node
+        content_nodes = total_nodes - stats.get("by_label", {}).get("Person", 0) - stats.get("by_label", {}).get("Domain", 0)
+        if content_nodes > 0:
+            semantic_ratio = min(1.0, semantic_edges / content_nodes)
+        else:
+            semantic_ratio = 0.0
+
+        # 30% - Embedding coverage
+        if total_nodes > 0:
+            embed_score = min(1.0, embeddings_count / total_nodes)
+        else:
+            embed_score = 0.0
+
+        health_score = (weak_score * 0.3) + (semantic_ratio * 0.4) + (embed_score * 0.3)
 
     # Classifica saude
     if health_score >= 0.8:
@@ -157,6 +195,7 @@ def get_recommendations(stats: dict, health_score: float) -> list:
     weak_count = stats.get("weak_memories", 0)
     total_nodes = stats.get("nodes", 0)
     embeddings_count = stats.get("embeddings", 0)
+    semantic_edges = stats.get("semantic_edges", 0)
 
     if weak_count > total_nodes * 0.3:
         recommendations.append({
@@ -170,10 +209,16 @@ def get_recommendations(stats: dict, health_score: float) -> list:
             "message": f"Apenas {embeddings_count}/{total_nodes} nos tem embeddings. Rode 'embeddings.py build'."
         })
 
+    if total_nodes > 0 and semantic_edges < total_nodes * 0.5:
+        recommendations.append({
+            "type": "sleep",
+            "message": f"Apenas {semantic_edges} arestas semanticas para {total_nodes} nos. Rode 'sleep.py' para consolidar."
+        })
+
     if total_nodes > 0 and stats.get("avg_degree", 0) < 2:
         recommendations.append({
             "type": "connections",
-            "message": "Grafo pouco conectado. Adicione mais [[links]] nas memorias."
+            "message": "Grafo pouco conectado. Rode 'sleep.py connect' ou adicione [[links]]."
         })
 
     if not recommendations:
@@ -203,6 +248,7 @@ if __name__ == "__main__":
         print("  consolidate    Run consolidation (weekly)")
         print("  decay          Run memory decay (daily)")
         print("  archive        Archive weak memories")
+        print("  sleep [phase]  Run sleep cycle (semantic consolidation)")
         print("  daily          Alias for decay")
         print("  weekly         Alias for consolidate")
         print("  health         Show brain health")
@@ -230,6 +276,14 @@ if __name__ == "__main__":
     elif cmd == "archive":
         print("Archiving weak memories...")
         stats = archive(brain)
+        brain.save()
+        log_job(stats)
+        print(json.dumps(stats, indent=2))
+
+    elif cmd == "sleep":
+        phases = sys.argv[2:] if len(sys.argv) > 2 else None
+        print(f"Running sleep cycle{f' ({phases})' if phases else ''}...")
+        stats = sleep(brain, phases)
         brain.save()
         log_job(stats)
         print(json.dumps(stats, indent=2))

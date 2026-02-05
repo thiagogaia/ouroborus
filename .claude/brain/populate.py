@@ -270,6 +270,56 @@ def parse_git_commits(max_commits: int = 7000) -> List[Dict]:
     return commits
 
 
+def _extract_references(content: str) -> List[str]:
+    """Extract cross-references from content.
+
+    Finds: ADR-XXX, PAT-XXX, EXP-XXX, [[wikilinks]]
+    Returns list of reference strings for brain.add_memory(references=...)
+    """
+    refs = []
+
+    # ADR-NNN
+    for m in re.finditer(r'\bADR-(\d+)\b', content, re.IGNORECASE):
+        refs.append(f"ADR-{m.group(1).zfill(3)}")
+
+    # PAT-NNN
+    for m in re.finditer(r'\bPAT-(\d+)\b', content, re.IGNORECASE):
+        refs.append(f"PAT-{m.group(1).zfill(3)}")
+
+    # EXP-NNN
+    for m in re.finditer(r'\bEXP-(\d+)\b', content, re.IGNORECASE):
+        refs.append(f"EXP-{m.group(1).zfill(3)}")
+
+    # [[wikilinks]]
+    for m in re.finditer(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', content):
+        refs.append(m.group(1).strip())
+
+    return list(set(refs))  # deduplicate
+
+
+def cross_reference_pass(brain: Brain) -> int:
+    """Second pass: resolve references now that all nodes exist.
+
+    Iterates all nodes, extracts refs from their content/summary,
+    and creates REFERENCES edges where possible.
+    """
+    count = 0
+    all_nodes = brain.get_all_nodes()
+
+    for node_id, node_data in all_nodes.items():
+        props = node_data.get("props", {})
+        content = props.get("summary", "") + " " + props.get("title", "")
+
+        refs = _extract_references(content)
+        for ref in refs:
+            target = brain._resolve_link(ref)
+            if target and target != node_id and not brain.has_edge(node_id, target):
+                brain.add_edge(node_id, target, "REFERENCES")
+                count += 1
+
+    return count
+
+
 def populate_adrs(brain: Brain) -> int:
     """Adiciona ADRs ao cérebro"""
     adr_file = Path(".claude/knowledge/decisions/ADR_LOG.md")
@@ -287,9 +337,7 @@ def populate_adrs(brain: Brain) -> int:
         if "NNN" in adr["id"]:
             continue
 
-        node_id = brain.add_memory(
-            title=f"{adr['id']}: {adr['title']}",
-            content=f"""## Contexto
+        full_content = f"""## Contexto
 {adr['context']}
 
 ## Decisão
@@ -297,14 +345,20 @@ def populate_adrs(brain: Brain) -> int:
 
 ## Consequências
 {adr['consequences']}
-""",
+"""
+        refs = _extract_references(adr.get("full_content", "") + full_content)
+
+        node_id = brain.add_memory(
+            title=f"{adr['id']}: {adr['title']}",
+            content=full_content,
             labels=["Decision", "ADR"],
-            author="@engram",  # Sistema
+            author="@engram",
             props={
                 "adr_id": adr["id"],
                 "status": adr["status"],
                 "date": adr["date"]
-            }
+            },
+            references=refs
         )
         count += 1
         print(f"  Added ADR: {adr['id']} -> {node_id}")
@@ -377,11 +431,13 @@ def populate_patterns(brain: Brain) -> int:
         else:
             labels.append("ApprovedPattern")
 
+        refs = _extract_references(pattern["description"])
         node_id = brain.add_memory(
             title=pattern["name"],
             content=pattern["description"],
             labels=labels,
-            author="@engram"
+            author="@engram",
+            references=refs
         )
         print(f"  Added pattern: {pattern['name']} -> {node_id}")
         count += 1
@@ -438,6 +494,7 @@ def populate_commits(brain: Brain, max_commits: int = 7000) -> int:
         author_username = re.sub(r'[^a-z0-9]', '-', author_email.split("@")[0].lower())
         author = f"@{author_username}"
 
+        refs = _extract_references(content)
         node_id = brain.add_memory(
             title=commit['subject'][:100],
             content=content,
@@ -448,8 +505,10 @@ def populate_commits(brain: Brain, max_commits: int = 7000) -> int:
                 "date": commit["date"],
                 "commit_type": commit_type,
                 "scope": commit["scope"],
-                "files_count": len(commit["files"])
-            }
+                "files_count": len(commit["files"]),
+                "files": commit["files"][:5]
+            },
+            references=refs
         )
         count += 1
 
@@ -515,6 +574,11 @@ def main():
         total += count
 
     if total > 0:
+        # Second pass: cross-reference now that all nodes exist
+        print(f"\n=== Cross-Reference Pass ===")
+        xref_count = cross_reference_pass(brain)
+        print(f"Created {xref_count} cross-reference edges")
+
         print(f"\n=== Saving Brain ===")
         brain.save()
 

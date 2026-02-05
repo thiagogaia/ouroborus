@@ -26,24 +26,33 @@ import math
 import hashlib
 import subprocess
 import re
+import os
+import site
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Tuple
 from uuid import uuid4
+
+# ── Auto-activate brain venv (PAT-012) ──
+# The brain's dependencies (numpy, networkx) live in .claude/brain/.venv/
+# This block activates it transparently so all scripts just work.
+_venv_dir = Path(__file__).parent / ".venv"
+if _venv_dir.exists() and "brain/.venv" not in os.environ.get("VIRTUAL_ENV", ""):
+    _site_packages = list(_venv_dir.glob("lib/python*/site-packages"))
+    if _site_packages:
+        site.addsitedir(str(_site_packages[0]))
 
 try:
     import numpy as np
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
-    print("Warning: numpy not installed. Embeddings disabled.")
 
 try:
     import networkx as nx
     HAS_NETWORKX = True
 except ImportError:
     HAS_NETWORKX = False
-    print("Warning: networkx not installed. Using fallback graph.")
 
 
 class FallbackGraph:
@@ -260,8 +269,14 @@ class Brain:
         Returns:
             ID do no criado
         """
-        node_id = str(uuid4())[:8]
+        # Deterministic ID: md5(title|labels) for dedup
+        id_source = f"{title}|{'|'.join(sorted(labels))}"
+        node_id = hashlib.md5(id_source.encode()).hexdigest()[:8]
         now = datetime.now().isoformat()
+
+        # Upsert: if node already exists, update instead of duplicate
+        if self._node_exists(node_id):
+            return self._upsert_node(node_id, title, content, labels, author, props, references, embedding)
 
         # Determina tipo de conteudo e path
         content_type = self._get_content_type(labels)
@@ -330,6 +345,50 @@ class Brain:
         if domain:
             domain_node = self._ensure_domain_node(domain)
             self.add_edge(node_id, domain_node, "BELONGS_TO")
+
+        return node_id
+
+    def _upsert_node(
+        self,
+        node_id: str,
+        title: str,
+        content: str,
+        labels: List[str],
+        author: str,
+        props: Dict[str, Any] = None,
+        references: List[str] = None,
+        embedding: Any = None
+    ) -> str:
+        """Update existing node instead of creating duplicate."""
+        node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+
+        # Merge props
+        existing_props = node.get("props", {})
+        existing_props.update(props or {})
+        existing_props["title"] = title
+        existing_props["summary"] = self._generate_summary(content)
+        node["props"] = existing_props
+
+        # Merge labels (union)
+        existing_labels = set(node.get("labels", []))
+        existing_labels.update(labels)
+        node["labels"] = list(existing_labels)
+
+        # Update memory timestamp
+        memory = node.get("memory", {})
+        memory["last_accessed"] = datetime.now().isoformat()
+        node["memory"] = memory
+
+        # Update embedding
+        if embedding is not None and HAS_NUMPY:
+            self.embeddings[node_id] = np.array(embedding)
+
+        # Add new references
+        if references:
+            for ref_id in references:
+                resolved = self._resolve_link(ref_id) if not self._node_exists(ref_id) else ref_id
+                if resolved and not self.has_edge(node_id, resolved):
+                    self.add_edge(node_id, resolved, "REFERENCES")
 
         return node_id
 
@@ -529,22 +588,68 @@ class Brain:
         return re.findall(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', content)
 
     def _resolve_link(self, link: str) -> Optional[str]:
-        """Resolve link para ID de no."""
+        """Resolve link para ID de no. Searches by prop, prefix, and exact title."""
         # Pessoa
         if link.startswith("@"):
-            return f"person-{link[1:]}"
+            pid = f"person-{link[1:]}"
+            if self._node_exists(pid):
+                return pid
+            return None
 
-        # ADR
+        # ADR-XXX: search by adr_id prop first
         if link.upper().startswith("ADR-"):
-            return f"decision-{link.lower()}"
+            found = self._find_node_by_prop("adr_id", link.upper())
+            if found:
+                return found
+            # Legacy format fallback
+            legacy = f"decision-{link.lower()}"
+            if self._node_exists(legacy):
+                return legacy
 
-        # Busca por titulo
+        # PAT-XXX: search by pat_id prop
+        if link.upper().startswith("PAT-"):
+            found = self._find_node_by_prop("pat_id", link.upper())
+            if found:
+                return found
+
+        # EXP-XXX: search by exp_id prop
+        if link.upper().startswith("EXP-"):
+            found = self._find_node_by_prop("exp_id", link.upper())
+            if found:
+                return found
+
+        # Search by title prefix (e.g. "ADR-001:" matches "ADR-001: Title")
+        found = self._find_node_by_title_prefix(link)
+        if found:
+            return found
+
+        # Exact title match
         for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
             node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
             props = node.get("props", {})
             if props.get("title", "").lower() == link.lower():
                 return node_id
 
+        return None
+
+    def _find_node_by_prop(self, prop_name: str, prop_value: str) -> Optional[str]:
+        """Find a node by a specific property value."""
+        for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            props = node.get("props", {})
+            if props.get(prop_name, "").upper() == prop_value.upper():
+                return node_id
+        return None
+
+    def _find_node_by_title_prefix(self, prefix: str) -> Optional[str]:
+        """Find a node whose title starts with prefix."""
+        prefix_lower = prefix.lower()
+        for node_id in (self.graph.nodes if HAS_NETWORKX else self.graph._nodes):
+            node = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+            props = node.get("props", {})
+            title = props.get("title", "").lower()
+            if title.startswith(prefix_lower):
+                return node_id
         return None
 
     def _infer_domain(self, content: str, labels: List[str]) -> Optional[str]:
@@ -924,6 +1029,84 @@ class Brain:
 
         return neighbors
 
+    def get_all_nodes(self) -> Dict[str, Dict]:
+        """Return all nodes as {id: data} dict."""
+        result = {}
+        nodes_iter = self.graph.nodes if HAS_NETWORKX else self.graph._nodes
+        for node_id in nodes_iter:
+            result[node_id] = self.graph.nodes[node_id] if HAS_NETWORKX else self.graph._nodes[node_id]
+        return result
+
+    def has_edge(self, source: str, target: str, edge_type: str = None) -> bool:
+        """Check if an edge exists between source and target."""
+        if HAS_NETWORKX:
+            if not self.graph.has_edge(source, target):
+                return False
+            if edge_type:
+                return self.graph.edges[source, target].get("type") == edge_type
+            return True
+        else:
+            key = (source, target)
+            if key not in self.graph._edges:
+                return False
+            if edge_type:
+                return self.graph._edges[key].get("type") == edge_type
+            return True
+
+    def get_edge(self, source: str, target: str) -> Optional[Dict]:
+        """Get edge data between two nodes."""
+        if HAS_NETWORKX:
+            if self.graph.has_edge(source, target):
+                return dict(self.graph.edges[source, target])
+            return None
+        else:
+            key = (source, target)
+            if key in self.graph._edges:
+                return dict(self.graph._edges[key])
+            return None
+
+    def remove_node(self, node_id: str):
+        """Remove a node and all its edges from the graph."""
+        if not self._node_exists(node_id):
+            return
+        if HAS_NETWORKX:
+            self.graph.remove_node(node_id)
+        else:
+            # Remove edges
+            to_remove = []
+            for (u, v) in list(self.graph._edges.keys()):
+                if u == node_id or v == node_id:
+                    to_remove.append((u, v))
+            for key in to_remove:
+                del self.graph._edges[key]
+            # Remove from adjacency
+            self.graph._adj_out.pop(node_id, None)
+            self.graph._adj_in.pop(node_id, None)
+            for nid in list(self.graph._adj_out.keys()):
+                if node_id in self.graph._adj_out[nid]:
+                    self.graph._adj_out[nid].remove(node_id)
+            for nid in list(self.graph._adj_in.keys()):
+                if node_id in self.graph._adj_in[nid]:
+                    self.graph._adj_in[nid].remove(node_id)
+            # Remove node
+            del self.graph._nodes[node_id]
+        # Remove embedding
+        self.embeddings.pop(node_id, None)
+
+    def get_edges_by_type(self, edge_type: str) -> List[Tuple[str, str, Dict]]:
+        """Return all edges of a specific type."""
+        result = []
+        if HAS_NETWORKX:
+            for u, v in self.graph.edges:
+                edata = self.graph.edges[u, v]
+                if edata.get("type") == edge_type:
+                    result.append((u, v, dict(edata)))
+        else:
+            for (u, v), edata in self.graph._edges.items():
+                if edata.get("type") == edge_type:
+                    result.append((u, v, dict(edata)))
+        return result
+
     def get_stats(self) -> Dict:
         """Estatisticas do cerebro."""
         node_count = self.graph.number_of_nodes()
@@ -940,11 +1123,27 @@ class Brain:
         # Conta memorias fracas
         weak_count = label_counts.get("WeakMemory", 0)
 
+        # Conta por tipo de aresta
+        edge_type_counts = {}
+        if HAS_NETWORKX:
+            for u, v in self.graph.edges:
+                etype = self.graph.edges[u, v].get("type", "UNKNOWN")
+                edge_type_counts[etype] = edge_type_counts.get(etype, 0) + 1
+        else:
+            for (u, v), edata in self.graph._edges.items():
+                etype = edata.get("type", "UNKNOWN")
+                edge_type_counts[etype] = edge_type_counts.get(etype, 0) + 1
+
+        structural_types = {"AUTHORED_BY", "BELONGS_TO"}
+        semantic_edges = sum(v for k, v in edge_type_counts.items() if k not in structural_types)
+
         return {
             "nodes": node_count,
             "edges": edge_count,
+            "semantic_edges": semantic_edges,
             "embeddings": len(self.embeddings),
             "by_label": label_counts,
+            "by_edge_type": edge_type_counts,
             "weak_memories": weak_count,
             "avg_degree": sum(d for _, d in self.graph.degree()) / max(1, node_count)
         }

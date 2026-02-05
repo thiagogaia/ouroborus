@@ -1,0 +1,655 @@
+#!/usr/bin/env python3
+"""
+sleep.py - Brain consolidation cycle ("sleep phases")
+
+Inspired by biological sleep, this script runs 5 phases of consolidation
+to transform the brain from a star topology (all structural edges) into
+a rich semantic network.
+
+Phases:
+  1. dedup    - Find and merge duplicate nodes
+  2. connect  - Parse content, discover cross-references (ADR/PAT/EXP/wikilinks)
+  3. relate   - Cosine similarity between embeddings -> RELATED_TO edges
+  4. themes   - Group commits by scope, create Theme nodes
+  5. calibrate - Adjust edge weights by access patterns
+
+Usage:
+    python3 sleep.py              # Run full cycle
+    python3 sleep.py connect      # Run single phase
+    python3 sleep.py dedup connect # Run specific phases
+"""
+
+import json
+import re
+import sys
+import hashlib
+from collections import defaultdict
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Set, Tuple, Optional
+
+sys.path.insert(0, str(Path(__file__).parent))
+from brain import Brain, HAS_NUMPY
+
+if HAS_NUMPY:
+    import numpy as np
+
+
+# ══════════════════════════════════════════════════════════
+# PHASE 1: DEDUP
+# ══════════════════════════════════════════════════════════
+
+def phase_dedup(brain: Brain) -> Dict:
+    """Find and merge duplicate nodes.
+
+    Duplicates are detected by:
+    - Same title (case-insensitive)
+    - Same adr_id/pat_id/exp_id/commit_hash prop
+    """
+    stats = {"merged": 0, "removed": []}
+    all_nodes = brain.get_all_nodes()
+
+    # Group by title
+    by_title: Dict[str, List[str]] = defaultdict(list)
+    for nid, ndata in all_nodes.items():
+        title = ndata.get("props", {}).get("title", "").lower().strip()
+        if title:
+            by_title[title].append(nid)
+
+    # Group by prop keys
+    prop_keys = ["adr_id", "pat_id", "exp_id", "commit_hash"]
+    for pkey in prop_keys:
+        by_prop: Dict[str, List[str]] = defaultdict(list)
+        for nid, ndata in all_nodes.items():
+            val = ndata.get("props", {}).get(pkey)
+            if val:
+                by_prop[val].append(nid)
+        # Merge into by_title groups
+        for val, nids in by_prop.items():
+            if len(nids) > 1:
+                key = f"_prop_{pkey}_{val}"
+                by_title[key] = nids
+
+    # Merge duplicates: keep the one with most edges, absorb others
+    for key, nids in by_title.items():
+        if len(nids) <= 1:
+            continue
+
+        # Pick survivor: most edges wins
+        best_id = None
+        best_degree = -1
+        for nid in nids:
+            if not brain._node_exists(nid):
+                continue
+            degree = len(list(brain.graph.successors(nid))) + len(list(brain.graph.predecessors(nid)))
+            if degree > best_degree:
+                best_degree = degree
+                best_id = nid
+
+        if not best_id:
+            continue
+
+        # Absorb others into survivor
+        for nid in nids:
+            if nid == best_id or not brain._node_exists(nid):
+                continue
+
+            # Transfer incoming edges
+            for pred in list(brain.graph.predecessors(nid)):
+                if pred != best_id and not brain.has_edge(pred, best_id):
+                    edge = brain.get_edge(pred, nid)
+                    if edge:
+                        brain.add_edge(pred, best_id, edge.get("type", "REFERENCES"), edge.get("weight", 0.5))
+
+            # Transfer outgoing edges
+            for succ in list(brain.graph.successors(nid)):
+                if succ != best_id and not brain.has_edge(best_id, succ):
+                    edge = brain.get_edge(nid, succ)
+                    if edge:
+                        brain.add_edge(best_id, succ, edge.get("type", "REFERENCES"), edge.get("weight", 0.5))
+
+            # Merge labels
+            survivor = brain.get_node(best_id)
+            victim = brain.get_node(nid)
+            if survivor and victim:
+                merged_labels = list(set(survivor.get("labels", []) + victim.get("labels", [])))
+                if brain._node_exists(best_id):
+                    node = brain.graph.nodes[best_id] if hasattr(brain.graph, 'has_edge') else brain.graph._nodes[best_id]
+                    node["labels"] = merged_labels
+
+            brain.remove_node(nid)
+            stats["merged"] += 1
+            stats["removed"].append(nid)
+
+    return stats
+
+
+# ══════════════════════════════════════════════════════════
+# PHASE 2: CONNECT
+# ══════════════════════════════════════════════════════════
+
+def _extract_all_refs(text: str) -> List[str]:
+    """Extract all reference patterns from text."""
+    refs = []
+    # ADR-NNN
+    for m in re.finditer(r'\bADR-(\d+)\b', text, re.IGNORECASE):
+        refs.append(f"ADR-{m.group(1).zfill(3)}")
+    # PAT-NNN
+    for m in re.finditer(r'\bPAT-(\d+)\b', text, re.IGNORECASE):
+        refs.append(f"PAT-{m.group(1).zfill(3)}")
+    # EXP-NNN
+    for m in re.finditer(r'\bEXP-(\d+)\b', text, re.IGNORECASE):
+        refs.append(f"EXP-{m.group(1).zfill(3)}")
+    # [[wikilinks]]
+    for m in re.finditer(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', text):
+        refs.append(m.group(1).strip())
+    return list(set(refs))
+
+
+def phase_connect(brain: Brain) -> Dict:
+    """Parse all node content and create cross-reference edges.
+
+    Creates edge types:
+    - REFERENCES: explicit ADR/PAT/EXP/wikilink references
+    - INFORMED_BY: Pattern -> ADR (when pattern mentions ADR)
+    - APPLIES: Commit -> Pattern (when commit mentions pattern)
+    - SAME_SCOPE: Commit <-> Commit with same scope
+    - MODIFIES_SAME: Commit <-> Commit that touch same files
+    """
+    stats = {"references": 0, "informed_by": 0, "applies": 0, "same_scope": 0, "modifies_same": 0}
+    all_nodes = brain.get_all_nodes()
+
+    # Pass 1: Explicit references from content
+    for nid, ndata in all_nodes.items():
+        props = ndata.get("props", {})
+        labels = ndata.get("labels", [])
+        text = f"{props.get('title', '')} {props.get('summary', '')}"
+
+        refs = _extract_all_refs(text)
+        for ref in refs:
+            target = brain._resolve_link(ref)
+            if target and target != nid and not brain.has_edge(nid, target):
+                # Determine edge type based on source/target labels
+                target_node = brain.get_node(target)
+                target_labels = target_node.get("labels", []) if target_node else []
+
+                if "Pattern" in labels and "ADR" in target_labels:
+                    brain.add_edge(nid, target, "INFORMED_BY", 0.7)
+                    stats["informed_by"] += 1
+                elif "Commit" in labels and "Pattern" in target_labels:
+                    brain.add_edge(nid, target, "APPLIES", 0.6)
+                    stats["applies"] += 1
+                else:
+                    brain.add_edge(nid, target, "REFERENCES", 0.6)
+                    stats["references"] += 1
+
+    # Pass 2: Same scope connections between commits
+    by_scope: Dict[str, List[str]] = defaultdict(list)
+    for nid, ndata in all_nodes.items():
+        if "Commit" not in ndata.get("labels", []):
+            continue
+        scope = ndata.get("props", {}).get("scope")
+        if scope:
+            by_scope[scope].append(nid)
+
+    for scope, nids in by_scope.items():
+        if len(nids) < 2:
+            continue
+        # Connect recent commits in same scope (max 5 per scope to avoid explosion)
+        for i, nid_a in enumerate(nids[:5]):
+            for nid_b in nids[i+1:6]:
+                if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                    brain.add_edge(nid_a, nid_b, "SAME_SCOPE", 0.4,
+                                   props={"scope": scope})
+                    stats["same_scope"] += 1
+
+    # Pass 3: Commits modifying same files
+    by_file: Dict[str, List[str]] = defaultdict(list)
+    for nid, ndata in all_nodes.items():
+        if "Commit" not in ndata.get("labels", []):
+            continue
+        files = ndata.get("props", {}).get("files", [])
+        if isinstance(files, list):
+            for f in files:
+                by_file[f].append(nid)
+
+    for filepath, nids in by_file.items():
+        if len(nids) < 2:
+            continue
+        # Connect commits touching same file (max 3 per file)
+        for i, nid_a in enumerate(nids[:3]):
+            for nid_b in nids[i+1:4]:
+                if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                    brain.add_edge(nid_a, nid_b, "MODIFIES_SAME", 0.5,
+                                   props={"file": filepath})
+                    stats["modifies_same"] += 1
+
+    return stats
+
+
+# ══════════════════════════════════════════════════════════
+# PHASE 3: RELATE (semantic similarity)
+# ══════════════════════════════════════════════════════════
+
+def _text_to_vector(text: str, vocab: Dict[str, int] = None) -> Optional[list]:
+    """Simple TF vector for text (no external deps). Returns sparse vector."""
+    if not text.strip():
+        return None
+    words = re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
+    if not words:
+        return None
+
+    # Use provided vocab or build from text
+    if vocab is None:
+        return None  # Need global vocab
+
+    vec = [0.0] * len(vocab)
+    for w in words:
+        if w in vocab:
+            vec[vocab[w]] += 1.0
+
+    # Normalize
+    norm = sum(v*v for v in vec) ** 0.5
+    if norm > 0:
+        vec = [v/norm for v in vec]
+    return vec
+
+
+def phase_relate(brain: Brain, threshold: float = 0.75) -> Dict:
+    """Create RELATED_TO edges between semantically similar nodes.
+
+    Uses embeddings if available, falls back to TF-IDF-like similarity.
+    """
+    stats = {"related_to": 0, "method": "none"}
+    all_nodes = brain.get_all_nodes()
+
+    # Collect texts for all content nodes (skip Person, Domain)
+    skip_labels = {"Person", "Domain"}
+    texts: Dict[str, str] = {}
+    for nid, ndata in all_nodes.items():
+        labels = set(ndata.get("labels", []))
+        if labels & skip_labels:
+            continue
+        props = ndata.get("props", {})
+        text = f"{props.get('title', '')} {props.get('summary', '')}"
+        if len(text.strip()) > 10:
+            texts[nid] = text
+
+    if len(texts) < 2:
+        return stats
+
+    # Try numpy embeddings first
+    if HAS_NUMPY and brain.embeddings:
+        stats["method"] = "embeddings"
+        node_ids = [nid for nid in texts if nid in brain.embeddings]
+
+        if len(node_ids) >= 2:
+            # Build matrix
+            matrix = np.array([brain.embeddings[nid] for nid in node_ids])
+            # Normalize rows
+            norms = np.linalg.norm(matrix, axis=1, keepdims=True)
+            norms[norms == 0] = 1
+            matrix = matrix / norms
+            # Cosine similarity matrix
+            sim_matrix = matrix @ matrix.T
+
+            for i in range(len(node_ids)):
+                for j in range(i+1, len(node_ids)):
+                    if sim_matrix[i, j] >= threshold:
+                        nid_a, nid_b = node_ids[i], node_ids[j]
+                        if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                            brain.add_edge(nid_a, nid_b, "RELATED_TO",
+                                           weight=float(sim_matrix[i, j]),
+                                           props={"method": "embedding"})
+                            stats["related_to"] += 1
+
+    # Fallback: TF-based similarity
+    if stats["related_to"] == 0:
+        stats["method"] = "tf_vectors"
+
+        # Build vocabulary from all texts
+        word_counts: Dict[str, int] = defaultdict(int)
+        for text in texts.values():
+            for w in set(re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())):
+                word_counts[w] += 1
+
+        # Filter: keep words appearing in 2+ but less than 80% of docs
+        max_df = len(texts) * 0.8
+        vocab_words = [w for w, c in word_counts.items() if 2 <= c <= max_df]
+        if len(vocab_words) < 5:
+            return stats
+
+        vocab = {w: i for i, w in enumerate(sorted(vocab_words))}
+
+        # Build vectors
+        vectors: Dict[str, list] = {}
+        for nid, text in texts.items():
+            vec = _text_to_vector(text, vocab)
+            if vec:
+                vectors[nid] = vec
+
+        if len(vectors) < 2:
+            return stats
+
+        # Compare pairs (only for non-huge graphs)
+        node_ids = list(vectors.keys())
+        if len(node_ids) > 500:
+            # Sample to avoid O(n^2) explosion
+            import random
+            random.shuffle(node_ids)
+            node_ids = node_ids[:500]
+
+        for i in range(len(node_ids)):
+            for j in range(i+1, len(node_ids)):
+                nid_a, nid_b = node_ids[i], node_ids[j]
+                vec_a, vec_b = vectors[nid_a], vectors[nid_b]
+
+                # Cosine similarity
+                dot = sum(a*b for a, b in zip(vec_a, vec_b))
+                if dot >= threshold:
+                    if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                        brain.add_edge(nid_a, nid_b, "RELATED_TO",
+                                       weight=dot,
+                                       props={"method": "tf_vector"})
+                        stats["related_to"] += 1
+
+    return stats
+
+
+# ══════════════════════════════════════════════════════════
+# PHASE 4: THEMES
+# ══════════════════════════════════════════════════════════
+
+def phase_themes(brain: Brain) -> Dict:
+    """Group commits by scope, create Theme nodes and PatternCluster nodes.
+
+    Creates:
+    - Theme nodes for scopes with 3+ commits
+    - BELONGS_TO_THEME edges from commits to themes
+    - PatternCluster nodes for patterns in same domain
+    - CLUSTERED_IN edges from patterns to clusters
+    """
+    stats = {"themes_created": 0, "clusters_created": 0, "edges_created": 0}
+    all_nodes = brain.get_all_nodes()
+
+    # Group commits by scope
+    by_scope: Dict[str, List[str]] = defaultdict(list)
+    for nid, ndata in all_nodes.items():
+        if "Commit" not in ndata.get("labels", []):
+            continue
+        scope = ndata.get("props", {}).get("scope")
+        if scope:
+            by_scope[scope].append(nid)
+
+    # Create Theme nodes for scopes with 3+ commits
+    for scope, commit_ids in by_scope.items():
+        if len(commit_ids) < 3:
+            continue
+
+        theme_title = f"Theme: {scope}"
+        theme_id_source = f"{theme_title}|Theme"
+        theme_id = hashlib.md5(theme_id_source.encode()).hexdigest()[:8]
+
+        if not brain._node_exists(theme_id):
+            # Summarize the theme
+            commit_types = defaultdict(int)
+            for cid in commit_ids:
+                cnode = brain.get_node(cid)
+                if cnode:
+                    ct = cnode.get("props", {}).get("commit_type", "other")
+                    commit_types[ct] += 1
+
+            summary = f"Theme '{scope}' with {len(commit_ids)} commits: " + \
+                      ", ".join(f"{ct}({n})" for ct, n in sorted(commit_types.items(), key=lambda x: -x[1]))
+
+            now = datetime.now().isoformat()
+            node_data = {
+                "labels": ["Theme"],
+                "props": {
+                    "title": theme_title,
+                    "scope": scope,
+                    "commit_count": len(commit_ids),
+                    "summary": summary
+                },
+                "memory": {
+                    "strength": 0.8,
+                    "access_count": 0,
+                    "last_accessed": now,
+                    "created_at": now,
+                    "decay_rate": 0.002
+                }
+            }
+
+            # Add node directly (Theme is a synthetic node)
+            if hasattr(brain.graph, 'has_edge'):  # NetworkX
+                brain.graph.add_node(theme_id, **node_data)
+            else:
+                brain.graph.add_node(theme_id, **node_data)
+
+            stats["themes_created"] += 1
+
+        # Create BELONGS_TO_THEME edges
+        for cid in commit_ids:
+            if brain._node_exists(cid) and not brain.has_edge(cid, theme_id):
+                brain.add_edge(cid, theme_id, "BELONGS_TO_THEME", 0.6)
+                stats["edges_created"] += 1
+
+    # Group patterns by domain inference
+    by_domain: Dict[str, List[str]] = defaultdict(list)
+    for nid, ndata in all_nodes.items():
+        if "Pattern" not in ndata.get("labels", []):
+            continue
+        # Find domain edge
+        for succ in brain.graph.successors(nid):
+            if brain.has_edge(nid, succ, "BELONGS_TO"):
+                succ_node = brain.get_node(succ)
+                if succ_node and "Domain" in succ_node.get("labels", []):
+                    domain = succ_node.get("props", {}).get("name", "unknown")
+                    by_domain[domain].append(nid)
+                    break
+
+    # Create PatternCluster nodes for domains with 2+ patterns
+    for domain, pattern_ids in by_domain.items():
+        if len(pattern_ids) < 2:
+            continue
+
+        cluster_title = f"PatternCluster: {domain}"
+        cluster_id_source = f"{cluster_title}|PatternCluster"
+        cluster_id = hashlib.md5(cluster_id_source.encode()).hexdigest()[:8]
+
+        if not brain._node_exists(cluster_id):
+            now = datetime.now().isoformat()
+            node_data = {
+                "labels": ["PatternCluster"],
+                "props": {
+                    "title": cluster_title,
+                    "domain": domain,
+                    "pattern_count": len(pattern_ids),
+                    "summary": f"Cluster of {len(pattern_ids)} patterns in '{domain}' domain"
+                },
+                "memory": {
+                    "strength": 0.7,
+                    "access_count": 0,
+                    "last_accessed": now,
+                    "created_at": now,
+                    "decay_rate": 0.003
+                }
+            }
+
+            if hasattr(brain.graph, 'has_edge'):
+                brain.graph.add_node(cluster_id, **node_data)
+            else:
+                brain.graph.add_node(cluster_id, **node_data)
+
+            stats["clusters_created"] += 1
+
+        for pid in pattern_ids:
+            if brain._node_exists(pid) and not brain.has_edge(pid, cluster_id):
+                brain.add_edge(pid, cluster_id, "CLUSTERED_IN", 0.5)
+                stats["edges_created"] += 1
+
+    return stats
+
+
+# ══════════════════════════════════════════════════════════
+# PHASE 5: CALIBRATE
+# ══════════════════════════════════════════════════════════
+
+def phase_calibrate(brain: Brain) -> Dict:
+    """Adjust edge weights based on node access patterns.
+
+    Rules:
+    - Edges between frequently accessed nodes get boosted
+    - Edges between never-accessed nodes get decayed
+    - Semantic edges get slight boost over structural
+    """
+    stats = {"boosted": 0, "decayed": 0}
+    structural_types = {"AUTHORED_BY", "BELONGS_TO"}
+
+    edges_list = list(brain.graph.edges) if hasattr(brain.graph, 'has_edge') else list(brain.graph._edges.keys())
+
+    for edge_key in edges_list:
+        u, v = edge_key
+        if hasattr(brain.graph, 'has_edge'):
+            edge = brain.graph.edges[u, v]
+        else:
+            edge = brain.graph._edges.get((u, v), {})
+
+        etype = edge.get("type", "")
+        current_weight = edge.get("weight", 0.5)
+
+        # Get access counts
+        u_node = brain.get_node(u)
+        v_node = brain.get_node(v)
+        if not u_node or not v_node:
+            continue
+
+        u_access = u_node.get("memory", {}).get("access_count", 0)
+        v_access = v_node.get("memory", {}).get("access_count", 0)
+        combined_access = u_access + v_access
+
+        # Boost for semantic edges
+        is_semantic = etype not in structural_types
+
+        if combined_access > 5 and is_semantic:
+            # Active nodes: boost edge
+            new_weight = min(1.0, current_weight * 1.15)
+            edge["weight"] = new_weight
+            stats["boosted"] += 1
+        elif combined_access == 0 and current_weight > 0.2:
+            # Never accessed: slight decay
+            new_weight = max(0.1, current_weight * 0.95)
+            edge["weight"] = new_weight
+            stats["decayed"] += 1
+
+    return stats
+
+
+# ══════════════════════════════════════════════════════════
+# ORCHESTRATOR
+# ══════════════════════════════════════════════════════════
+
+PHASES = {
+    "dedup": phase_dedup,
+    "connect": phase_connect,
+    "relate": phase_relate,
+    "themes": phase_themes,
+    "calibrate": phase_calibrate
+}
+
+PHASE_ORDER = ["dedup", "connect", "relate", "themes", "calibrate"]
+
+
+def run_sleep(brain: Brain, phases: List[str] = None) -> Dict:
+    """Run sleep cycle (all phases or specific ones)."""
+    if phases is None:
+        phases = PHASE_ORDER
+
+    results = {
+        "started_at": datetime.now().isoformat(),
+        "phases": {}
+    }
+
+    # Stats before
+    stats_before = brain.get_stats()
+    results["before"] = {
+        "nodes": stats_before["nodes"],
+        "edges": stats_before["edges"],
+        "semantic_edges": stats_before.get("semantic_edges", 0)
+    }
+
+    for phase_name in phases:
+        if phase_name not in PHASES:
+            print(f"  Unknown phase: {phase_name}, skipping")
+            continue
+
+        print(f"  Phase [{phase_name}]...")
+        try:
+            phase_stats = PHASES[phase_name](brain)
+            results["phases"][phase_name] = phase_stats
+            print(f"    -> {json.dumps(phase_stats)}")
+        except Exception as e:
+            results["phases"][phase_name] = {"error": str(e)}
+            print(f"    -> ERROR: {e}")
+
+    # Stats after
+    stats_after = brain.get_stats()
+    results["after"] = {
+        "nodes": stats_after["nodes"],
+        "edges": stats_after["edges"],
+        "semantic_edges": stats_after.get("semantic_edges", 0)
+    }
+
+    results["finished_at"] = datetime.now().isoformat()
+    results["delta"] = {
+        "nodes": stats_after["nodes"] - stats_before["nodes"],
+        "edges": stats_after["edges"] - stats_before["edges"],
+        "semantic_edges": stats_after.get("semantic_edges", 0) - stats_before.get("semantic_edges", 0)
+    }
+
+    return results
+
+
+# ══════════════════════════════════════════════════════════
+# CLI
+# ══════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    phases = None
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ("-h", "--help"):
+            print(__doc__)
+            sys.exit(0)
+        phases = [p for p in sys.argv[1:] if p in PHASES]
+        if not phases:
+            print(f"Unknown phases: {sys.argv[1:]}. Available: {', '.join(PHASE_ORDER)}")
+            sys.exit(1)
+
+    brain = Brain()
+    if not brain.load():
+        print("Error: Could not load brain. Run populate.py first.")
+        sys.exit(1)
+
+    print(f"=== Brain Sleep Cycle ===")
+    print(f"Phases: {phases or PHASE_ORDER}")
+    print()
+
+    results = run_sleep(brain, phases)
+
+    print()
+    print(f"=== Results ===")
+    print(f"Before: {results['before']['nodes']} nodes, {results['before']['edges']} edges ({results['before']['semantic_edges']} semantic)")
+    print(f"After:  {results['after']['nodes']} nodes, {results['after']['edges']} edges ({results['after']['semantic_edges']} semantic)")
+    print(f"Delta:  {results['delta']['nodes']:+d} nodes, {results['delta']['edges']:+d} edges ({results['delta']['semantic_edges']:+d} semantic)")
+
+    print()
+    print("Saving brain...")
+    brain.save()
+
+    # Save sleep log
+    log_path = Path(".claude/brain/sleep-log.jsonl")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(results, default=str) + "\n")
+    print(f"Log saved to {log_path}")

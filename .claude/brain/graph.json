@@ -1,15 +1,15 @@
 {
   "version": "1.0",
   "meta": {
-    "saved_at": "2026-02-05T16:04:58.067194",
-    "node_count": 151,
-    "edge_count": 234
+    "saved_at": "2026-02-05T17:09:45.355546",
+    "node_count": 165,
+    "edge_count": 322
   },
   "nodes": {
     "a52ceda2": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-001: Sistema Metacircular",
@@ -61,8 +61,8 @@
     },
     "ee7eb926": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-002: Skills com Frontmatter YAML",
@@ -98,8 +98,8 @@
     },
     "49d27394": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-003: Agents Não Invocam Outros Agents",
@@ -120,8 +120,8 @@
     },
     "442d2f41": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-004: Progressive Disclosure",
@@ -157,8 +157,8 @@
     },
     "a4d710c9": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-005: Python para Scripts Internos",
@@ -179,8 +179,8 @@
     },
     "3234b3e3": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-006: Manifest como Source of Truth",
@@ -201,8 +201,8 @@
     },
     "bcec1e40": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-007: Adoção do Engram (Bootstrap)",
@@ -223,8 +223,8 @@
     },
     "e57d240c": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-008: Arquitetura Git-Native com Grafo de Conhecimento",
@@ -245,8 +245,8 @@
     },
     "7b1fcb34": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-009: Estado Por Desenvolvedor",
@@ -267,8 +267,8 @@
     },
     "2638f530": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-010: Commits de Conhecimento",
@@ -289,8 +289,8 @@
     },
     "9310bbae": {
       "labels": [
-        "Decision",
-        "ADR"
+        "ADR",
+        "Decision"
       ],
       "props": {
         "title": "ADR-011: Arquitetura de Cérebro Organizacional",
@@ -311,8 +311,8 @@
     },
     "ed9c6f35": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Engram",
@@ -330,8 +330,8 @@
     },
     "507ab390": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Ouroboros",
@@ -349,8 +349,8 @@
     },
     "2477137c": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Metacircular",
@@ -368,8 +368,8 @@
     },
     "7f1b7fc0": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Genesis",
@@ -387,8 +387,8 @@
     },
     "582c6d8e": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Evolution",
@@ -406,8 +406,8 @@
     },
     "4c95e120": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Skill",
@@ -425,8 +425,8 @@
     },
     "f37972df": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Agent",
@@ -444,8 +444,8 @@
     },
     "83389b13": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Command",
@@ -463,8 +463,8 @@
     },
     "b7eeca3f": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Seed",
@@ -497,8 +497,8 @@
     },
     "aa7df3e8": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Schema",
@@ -516,8 +516,8 @@
     },
     "bc660740": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Manifest",
@@ -535,8 +535,8 @@
     },
     "130b74cb": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Knowledge File",
@@ -554,8 +554,8 @@
     },
     "be485898": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "ICE Score",
@@ -573,8 +573,8 @@
     },
     "03f48948": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "ADR",
@@ -592,8 +592,8 @@
     },
     "4c8fe0fb": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Runtime Component",
@@ -611,8 +611,8 @@
     },
     "76918b1d": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Progressive Disclosure",
@@ -630,8 +630,8 @@
     },
     "805185e1": {
       "labels": [
-        "Concept",
-        "Glossary"
+        "Glossary",
+        "Concept"
       ],
       "props": {
         "title": "Feedback Loop",
@@ -649,9 +649,9 @@
     },
     "4d3e2c93": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-001",
@@ -670,9 +670,9 @@
     },
     "006a5881": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-002",
@@ -691,9 +691,9 @@
     },
     "166da41d": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-003",
@@ -712,9 +712,9 @@
     },
     "46a30545": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-004",
@@ -733,9 +733,9 @@
     },
     "e1d6fff2": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-005",
@@ -754,9 +754,9 @@
     },
     "7a135a62": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-006",
@@ -775,9 +775,9 @@
     },
     "0c94c63e": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-007",
@@ -796,9 +796,9 @@
     },
     "1ae74437": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-008",
@@ -817,9 +817,9 @@
     },
     "e6447296": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-009",
@@ -838,9 +838,9 @@
     },
     "635af67f": {
       "labels": [
-        "Concept",
+        "BusinessRule",
         "Rule",
-        "BusinessRule"
+        "Concept"
       ],
       "props": {
         "title": "RN-010",
@@ -1068,10 +1068,10 @@
     },
     "50ec5f8c": {
       "labels": [
-        "Episode",
+        "EngramgenesisDomain",
         "Commit",
-        "Feature",
-        "EngramgenesisDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(engram-genesis): add backup migration system for /init-engram",
@@ -1123,36 +1123,10 @@
         "decay_rate": 0.0001
       }
     },
-    "c0408c0f": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-docs-knowledge-record-architectural-analysis-on-or-c0408c0f.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Document analysis of sequential vs parallel execution model Files changed: .claude/evolution-activations.json, .claude/knowle...",
-        "commit_hash": "6d7c3077",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:28.051028",
-        "created_at": "2026-02-03T21:34:28.051028",
-        "decay_rate": 0.01
-      }
-    },
     "28e6f731": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "chore: add .gitignore and update knowledge after /learn",
@@ -1175,10 +1149,10 @@
     },
     "a1516559": {
       "labels": [
-        "Episode",
         "Commit",
-        "Feature",
-        "EngramDomain"
+        "EngramDomain",
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(engram): complete /init-engram with populated knowledge and new skill",
@@ -1201,8 +1175,8 @@
     },
     "13ef8a7c": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "a",
@@ -1225,10 +1199,10 @@
     },
     "78161cc1": {
       "labels": [
-        "Episode",
+        "BrainDomain",
         "Commit",
-        "Feature",
-        "BrainDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(brain): implement organizational brain with graph and embeddings",
@@ -1251,9 +1225,9 @@
     },
     "7463a6ea": {
       "labels": [
+        "Documentation",
         "Episode",
         "Commit",
-        "Documentation",
         "KnowledgeDomain"
       ],
       "props": {
@@ -1272,132 +1246,6 @@
         "access_count": 1,
         "last_accessed": "2026-02-03T21:50:42.139813",
         "created_at": "2026-02-03T21:50:42.139813",
-        "decay_rate": 0.01
-      }
-    },
-    "6b1212bc": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramgenesisDomain"
-      ],
-      "props": {
-        "title": "feat(engram-genesis): add backup migration system for /init-engram",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-feat-engram-genesis-add-backup-migration-system-fo-6b1212bc.md",
-        "summary": "feat(engram-genesis): add backup migration system for /init-engram Implements intelligent backup detection, analysis and migration: Files changed: .claude/commands/init-engram.md, .claude/settings....",
-        "commit_hash": "c76aa256",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram-genesis",
-        "files_count": 5
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:50:42.139980",
-        "created_at": "2026-02-03T21:50:42.139980",
-        "decay_rate": 0.01
-      }
-    },
-    "95f0b5bb": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-docs-knowledge-record-architectural-analysis-on-or-95f0b5bb.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Document analysis of sequential vs parallel execution model Files changed: .claude/evolution-activations.json, .claude/knowle...",
-        "commit_hash": "6d7c3077",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:50:42.140111",
-        "created_at": "2026-02-03T21:50:42.140111",
-        "decay_rate": 0.01
-      }
-    },
-    "1dd0c7c3": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "chore: add .gitignore and update knowledge after /learn",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-chore-add-gitignore-and-update-knowledge-after-lea-1dd0c7c3.md",
-        "summary": "chore: add .gitignore and update knowledge after /learn - Add .gitignore for __pycache__, IDE files, env files Files changed: .claude/evolution-activations.json, .claude/knowledge/context/CURRENT_S...",
-        "commit_hash": "774b6c58",
-        "date": "2026-02-03",
-        "commit_type": "chore",
-        "scope": null,
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:50:42.140240",
-        "created_at": "2026-02-03T21:50:42.140240",
-        "decay_rate": 0.01
-      }
-    },
-    "5fe44cd3": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): complete /init-engram with populated knowledge and new skill",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-feat-engram-complete-init-engram-with-populated-kn-5fe44cd3.md",
-        "summary": "feat(engram): complete /init-engram with populated knowledge and new skill - Populate all 6 knowledge files with real project data: Files changed: .claude/.engram-version, .claude/agents/architect....",
-        "commit_hash": "264072a6",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:50:42.140359",
-        "created_at": "2026-02-03T21:50:42.140359",
-        "decay_rate": 0.01
-      }
-    },
-    "be4a3ab1": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "a",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-03-a-be4a3ab1.md",
-        "summary": "a Files changed: N/A",
-        "commit_hash": "bbcc8777",
-        "date": "2026-02-03",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 0
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:50:42.140486",
-        "created_at": "2026-02-03T21:50:42.140486",
         "decay_rate": 0.01
       }
     },
@@ -1476,8 +1324,8 @@
     },
     "d1a007bc": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "setup",
@@ -1500,10 +1348,10 @@
     },
     "37d5e104": {
       "labels": [
-        "Episode",
+        "BrainDomain",
         "Commit",
-        "Feature",
-        "BrainDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(brain): add /recall command for querying organizational memory",
@@ -1526,10 +1374,10 @@
     },
     "812f0768": {
       "labels": [
-        "Episode",
-        "Commit",
         "Documentation",
-        "KnowledgeDomain"
+        "KnowledgeDomain",
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "docs(knowledge): record architectural analysis on orchestration model",
@@ -1552,10 +1400,10 @@
     },
     "9a2c7d95": {
       "labels": [
-        "Episode",
         "Commit",
-        "Feature",
-        "EngramDomain"
+        "EngramDomain",
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
@@ -1576,416 +1424,6 @@
         "decay_rate": 0.01
       }
     },
-    "18847d38": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-18847d38.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:00.826763",
-        "created_at": "2026-02-04T01:39:00.826763",
-        "decay_rate": 0.01
-      }
-    },
-    "01131eb7": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-01131eb7.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:05.688573",
-        "created_at": "2026-02-04T01:39:05.688573",
-        "decay_rate": 0.01
-      }
-    },
-    "41b69066": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-41b69066.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:05.689027",
-        "created_at": "2026-02-04T01:39:05.689027",
-        "decay_rate": 0.01
-      }
-    },
-    "b575dae2": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-b575dae2.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:05.689177",
-        "created_at": "2026-02-04T01:39:05.689177",
-        "decay_rate": 0.01
-      }
-    },
-    "acc3c8c1": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-acc3c8c1.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:05.689310",
-        "created_at": "2026-02-04T01:39:05.689310",
-        "decay_rate": 0.01
-      }
-    },
-    "1e876336": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-1e876336.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:05.689426",
-        "created_at": "2026-02-04T01:39:05.689426",
-        "decay_rate": 0.01
-      }
-    },
-    "513df767": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-513df767.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:07.604707",
-        "created_at": "2026-02-04T01:39:07.604707",
-        "decay_rate": 0.01
-      }
-    },
-    "73687f19": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-73687f19.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:07.605149",
-        "created_at": "2026-02-04T01:39:07.605149",
-        "decay_rate": 0.01
-      }
-    },
-    "af8894f3": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-af8894f3.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:07.605300",
-        "created_at": "2026-02-04T01:39:07.605300",
-        "decay_rate": 0.01
-      }
-    },
-    "b27578dd": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-b27578dd.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:07.605430",
-        "created_at": "2026-02-04T01:39:07.605430",
-        "decay_rate": 0.01
-      }
-    },
-    "7425b352": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-7425b352.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:07.605546",
-        "created_at": "2026-02-04T01:39:07.605546",
-        "decay_rate": 0.01
-      }
-    },
-    "1b0bbe62": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-1b0bbe62.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:14.545828",
-        "created_at": "2026-02-04T01:39:14.545828",
-        "decay_rate": 0.01
-      }
-    },
-    "68b77b30": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-68b77b30.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:14.546530",
-        "created_at": "2026-02-04T01:39:14.546530",
-        "decay_rate": 0.01
-      }
-    },
-    "58764d5e": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-58764d5e.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:14.546687",
-        "created_at": "2026-02-04T01:39:14.546687",
-        "decay_rate": 0.01
-      }
-    },
-    "929387b3": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-929387b3.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:14.546818",
-        "created_at": "2026-02-04T01:39:14.546818",
-        "decay_rate": 0.01
-      }
-    },
-    "e80219ac": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-e80219ac.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:14.546933",
-        "created_at": "2026-02-04T01:39:14.546933",
-        "decay_rate": 0.01
-      }
-    },
     "3a7a1d3a": {
       "labels": [
         "Pattern",
@@ -2003,518 +1441,6 @@
         "last_accessed": "2026-02-04T01:39:25.234144",
         "created_at": "2026-02-04T01:39:25.234144",
         "decay_rate": 0.005
-      }
-    },
-    "38e7e5af": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-38e7e5af.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:52.607678",
-        "created_at": "2026-02-04T01:39:52.607678",
-        "decay_rate": 0.01
-      }
-    },
-    "af28d5a9": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-af28d5a9.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:52.608335",
-        "created_at": "2026-02-04T01:39:52.608335",
-        "decay_rate": 0.01
-      }
-    },
-    "a853f527": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-a853f527.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:52.608565",
-        "created_at": "2026-02-04T01:39:52.608565",
-        "decay_rate": 0.01
-      }
-    },
-    "d206c427": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-d206c427.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:52.608713",
-        "created_at": "2026-02-04T01:39:52.608713",
-        "decay_rate": 0.01
-      }
-    },
-    "9d011267": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-9d011267.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:39:52.608830",
-        "created_at": "2026-02-04T01:39:52.608830",
-        "decay_rate": 0.01
-      }
-    },
-    "1bd620fb": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-1bd620fb.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:31.187261",
-        "created_at": "2026-02-04T01:40:31.187261",
-        "decay_rate": 0.01
-      }
-    },
-    "36b94afc": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-36b94afc.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:31.187839",
-        "created_at": "2026-02-04T01:40:31.187839",
-        "decay_rate": 0.01
-      }
-    },
-    "45956986": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-45956986.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:31.188051",
-        "created_at": "2026-02-04T01:40:31.188051",
-        "decay_rate": 0.01
-      }
-    },
-    "5ed1b49e": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-5ed1b49e.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:31.188196",
-        "created_at": "2026-02-04T01:40:31.188196",
-        "decay_rate": 0.01
-      }
-    },
-    "327ffc2a": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-327ffc2a.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:31.188325",
-        "created_at": "2026-02-04T01:40:31.188325",
-        "decay_rate": 0.01
-      }
-    },
-    "b8ed37f9": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-b8ed37f9.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:48.720175",
-        "created_at": "2026-02-04T01:40:48.720175",
-        "decay_rate": 0.01
-      }
-    },
-    "0561b4fd": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-0561b4fd.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:48.720653",
-        "created_at": "2026-02-04T01:40:48.720653",
-        "decay_rate": 0.01
-      }
-    },
-    "cfb0a071": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-cfb0a071.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:48.720800",
-        "created_at": "2026-02-04T01:40:48.720800",
-        "decay_rate": 0.01
-      }
-    },
-    "5e88239a": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-5e88239a.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:48.720927",
-        "created_at": "2026-02-04T01:40:48.720927",
-        "decay_rate": 0.01
-      }
-    },
-    "f83ee31c": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-f83ee31c.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:40:48.721038",
-        "created_at": "2026-02-04T01:40:48.721038",
-        "decay_rate": 0.01
-      }
-    },
-    "3831c0b2": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-3831c0b2.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:46:35.908703",
-        "created_at": "2026-02-04T01:46:35.908703",
-        "decay_rate": 0.01
-      }
-    },
-    "4923d0e7": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-4923d0e7.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:46:35.909371",
-        "created_at": "2026-02-04T01:46:35.909371",
-        "decay_rate": 0.01
-      }
-    },
-    "aa07898a": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-aa07898a.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:46:35.909600",
-        "created_at": "2026-02-04T01:46:35.909600",
-        "decay_rate": 0.01
-      }
-    },
-    "34209fc8": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-34209fc8.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:46:35.909761",
-        "created_at": "2026-02-04T01:46:35.909761",
-        "decay_rate": 0.01
-      }
-    },
-    "6fa1febd": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-6fa1febd.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:46:35.909931",
-        "created_at": "2026-02-04T01:46:35.909931",
-        "decay_rate": 0.01
       }
     },
     "9118ae21": {
@@ -2580,9 +1506,10 @@
     },
     "fe7d60c8": {
       "labels": [
-        "Concept",
+        "Glossary",
         "Inspiration",
-        "Research"
+        "Research",
+        "Concept"
       ],
       "props": {
         "title": "BOSS (Bootstrap Your Own Skills)",
@@ -2600,8 +1527,8 @@
     },
     "a1396a0f": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "update readme",
@@ -2624,10 +1551,10 @@
     },
     "16c24a89": {
       "labels": [
-        "Episode",
-        "Commit",
         "Documentation",
-        "ReadmeDomain"
+        "ReadmeDomain",
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "docs(readme): update to v3 with organizational brain",
@@ -2650,8 +1577,8 @@
     },
     "81dd2eb4": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "logo",
@@ -2676,8 +1603,8 @@
       "labels": [
         "Episode",
         "Commit",
-        "Feature",
-        "KnowledgeDomain"
+        "KnowledgeDomain",
+        "Feature"
       ],
       "props": {
         "title": "feat(knowledge): batch learn from all 11 commits + multi-project setup",
@@ -2698,291 +1625,12 @@
         "decay_rate": 0.01
       }
     },
-    "1f28e04e": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-setup-1f28e04e.md",
-        "summary": "setup Files changed: setup.sh",
-        "commit_hash": "367a4c1a",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.418898",
-        "created_at": "2026-02-04T03:52:05.418898",
-        "decay_rate": 0.01
-      }
-    },
-    "edd2c5af": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): add /recall command for querying organizational memory",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-add-recall-command-for-querying-organiz-edd2c5af.md",
-        "summary": "feat(brain): add /recall command for querying organizational memory Implements brain query interface: Files changed: .claude/brain/recall.py, .claude/commands/recall.md, CLAUDE.md, core/commands/re...",
-        "commit_hash": "5db29c67",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 4
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.418993",
-        "created_at": "2026-02-04T03:52:05.418993",
-        "decay_rate": 0.01
-      }
-    },
-    "6bd284eb": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): record architectural analysis on orchestration model",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-record-architectural-analysis-on-or-6bd284eb.md",
-        "summary": "docs(knowledge): record architectural analysis on orchestration model - Update PRIORITY_MATRIX.md with completed tasks in cemetery Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/gr...",
-        "commit_hash": "7f7f2215",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 8
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.419099",
-        "created_at": "2026-02-04T03:52:05.419099",
-        "decay_rate": 0.01
-      }
-    },
-    "197e18a0": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "EngramDomain"
-      ],
-      "props": {
-        "title": "feat(engram): upgrade to v3.0.0 with complete metacircular system",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-engram-upgrade-to-v3-0-0-with-complete-metaci-197e18a0.md",
-        "summary": "feat(engram): upgrade to v3.0.0 with complete metacircular system Major version upgrade with organizational brain and complete component set: Files changed: .claude/.engram-version, .claude/brain/c...",
-        "commit_hash": "cb64fd73",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "engram",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.419221",
-        "created_at": "2026-02-04T03:52:05.419221",
-        "decay_rate": 0.01
-      }
-    },
-    "1690b3ca": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "BrainDomain"
-      ],
-      "props": {
-        "title": "feat(brain): implement organizational brain with graph and embeddings",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-brain-implement-organizational-brain-with-gra-1690b3ca.md",
-        "summary": "feat(brain): implement organizational brain with graph and embeddings Complete implementation of the organizational memory system: Files changed: .claude/brain/README.md, .claude/brain/brain.py, .c...",
-        "commit_hash": "d94adec4",
-        "date": "2026-02-03",
-        "commit_type": "feat",
-        "scope": "brain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.419341",
-        "created_at": "2026-02-04T03:52:05.419341",
-        "decay_rate": 0.01
-      }
-    },
-    "957a9ce6": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "docs(knowledge): add brain architecture ADRs and update state",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-knowledge-add-brain-architecture-adrs-and-upd-957a9ce6.md",
-        "summary": "docs(knowledge): add brain architecture ADRs and update state - ADR-008: Git-Native Architecture with Knowledge Graph Files changed: .claude/evolution-activations.json, .claude/knowledge/context/CU...",
-        "commit_hash": "5da6535c",
-        "date": "2026-02-03",
-        "commit_type": "docs",
-        "scope": "knowledge",
-        "files_count": 6
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T03:52:05.419447",
-        "created_at": "2026-02-04T03:52:05.419447",
-        "decay_rate": 0.01
-      }
-    },
-    "279fee03": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "DomainDomain"
-      ],
-      "props": {
-        "title": "feat(domain): add /domain command and proactive usage instructions",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-domain-add-domain-command-and-proactive-usage-279fee03.md",
-        "summary": "feat(domain): add /domain command and proactive usage instructions - Create /domain command for domain knowledge analysis Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings....",
-        "commit_hash": "bfc9ef12",
-        "date": "2026-02-04",
-        "commit_type": "feat",
-        "scope": "domain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T04:47:04.007942",
-        "created_at": "2026-02-04T04:47:04.007942",
-        "decay_rate": 0.01
-      }
-    },
-    "29f506e4": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "update readme",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-update-readme-29f506e4.md",
-        "summary": "update readme Files changed: README.md",
-        "commit_hash": "53c9fab7",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T04:47:04.008483",
-        "created_at": "2026-02-04T04:47:04.008483",
-        "decay_rate": 0.01
-      }
-    },
-    "e6d65084": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "ReadmeDomain"
-      ],
-      "props": {
-        "title": "docs(readme): update to v3 with organizational brain",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-readme-update-to-v3-with-organizational-brain-e6d65084.md",
-        "summary": "docs(readme): update to v3 with organizational brain - Update title and badges to v3.0.0 Files changed: README.md",
-        "commit_hash": "a0de94bf",
-        "date": "2026-02-04",
-        "commit_type": "docs",
-        "scope": "readme",
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T04:47:04.008645",
-        "created_at": "2026-02-04T04:47:04.008645",
-        "decay_rate": 0.01
-      }
-    },
-    "9d48a9da": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "logo",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-logo-9d48a9da.md",
-        "summary": "logo Files changed: logo.svg",
-        "commit_hash": "41f2ea82",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T04:47:04.008771",
-        "created_at": "2026-02-04T04:47:04.008771",
-        "decay_rate": 0.01
-      }
-    },
-    "d6049aff": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "KnowledgeDomain"
-      ],
-      "props": {
-        "title": "feat(knowledge): batch learn from all 11 commits + multi-project setup",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-knowledge-batch-learn-from-all-11-commits-mul-d6049aff.md",
-        "summary": "feat(knowledge): batch learn from all 11 commits + multi-project setup Process all repository commits retroactively via parallel /learn agents: Files changed: .claude/brain/cognitive-log.jsonl, .cl...",
-        "commit_hash": "a66232ab",
-        "date": "2026-02-04",
-        "commit_type": "feat",
-        "scope": "knowledge",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T04:47:04.008880",
-        "created_at": "2026-02-04T04:47:04.008880",
-        "decay_rate": 0.01
-      }
-    },
     "75a55c6d": {
       "labels": [
+        "DomainDomain",
+        "Commit",
         "Episode",
-        "Feature",
-        "DomainDomain"
+        "Feature"
       ],
       "props": {
         "title": "feat(domain): add /domain command and proactive usage instructions",
@@ -3016,10 +1664,10 @@
     },
     "99286bf3": {
       "labels": [
-        "Episode",
-        "Commit",
         "Documentation",
-        "ReadmeDomain"
+        "ReadmeDomain",
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "docs(readme): fix inaccuracies and update for batch-setup separation",
@@ -3042,10 +1690,10 @@
     },
     "cd6cd21f": {
       "labels": [
-        "Episode",
+        "LearnDomain",
         "Commit",
-        "Feature",
-        "LearnDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(learn): add automatic embeddings regeneration to /learn workflow",
@@ -3068,10 +1716,10 @@
     },
     "df4a7d40": {
       "labels": [
-        "Episode",
-        "Commit",
+        "SetupDomain",
         "Refactor",
-        "SetupDomain"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "refactor(setup): separate batch functionality into dedicated script",
@@ -3094,8 +1742,8 @@
     },
     "27980a2a": {
       "labels": [
-        "Episode",
-        "Commit"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "chore: remove duplicate orchestration-protocol from project-analyzer",
@@ -3118,10 +1766,10 @@
     },
     "588628c9": {
       "labels": [
-        "Episode",
-        "Commit",
         "Documentation",
-        "DomainDomain"
+        "DomainDomain",
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "docs(domain): expand domain knowledge with business rules and entities",
@@ -3144,9 +1792,9 @@
     },
     "6721d264": {
       "labels": [
-        "Episode",
+        "KnowledgeDomain",
         "Commit",
-        "KnowledgeDomain"
+        "Episode"
       ],
       "props": {
         "title": "chore(knowledge): update brain state after /learn session",
@@ -3165,126 +1813,6 @@
         "last_accessed": "2026-02-04T19:16:46.724801",
         "created_at": "2026-02-04T19:16:46.724801",
         "decay_rate": 0.01
-      }
-    },
-    "2626339f": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Feature",
-        "DomainDomain"
-      ],
-      "props": {
-        "title": "feat(domain): add /domain command and proactive usage instructions",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-feat-domain-add-domain-command-and-proactive-usage-2626339f.md",
-        "summary": "feat(domain): add /domain command and proactive usage instructions - Create /domain command for domain knowledge analysis Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings....",
-        "commit_hash": "bfc9ef12",
-        "date": "2026-02-04",
-        "commit_type": "feat",
-        "scope": "domain",
-        "files_count": 10
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T19:16:46.724953",
-        "created_at": "2026-02-04T19:16:46.724953",
-        "decay_rate": 0.01
-      }
-    },
-    "d1129e9b": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "update readme",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-update-readme-d1129e9b.md",
-        "summary": "update readme Files changed: README.md",
-        "commit_hash": "53c9fab7",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T19:16:46.725234",
-        "created_at": "2026-02-04T19:16:46.725234",
-        "decay_rate": 0.01
-      }
-    },
-    "64448474": {
-      "labels": [
-        "Episode",
-        "Commit",
-        "Documentation",
-        "ReadmeDomain"
-      ],
-      "props": {
-        "title": "docs(readme): update to v3 with organizational brain",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-docs-readme-update-to-v3-with-organizational-brain-64448474.md",
-        "summary": "docs(readme): update to v3 with organizational brain - Update title and badges to v3.0.0 Files changed: README.md",
-        "commit_hash": "a0de94bf",
-        "date": "2026-02-04",
-        "commit_type": "docs",
-        "scope": "readme",
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T19:16:46.725447",
-        "created_at": "2026-02-04T19:16:46.725447",
-        "decay_rate": 0.01
-      }
-    },
-    "b1977c22": {
-      "labels": [
-        "Episode",
-        "Commit"
-      ],
-      "props": {
-        "title": "logo",
-        "author": "@thiagogaia",
-        "content_path": "memory/episodes/2026-02-04-logo-b1977c22.md",
-        "summary": "logo Files changed: logo.svg",
-        "commit_hash": "41f2ea82",
-        "date": "2026-02-04",
-        "commit_type": "other",
-        "scope": null,
-        "files_count": 1
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T19:16:46.725644",
-        "created_at": "2026-02-04T19:16:46.725644",
-        "decay_rate": 0.01
-      }
-    },
-    "4a337b6c": {
-      "labels": [
-        "Decision",
-        "ADR",
-        "Refactor"
-      ],
-      "props": {
-        "title": "ADR-012: Separação setup.sh e batch-setup.sh",
-        "author": "@engram",
-        "content_path": "memory/decisions/2026-02-04-adr-012-separa-o-setup-sh-e-batch-setup-sh-4a337b6c.md",
-        "summary": "Decisão de reverter feature creep no setup.sh, separando lógica de batch em arquivo dedicado. Unix philosophy: do one thing well. setup.sh 783 linhas (single project), batch-setup.sh 177 linhas (wr..."
-      },
-      "memory": {
-        "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T19:17:48.634174",
-        "created_at": "2026-02-04T19:17:48.634174",
-        "decay_rate": 0.001
       }
     },
     "223940a2": {
@@ -3309,10 +1837,10 @@
     },
     "35278641": {
       "labels": [
-        "Episode",
-        "Commit",
+        "CoreDomain",
         "Refactor",
-        "CoreDomain"
+        "Commit",
+        "Episode"
       ],
       "props": {
         "title": "refactor(core): add infra detection and remove orphan extras",
@@ -3335,10 +1863,10 @@
     },
     "3ee40d0e": {
       "labels": [
-        "Episode",
         "Commit",
-        "Feature",
-        "ExtrasDomain"
+        "ExtrasDomain",
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(extras): add infra-expert agent for DevOps troubleshooting",
@@ -3361,10 +1889,10 @@
     },
     "a3095845": {
       "labels": [
-        "Episode",
         "Commit",
-        "Feature",
-        "ExtrasDomain"
+        "ExtrasDomain",
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(extras): add 4 niche skills with real-world content",
@@ -3387,10 +1915,10 @@
     },
     "3742d3fd": {
       "labels": [
-        "Episode",
+        "GenesisDomain",
         "Commit",
-        "Feature",
-        "GenesisDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(genesis): use pre-built templates before generating generic scaffolds",
@@ -3413,10 +1941,10 @@
     },
     "f3d73e0a": {
       "labels": [
-        "Episode",
+        "InitengramDomain",
         "Commit",
-        "Feature",
-        "InitengramDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(init-engram): add template skills staging and evaluation flow",
@@ -3435,6 +1963,1528 @@
         "last_accessed": "2026-02-05T16:04:54.895550",
         "created_at": "2026-02-05T16:04:54.895550",
         "decay_rate": 0.01
+      }
+    },
+    "79abc0a5": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-000: Inspiração Arquitetural (Voyager + DGM + BOSS)",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-05-adr-000-inspira-o-arquitetural-voyager-dgm-boss--79abc0a5.md",
+        "summary": "Contexto Antes de criar o Engram v2, foi realizada pesquisa de soluções de mercado para sistemas auto-alimentados. Três projetos se destacaram como inspiração arquitetural: 1. Voyager (NVIDIA/MineD...",
+        "adr_id": "ADR-000",
+        "status": "✅ Aceito",
+        "date": "2026-02-03 (commit bbcc8777 - inicial)"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.872977",
+        "created_at": "2026-02-05T17:05:19.872977",
+        "decay_rate": 0.001
+      }
+    },
+    "f045840e": {
+      "labels": [
+        "ADR",
+        "Refactor",
+        "Decision"
+      ],
+      "props": {
+        "title": "ADR-012: Separação setup.sh e batch-setup.sh",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-05-adr-012-separa-o-setup-sh-e-batch-setup-sh-f045840e.md",
+        "summary": "Contexto O setup.sh acumulou funcionalidade de batch (múltiplos diretórios, `--batch` flag, progress indicator, summary) que aumentou o arquivo em +175 linhas (783 → 958) e misturou lógica de loop ...",
+        "adr_id": "ADR-012",
+        "status": "✅ Aceito",
+        "date": "2026-02-04 (commit bbcf725)"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.873202",
+        "created_at": "2026-02-05T17:05:19.873202",
+        "decay_rate": 0.001
+      }
+    },
+    "domain-api": {
+      "labels": [
+        "Domain"
+      ],
+      "props": {
+        "name": "api"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 0,
+        "last_accessed": "2026-02-05T17:05:19.873325",
+        "created_at": "2026-02-05T17:05:19.873325",
+        "decay_rate": 0.0001
+      }
+    },
+    "53e1ed87": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-013: Remoção de Componentes Órfãos (Ciclo Ouroboros)",
+        "author": "@engram",
+        "content_path": "memory/decisions/2026-02-05-adr-013-remo-o-de-componentes-rf-os-ciclo-ouroboro-53e1ed87.md",
+        "summary": "Contexto Análise da ANALISE_IMPLEMENTA.md revelou que 3 componentes não participavam do ciclo ouroboros: - `execution-pipeline`: duplicava /plan→/review→/commit→/learn, assumia Docker obrigatório -...",
+        "adr_id": "ADR-013",
+        "status": "✅ Aceito",
+        "date": "2026-02-05"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.873388",
+        "created_at": "2026-02-05T17:05:19.873388",
+        "decay_rate": 0.001
+      }
+    },
+    "99d27b58": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Automatic Curriculum",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-automatic-curriculum-99d27b58.md",
+        "summary": "Conceito do Voyager - sistema que propõe tarefas baseado no nível atual. Roadmap futuro para Engram."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.874974",
+        "created_at": "2026-02-05T17:05:19.874974",
+        "decay_rate": 0.003
+      }
+    },
+    "ac9d3226": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Batch Mode",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-batch-mode-ac9d3226.md",
+        "summary": "Modo de instalação sem prompts interativos (--batch ou -y). Confirma backups automaticamente."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875082",
+        "created_at": "2026-02-05T17:05:19.875082",
+        "decay_rate": 0.003
+      }
+    },
+    "a23868a8": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Brain (Cérebro Organizacional)",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-brain-c-rebro-organizacional--a23868a8.md",
+        "summary": "Sistema de memória com grafo de conhecimento em `.claude/brain/`. Usa NetworkX para nós e arestas, embeddings para busca semântica."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875292",
+        "created_at": "2026-02-05T17:05:19.875292",
+        "decay_rate": 0.003
+      }
+    },
+    "2e6730d3": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Cognitive Job",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-cognitive-job-2e6730d3.md",
+        "summary": "Processo periódico de manutenção do cérebro. Três tipos: consolidate (semanal), decay (diário), archive (sob demanda)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875397",
+        "created_at": "2026-02-05T17:05:19.875397",
+        "decay_rate": 0.003
+      }
+    },
+    "46ffe86c": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Consolidação",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-consolida-o-46ffe86c.md",
+        "summary": "Processo cognitivo semanal. Fortalece conexões entre nós co-acessados, detecta padrões emergentes."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875588",
+        "created_at": "2026-02-05T17:05:19.875588",
+        "decay_rate": 0.003
+      }
+    },
+    "6c8589ea": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Content Type",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-content-type-6c8589ea.md",
+        "summary": "Classificação do tipo de conteúdo baseado nos labels. Valores: \"episodes\", \"concepts\", \"patterns\", \"decisions\", \"people\", \"domains\"."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875683",
+        "created_at": "2026-02-05T17:05:19.875683",
+        "decay_rate": 0.003
+      }
+    },
+    "475dab4c": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Curva de Ebbinghaus",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-curva-de-ebbinghaus-475dab4c.md",
+        "summary": "Modelo de esquecimento. strength = e^(-decay_rate × dias). Memórias menos acessadas enfraquecem gradualmente."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875784",
+        "created_at": "2026-02-05T17:05:19.875784",
+        "decay_rate": 0.003
+      }
+    },
+    "76293dca": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Darwin Gödel Machine (DGM)",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-darwin-g-del-machine-dgm--76293dca.md",
+        "summary": "Agente Sakana AI que reescreve seu próprio código-fonte. Mantém arquivo evolutivo. Inspiração para capacidade metacircular do Engram."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875881",
+        "created_at": "2026-02-05T17:05:19.875881",
+        "decay_rate": 0.003
+      }
+    },
+    "5f110764": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Decay (Esquecimento)",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-decay-esquecimento--5f110764.md",
+        "summary": "Processo cognitivo diário. Aplica curva de Ebbinghaus, marca memórias fracas para possível arquivo."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.875976",
+        "created_at": "2026-02-05T17:05:19.875976",
+        "decay_rate": 0.003
+      }
+    },
+    "4d950964": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Domain Keywords",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-domain-keywords-4d950964.md",
+        "summary": "Dicionário de palavras-chave para inferir domínio automático. Domínios: auth, payments, database, api, frontend, infra, testing."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876069",
+        "created_at": "2026-02-05T17:05:19.876069",
+        "decay_rate": 0.003
+      }
+    },
+    "0d4acc23": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Embeddings",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-embeddings-0d4acc23.md",
+        "summary": "Representação vetorial de texto para busca semântica. Usa sentence-transformers (local) ou OpenAI API."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876159",
+        "created_at": "2026-02-05T17:05:19.876159",
+        "decay_rate": 0.003
+      }
+    },
+    "72d3ebff": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Experience Replay",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-experience-replay-72d3ebff.md",
+        "summary": "Técnica de ML - reusar experiências passadas como exemplos. No Engram: EXPERIENCE_LIBRARY.md."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876430",
+        "created_at": "2026-02-05T17:05:19.876430",
+        "decay_rate": 0.003
+      }
+    },
+    "1d141a87": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "FallbackGraph",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-fallbackgraph-1d141a87.md",
+        "summary": "Implementação simplificada de grafo quando NetworkX não está disponível. Fornece operações básicas (add_node, add_edge, successors, predecessors) sem dependências externas."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876521",
+        "created_at": "2026-02-05T17:05:19.876521",
+        "decay_rate": 0.003
+      }
+    },
+    "362bd1b1": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Frontmatter",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-frontmatter-362bd1b1.md",
+        "summary": "Metadados YAML no início de arquivos Markdown (entre ---). Contém name, description, tools, etc."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876718",
+        "created_at": "2026-02-05T17:05:19.876718",
+        "decay_rate": 0.003
+      }
+    },
+    "802e1c1d": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Health Score",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-health-score-802e1c1d.md",
+        "summary": "Métrica de saúde do cérebro: 1.0 - (weak_count / total_nodes). Status: healthy (>=0.8), needs_attention (>=0.5), critical (<0.5)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.876910",
+        "created_at": "2026-02-05T17:05:19.876910",
+        "decay_rate": 0.003
+      }
+    },
+    "480b4335": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Health Status",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-health-status-480b4335.md",
+        "summary": "Estado de saúde de componente baseado em uso. Ícones: verde (ativo), amarelo (stale), caixa (archived), branco (nunca usado)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.877004",
+        "created_at": "2026-02-05T17:05:19.877004",
+        "decay_rate": 0.003
+      }
+    },
+    "90935be0": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Memory Labels",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-memory-labels-90935be0.md",
+        "summary": "Tipos de memória no grafo: Episode (episódica), Concept (semântica), Pattern (procedural), Decision (ADR), Person, Domain."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.877375",
+        "created_at": "2026-02-05T17:05:19.877375",
+        "decay_rate": 0.003
+      }
+    },
+    "eadcc06d": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Memory State",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-memory-state-eadcc06d.md",
+        "summary": "Estado de uma memória no grafo, contendo: strength (força), access_count (vezes acessada), last_accessed (último acesso), created_at (criação), decay_rate (taxa de esquecimento)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.877468",
+        "created_at": "2026-02-05T17:05:19.877468",
+        "decay_rate": 0.003
+      }
+    },
+    "382d705f": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Monorepo",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-monorepo-382d705f.md",
+        "summary": "Projeto com múltiplos pacotes/workspaces em um repositório. Detectado via pnpm-workspace.yaml ou lerna.json."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.877643",
+        "created_at": "2026-02-05T17:05:19.877643",
+        "decay_rate": 0.003
+      }
+    },
+    "5fc2aceb": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Protected Labels",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-protected-labels-5fc2aceb.md",
+        "summary": "Labels de nós que não são arquivados mesmo com baixa strength: Person, Domain, Decision."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.877916",
+        "created_at": "2026-02-05T17:05:19.877916",
+        "decay_rate": 0.003
+      }
+    },
+    "6e3e1b2f": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Reinforce",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-reinforce-6e3e1b2f.md",
+        "summary": "Processo de fortalecimento de memória acessada. Incrementa access_count, atualiza last_accessed, aumenta strength em 5% (capped em 1.0)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.878016",
+        "created_at": "2026-02-05T17:05:19.878016",
+        "decay_rate": 0.003
+      }
+    },
+    "2acb0005": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Scaffold",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-scaffold-2acb0005.md",
+        "summary": "Estrutura inicial gerada para um componente. Contém placeholders [TODO:] para customização."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.878216",
+        "created_at": "2026-02-05T17:05:19.878216",
+        "decay_rate": 0.003
+      }
+    },
+    "83642dad": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Self-Verification",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-self-verification-83642dad.md",
+        "summary": "Conceito do Voyager - só commita skill se verificou sucesso. No Engram: validate.py obrigatório antes de register.py."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.878697",
+        "created_at": "2026-02-05T17:05:19.878697",
+        "decay_rate": 0.003
+      }
+    },
+    "415f4eaa": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Skill Library",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-skill-library-415f4eaa.md",
+        "summary": "Conceito do Voyager - coleção de skills indexados por embedding semântico. No Engram: `.claude/skills/` + manifest.json."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.878899",
+        "created_at": "2026-02-05T17:05:19.878899",
+        "decay_rate": 0.003
+      }
+    },
+    "48f2d20b": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Spreading Activation",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-spreading-activation-48f2d20b.md",
+        "summary": "Técnica de busca em grafos. A partir de nós semente, propaga ativação pelos vizinhos com decay. Encontra conhecimento relacionado indiretamente."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.878991",
+        "created_at": "2026-02-05T17:05:19.878991",
+        "decay_rate": 0.003
+      }
+    },
+    "46c9616c": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Stack Detection",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-stack-detection-46c9616c.md",
+        "summary": "Processo de detecção automática da stack do projeto via package.json, requirements.txt, Cargo.toml, etc."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.879084",
+        "created_at": "2026-02-05T17:05:19.879084",
+        "decay_rate": 0.003
+      }
+    },
+    "c71281a9": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Stale Threshold",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-stale-threshold-c71281a9.md",
+        "summary": "Número de dias sem uso após o qual um componente é considerado stale. Default: 14 dias."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.879177",
+        "created_at": "2026-02-05T17:05:19.879177",
+        "decay_rate": 0.003
+      }
+    },
+    "872c0f95": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Template Stack",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-template-stack-872c0f95.md",
+        "summary": "Arquivo `.skill.tmpl` em `templates/skills/` que serve como ponto de partida para geração de skill customizado por framework."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.879271",
+        "created_at": "2026-02-05T17:05:19.879271",
+        "decay_rate": 0.003
+      }
+    },
+    "eb333c9a": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Voyager",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-voyager-eb333c9a.md",
+        "summary": "Projeto NVIDIA/MineDojo de agente que joga Minecraft e constrói sua própria biblioteca de skills. Inspiração para skill library composicional do Engram."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.879372",
+        "created_at": "2026-02-05T17:05:19.879372",
+        "decay_rate": 0.003
+      }
+    },
+    "fea18c15": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "WeakMemory",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-weakmemory-fea18c15.md",
+        "summary": "Label adicionado a nós com strength < 0.3. Indica memória candidata a consolidação ou arquivo."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.879461",
+        "created_at": "2026-02-05T17:05:19.879461",
+        "decay_rate": 0.003
+      }
+    },
+    "c047e955": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-011",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-011-c047e955.md",
+        "summary": "Nome de skill DEVE corresponder ao nome do diretório   - Fonte: `validate.py:98-99`",
+        "rule_id": "RN-011"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880416",
+        "created_at": "2026-02-05T17:05:19.880416",
+        "decay_rate": 0.003
+      }
+    },
+    "12d4c5b1": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-012",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-012-12d4c5b1.md",
+        "summary": "Scripts dentro de skill DEVEM ter linha shebang (#!)   - Fonte: `validate.py:123-124`",
+        "rule_id": "RN-012"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880514",
+        "created_at": "2026-02-05T17:05:19.880514",
+        "decay_rate": 0.003
+      }
+    },
+    "63c9a2d9": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-013",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-013-63c9a2d9.md",
+        "summary": "Scripts DEVEM ter permissão de execução (chmod +x)   - Fonte: `validate.py:125-126`",
+        "rule_id": "RN-013"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880616",
+        "created_at": "2026-02-05T17:05:19.880616",
+        "decay_rate": 0.003
+      }
+    },
+    "2ad2d9da": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-014",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-014-2ad2d9da.md",
+        "summary": "Arquivos proibidos em skill: README.md, CHANGELOG.md, INSTALLATION.md, INSTALL.md, QUICK_REFERENCE.md   - Fonte: `validate.py:135-138`",
+        "rule_id": "RN-014"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880700",
+        "created_at": "2026-02-05T17:05:19.880700",
+        "decay_rate": 0.003
+      }
+    },
+    "5e51d95c": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-015",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-015-5e51d95c.md",
+        "summary": "Body de agent DEVE conter seção \"Regras\" ou \"Rules\"   - Fonte: `validate.py:184-185`",
+        "rule_id": "RN-015"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880787",
+        "created_at": "2026-02-05T17:05:19.880787",
+        "decay_rate": 0.003
+      }
+    },
+    "3d5f0db0": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-016",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-016-3d5f0db0.md",
+        "summary": "Body de agent NÃO DEVE exceder 300 linhas   - Fonte: `validate.py:188-189`",
+        "rule_id": "RN-016"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880876",
+        "created_at": "2026-02-05T17:05:19.880876",
+        "decay_rate": 0.003
+      }
+    },
+    "86bece09": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-017",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-017-86bece09.md",
+        "summary": "Commands NÃO DEVEM ter frontmatter YAML   - Fonte: `validate.py:206-207`",
+        "rule_id": "RN-017"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.880960",
+        "created_at": "2026-02-05T17:05:19.880960",
+        "decay_rate": 0.003
+      }
+    },
+    "e12afc4a": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-018",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-018-e12afc4a.md",
+        "summary": "Commands DEVEM ter conteúdo mínimo de 20 caracteres   - Fonte: `validate.py:210-211`",
+        "rule_id": "RN-018"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881041",
+        "created_at": "2026-02-05T17:05:19.881041",
+        "decay_rate": 0.003
+      }
+    },
+    "8c20b6a9": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-019",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-019-8c20b6a9.md",
+        "summary": "Commands NÃO DEVEM exceder 200 linhas   - Fonte: `validate.py:214-215`",
+        "rule_id": "RN-019"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881124",
+        "created_at": "2026-02-05T17:05:19.881124",
+        "decay_rate": 0.003
+      }
+    },
+    "5a3fa05d": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-020",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-020-5a3fa05d.md",
+        "summary": "Taxa de decay varia por tipo de memória: Decision=0.001, Pattern=0.005, Concept=0.003, Episode=0.01, Person=0.0001   - Fonte: `brain.py:433-446`",
+        "rule_id": "RN-020"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881206",
+        "created_at": "2026-02-05T17:05:19.881206",
+        "decay_rate": 0.003
+      }
+    },
+    "e459cfa7": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-021",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-021-e459cfa7.md",
+        "summary": "ID de pessoa DEVE seguir formato \"person-{username}\"   - Fonte: `brain.py:454`",
+        "rule_id": "RN-021"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881292",
+        "created_at": "2026-02-05T17:05:19.881292",
+        "decay_rate": 0.003
+      }
+    },
+    "7b8901d0": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-022",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-022-7b8901d0.md",
+        "summary": "ID de domínio DEVE seguir formato \"domain-{nome_lowercase}\"   - Fonte: `brain.py:487`",
+        "rule_id": "RN-022"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881380",
+        "created_at": "2026-02-05T17:05:19.881380",
+        "decay_rate": 0.003
+      }
+    },
+    "bf4c4521": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-023",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-023-bf4c4521.md",
+        "summary": "Threshold para memória fraca (WeakMemory): strength < 0.3   - Fonte: `brain.py:868`",
+        "rule_id": "RN-023"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881476",
+        "created_at": "2026-02-05T17:05:19.881476",
+        "decay_rate": 0.003
+      }
+    },
+    "b5bf7925": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-024",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-024-b5bf7925.md",
+        "summary": "Threshold para arquivo (archive): strength < 0.1   - Fonte: `brain.py:864`",
+        "rule_id": "RN-024"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881567",
+        "created_at": "2026-02-05T17:05:19.881567",
+        "decay_rate": 0.003
+      }
+    },
+    "b8e5d3f5": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-025",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-025-b8e5d3f5.md",
+        "summary": "Spreading activation usa decay de 0.5 por nível (default)   - Fonte: `brain.py:605`",
+        "rule_id": "RN-025"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881660",
+        "created_at": "2026-02-05T17:05:19.881660",
+        "decay_rate": 0.003
+      }
+    },
+    "3d1457be": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-026",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-026-3d1457be.md",
+        "summary": "Nós in-edges recebem 50% da ativação de out-edges   - Fonte: `brain.py:655`",
+        "rule_id": "RN-026"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881745",
+        "created_at": "2026-02-05T17:05:19.881745",
+        "decay_rate": 0.003
+      }
+    },
+    "3702133d": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-027",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-027-3702133d.md",
+        "summary": "Top 10 resultados de retrieve() são reforçados automaticamente   - Fonte: `brain.py:732`",
+        "rule_id": "RN-027"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881827",
+        "created_at": "2026-02-05T17:05:19.881827",
+        "decay_rate": 0.003
+      }
+    },
+    "81f71838": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-028",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-028-81f71838.md",
+        "summary": "Sources válidos para componentes: genesis, seed, manual, evolution, runtime, core   - Fonte: `register.py:156`",
+        "rule_id": "RN-028"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.881917",
+        "created_at": "2026-02-05T17:05:19.881917",
+        "decay_rate": 0.003
+      }
+    },
+    "afc822f6": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-029",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-029-afc822f6.md",
+        "summary": "Componentes novos iniciam com activations=0, last_used=null, health=active   - Fonte: `register.py:81-89`",
+        "rule_id": "RN-029"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882003",
+        "created_at": "2026-02-05T17:05:19.882003",
+        "decay_rate": 0.003
+      }
+    },
+    "797ed63f": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-030",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-030-797ed63f.md",
+        "summary": "Unregister marca health=archived (não remove fisicamente)   - Fonte: `register.py:101`",
+        "rule_id": "RN-030"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882088",
+        "created_at": "2026-02-05T17:05:19.882088",
+        "decay_rate": 0.003
+      }
+    },
+    "c94f797c": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-031",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-031-c94f797c.md",
+        "summary": "Knowledge files com idade > 14 dias geram warning   - Fonte: `doctor.py:140-144`",
+        "rule_id": "RN-031"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882171",
+        "created_at": "2026-02-05T17:05:19.882171",
+        "decay_rate": 0.003
+      }
+    },
+    "bf4cf47f": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-032",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-032-bf4cf47f.md",
+        "summary": "Knowledge files com tamanho < 50 bytes são considerados vazios   - Fonte: `doctor.py:132-134`",
+        "rule_id": "RN-032"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882251",
+        "created_at": "2026-02-05T17:05:19.882251",
+        "decay_rate": 0.003
+      }
+    },
+    "ff5a2f32": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-033",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-033-ff5a2f32.md",
+        "summary": "Core skills obrigatórios: engram-genesis, engram-evolution   - Fonte: `doctor.py:96-103`",
+        "rule_id": "RN-033"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882332",
+        "created_at": "2026-02-05T17:05:19.882332",
+        "decay_rate": 0.003
+      }
+    },
+    "a6c3edcd": {
+      "labels": [
+        "Concept",
+        "Rule",
+        "BusinessRule"
+      ],
+      "props": {
+        "title": "RN-034",
+        "author": "@engram",
+        "content_path": "memory/concepts/2026-02-05-rn-034-a6c3edcd.md",
+        "summary": "Health score: >=90%=verde, >=70%=amarelo, <70%=vermelho   - Fonte: `doctor.py:341-345`",
+        "rule_id": "RN-034"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.882417",
+        "created_at": "2026-02-05T17:05:19.882417",
+        "decay_rate": 0.003
+      }
+    },
+    "d0b05c77": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-012: Venv Isolado para Brain",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-05-pat-012-venv-isolado-para-brain-d0b05c77.md",
+        "summary": "- Contexto: dependências Python pesadas (torch, sentence-transformers) - Solução: criar venv em `.claude/brain/.venv`   - setup.sh cria e instala deps automaticamente   - Scripts do brain ativam ve..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.884183",
+        "created_at": "2026-02-05T17:05:19.884183",
+        "decay_rate": 0.005
+      }
+    },
+    "d48dd7aa": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-013: Integração de Features em Commands Existentes",
+        "author": "@engram",
+        "content_path": "memory/patterns/2026-02-05-pat-013-integra-o-de-features-em-commands-existent-d48dd7aa.md",
+        "summary": "- Contexto: nova feature que complementa workflow existente - Solução: adicionar fase ao command existente em vez de criar novo   - /init-engram: Fase 5 para popular cérebro   - /learn: Fase 4 para..."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:19.884293",
+        "created_at": "2026-02-05T17:05:19.884293",
+        "decay_rate": 0.005
+      }
+    },
+    "5a98893e": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation",
+        "AnalysisDomain"
+      ],
+      "props": {
+        "title": "docs(analysis): add deep implementation analysis and update roadmap",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-docs-analysis-add-deep-implementation-analysis-and-5a98893e.md",
+        "summary": "docs(analysis): add deep implementation analysis and update roadmap Add V2 analysis comparing project vision vs reality, covering Files changed: ANALISE_IMPLEMENTA.md, ANALISE_IMPLEMENTA_V2.md",
+        "commit_hash": "16a27626",
+        "date": "2026-02-05",
+        "commit_type": "docs",
+        "scope": "analysis",
+        "files_count": 2,
+        "files": [
+          "ANALISE_IMPLEMENTA.md",
+          "ANALISE_IMPLEMENTA_V2.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.309320",
+        "created_at": "2026-02-05T17:05:20.309320",
+        "decay_rate": 0.01
+      }
+    },
+    "835a2079": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "chore(knowledge): record /learn session with ADR-013, PAT-034/035, EXP-021",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-chore-knowledge-record-learn-session-with-adr-013--835a2079.md",
+        "summary": "chore(knowledge): record /learn session with ADR-013, PAT-034/035, EXP-021 - ADR-013: removal of orphan components (ouroboros cycle principle) Files changed: .claude/brain/cognitive-log.jsonl, .cla...",
+        "commit_hash": "e48a04c8",
+        "date": "2026-02-05",
+        "commit_type": "chore",
+        "scope": "knowledge",
+        "files_count": 10,
+        "files": [
+          ".claude/brain/cognitive-log.jsonl",
+          ".claude/brain/embeddings.npz",
+          ".claude/brain/graph.json",
+          ".claude/evolution-activations.json",
+          ".claude/knowledge/context/CURRENT_STATE.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.309951",
+        "created_at": "2026-02-05T17:05:20.309951",
+        "decay_rate": 0.01
+      }
+    },
+    "75b8b777": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Refactor",
+        "TemplatesDomain"
+      ],
+      "props": {
+        "title": "refactor(templates): rename stacks/ to skills/ for semantic clarity",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-refactor-templates-rename-stacks-to-skills-for-sem-75b8b777.md",
+        "summary": "refactor(templates): rename stacks/ to skills/ for semantic clarity The templates/stacks/ directory only contains skill templates (.skill.tmpl). Files changed: .claude/commands/curriculum.md, .clau...",
+        "commit_hash": "cf471101",
+        "date": "2026-02-04",
+        "commit_type": "refactor",
+        "scope": "templates",
+        "files_count": 10,
+        "files": [
+          ".claude/commands/curriculum.md",
+          ".claude/knowledge/domain/DOMAIN.md",
+          ".claude/knowledge/patterns/PATTERNS.md",
+          ".claude/skills/engram-factory/SKILL.md",
+          ".claude/skills/engram-factory/references/orchestration-protocol.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.310634",
+        "created_at": "2026-02-05T17:05:20.310634",
+        "decay_rate": 0.01
+      }
+    },
+    "fd10e0be": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Refactor",
+        "TemplatesDomain"
+      ],
+      "props": {
+        "title": "refactor(templates): mirror knowledge folder structure to match destination",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-refactor-templates-mirror-knowledge-folder-structu-fd10e0be.md",
+        "summary": "refactor(templates): mirror knowledge folder structure to match destination Knowledge templates now mirror the .claude/knowledge/ directory structure: Files changed: setup.sh, templates/knowledge/A...",
+        "commit_hash": "999715d0",
+        "date": "2026-02-04",
+        "commit_type": "refactor",
+        "scope": "templates",
+        "files_count": 10,
+        "files": [
+          "setup.sh",
+          "templates/knowledge/ADR_LOG.md.tmpl",
+          "templates/knowledge/CURRENT_STATE.md.tmpl",
+          "templates/knowledge/DOMAIN.md.tmpl",
+          "templates/knowledge/EXPERIENCE_LIBRARY.md.tmpl"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.310738",
+        "created_at": "2026-02-05T17:05:20.310738",
+        "decay_rate": 0.01
+      }
+    },
+    "51501375": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "TemplatesDomain"
+      ],
+      "props": {
+        "title": "feat(templates): add Flask patterns template and SERVICE_MAP knowledge file",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-feat-templates-add-flask-patterns-template-and-ser-51501375.md",
+        "summary": "feat(templates): add Flask patterns template and SERVICE_MAP knowledge file - New Flask skill template covering factory pattern, blueprints, Files changed: ANALISE_IMPLEMENTA.md, setup.sh, template...",
+        "commit_hash": "7b15c679",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "templates",
+        "files_count": 4,
+        "files": [
+          "ANALISE_IMPLEMENTA.md",
+          "setup.sh",
+          "templates/knowledge/SERVICE_MAP.md.tmpl",
+          "templates/stacks/flask/flask-patterns.skill.tmpl"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.310842",
+        "created_at": "2026-02-05T17:05:20.310842",
+        "decay_rate": 0.01
+      }
+    },
+    "f8d0dc8d": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "CoreDomain"
+      ],
+      "props": {
+        "title": "feat(core): add base-ingester seed skill and /ingest command",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-feat-core-add-base-ingester-seed-skill-and-ingest--f8d0dc8d.md",
+        "summary": "feat(core): add base-ingester seed skill and /ingest command New seed skill for bulk documentation import into the organizational brain. Files changed: README.md, core/commands/ingest.md, core/seed...",
+        "commit_hash": "e9841a0e",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "core",
+        "files_count": 5,
+        "files": [
+          "README.md",
+          "core/commands/ingest.md",
+          "core/seeds/base-ingester/SKILL.md",
+          "core/seeds/base-ingester/scripts/ingest.py",
+          "setup.sh"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.310955",
+        "created_at": "2026-02-05T17:05:20.310955",
+        "decay_rate": 0.01
+      }
+    },
+    "a77de1bc": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Feature",
+        "GenesisDomain"
+      ],
+      "props": {
+        "title": "feat(genesis): add NestJS/Laravel/Flask detection and NestJS template",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-feat-genesis-add-nestjs-laravel-flask-detection-an-a77de1bc.md",
+        "summary": "feat(genesis): add NestJS/Laravel/Flask detection and NestJS template Fix dead code in analyze_project.py where Laravel was never detected Files changed: core/genesis/scripts/analyze_project.py, se...",
+        "commit_hash": "9cbb3137",
+        "date": "2026-02-04",
+        "commit_type": "feat",
+        "scope": "genesis",
+        "files_count": 3,
+        "files": [
+          "core/genesis/scripts/analyze_project.py",
+          "setup.sh",
+          "templates/stacks/nestjs/nestjs-patterns.skill.tmpl"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.311086",
+        "created_at": "2026-02-05T17:05:20.311086",
+        "decay_rate": 0.01
+      }
+    },
+    "7665a274": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "KnowledgeDomain"
+      ],
+      "props": {
+        "title": "chore(knowledge): record /learn session with ADR-012 and PAT-033",
+        "author": "@thiagogaia",
+        "content_path": "memory/episodes/2026-02-05-chore-knowledge-record-learn-session-with-adr-012--7665a274.md",
+        "summary": "chore(knowledge): record /learn session with ADR-012 and PAT-033 Knowledge from setup.sh refactoring session: Files changed: .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings.npz, .claude...",
+        "commit_hash": "aa30b790",
+        "date": "2026-02-04",
+        "commit_type": "chore",
+        "scope": "knowledge",
+        "files_count": 10,
+        "files": [
+          ".claude/brain/cognitive-log.jsonl",
+          ".claude/brain/embeddings.npz",
+          ".claude/brain/graph.json",
+          ".claude/evolution-activations.json",
+          ".claude/knowledge/context/CURRENT_STATE.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T17:05:20.311214",
+        "created_at": "2026-02-05T17:05:20.311214",
+        "decay_rate": 0.01
+      }
+    },
+    "695f6814": {
+      "labels": [
+        "Theme"
+      ],
+      "props": {
+        "title": "Theme: knowledge",
+        "scope": "knowledge",
+        "commit_count": 6,
+        "summary": "Theme 'knowledge' with 6 commits: chore(3), docs(2), feat(1)"
+      },
+      "memory": {
+        "strength": 0.8,
+        "access_count": 0,
+        "last_accessed": "2026-02-05T17:05:25.721927",
+        "created_at": "2026-02-05T17:05:25.721927",
+        "decay_rate": 0.002
+      }
+    },
+    "50f6e99f": {
+      "labels": [
+        "Theme"
+      ],
+      "props": {
+        "title": "Theme: templates",
+        "scope": "templates",
+        "commit_count": 3,
+        "summary": "Theme 'templates' with 3 commits: refactor(2), feat(1)"
+      },
+      "memory": {
+        "strength": 0.8,
+        "access_count": 0,
+        "last_accessed": "2026-02-05T17:05:25.721952",
+        "created_at": "2026-02-05T17:05:25.721952",
+        "decay_rate": 0.002
+      }
+    },
+    "42cd5642": {
+      "labels": [
+        "PatternCluster"
+      ],
+      "props": {
+        "title": "PatternCluster: infra",
+        "domain": "infra",
+        "pattern_count": 4,
+        "summary": "Cluster of 4 patterns in 'infra' domain"
+      },
+      "memory": {
+        "strength": 0.7,
+        "access_count": 0,
+        "last_accessed": "2026-02-05T17:05:25.721986",
+        "created_at": "2026-02-05T17:05:25.721986",
+        "decay_rate": 0.003
+      }
+    },
+    "258e7d75": {
+      "labels": [
+        "PatternCluster"
+      ],
+      "props": {
+        "title": "PatternCluster: frontend",
+        "domain": "frontend",
+        "pattern_count": 9,
+        "summary": "Cluster of 9 patterns in 'frontend' domain"
+      },
+      "memory": {
+        "strength": 0.7,
+        "access_count": 0,
+        "last_accessed": "2026-02-05T17:05:25.721997",
+        "created_at": "2026-02-05T17:05:25.721997",
+        "decay_rate": 0.003
       }
     }
   },
@@ -3482,6 +3532,15 @@
       "props": {}
     },
     {
+      "src": "49d27394",
+      "tgt": "166da41d",
+      "type": "RELATED_TO",
+      "weight": 0.7950463919999252,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
       "src": "442d2f41",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -3494,6 +3553,16 @@
       "type": "BELONGS_TO",
       "weight": 1.0,
       "props": {}
+    },
+    {
+      "src": "442d2f41",
+      "tgt": "76918b1d",
+      "type": "RELATED_TO",
+      "weight": 0.7589371800422668,
+      "props": {
+        "method": "embedding"
+      },
+      "created_at": "2026-02-05T17:09:45.354995"
     },
     {
       "src": "a4d710c9",
@@ -3888,6 +3957,16 @@
       "props": {}
     },
     {
+      "src": "7a135a62",
+      "tgt": "0c94c63e",
+      "type": "RELATED_TO",
+      "weight": 0.7551350593566895,
+      "props": {
+        "method": "embedding"
+      },
+      "created_at": "2026-02-05T17:09:45.355134"
+    },
+    {
       "src": "0c94c63e",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -3944,6 +4023,13 @@
       "props": {}
     },
     {
+      "src": "55501c4b",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
       "src": "848cbb2d",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -3955,6 +4041,13 @@
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "848cbb2d",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -3972,6 +4065,23 @@
       "props": {}
     },
     {
+      "src": "43f7e06f",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "43f7e06f",
+      "tgt": "3b9b10fd",
+      "type": "RELATED_TO",
+      "weight": 0.7561297416687012,
+      "props": {
+        "method": "embedding"
+      },
+      "created_at": "2026-02-05T17:09:45.355159"
+    },
+    {
       "src": "3b9b10fd",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -3983,6 +4093,13 @@
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "3b9b10fd",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -4014,6 +4131,23 @@
       "props": {}
     },
     {
+      "src": "02a48240",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "02a48240",
+      "tgt": "c8be5372",
+      "type": "RELATED_TO",
+      "weight": 0.816099226474762,
+      "props": {
+        "method": "embedding"
+      },
+      "created_at": "2026-02-05T17:09:45.355169"
+    },
+    {
       "src": "c8be5372",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -4025,6 +4159,13 @@
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "c8be5372",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -4042,6 +4183,13 @@
       "props": {}
     },
     {
+      "src": "69c0e925",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
       "src": "c3ac2a3a",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -4053,6 +4201,13 @@
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "c3ac2a3a",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -4067,6 +4222,13 @@
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "96f2c2d1",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -4091,13 +4253,6 @@
       "props": {}
     },
     {
-      "src": "c0408c0f",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
       "src": "28e6f731",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -4112,6 +4267,15 @@
       "props": {}
     },
     {
+      "src": "a1516559",
+      "tgt": "9a2c7d95",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "engram"
+      }
+    },
+    {
       "src": "13ef8a7c",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -4119,11 +4283,29 @@
       "props": {}
     },
     {
+      "src": "13ef8a7c",
+      "tgt": "81dd2eb4",
+      "type": "RELATED_TO",
+      "weight": 0.9999999999999998,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
       "src": "78161cc1",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
       "weight": 1.0,
       "props": {}
+    },
+    {
+      "src": "78161cc1",
+      "tgt": "37d5e104",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
     },
     {
       "src": "7463a6ea",
@@ -4140,45 +4322,62 @@
       "props": {}
     },
     {
-      "src": "6b1212bc",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
+      "src": "7463a6ea",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.5,
       "props": {}
     },
     {
-      "src": "6b1212bc",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
+      "src": "7463a6ea",
+      "tgt": "812f0768",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "95f0b5bb",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
+      "src": "7463a6ea",
+      "tgt": "79c9405c",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "1dd0c7c3",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
+      "src": "7463a6ea",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "5fe44cd3",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
+      "src": "7463a6ea",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "be4a3ab1",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
+      "src": "7463a6ea",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
       "props": {}
     },
     {
@@ -4252,191 +4451,59 @@
       "props": {}
     },
     {
-      "src": "9a2c7d95",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
+      "src": "812f0768",
+      "tgt": "79c9405c",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
       "props": {}
     },
     {
       "src": "9a2c7d95",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "9a2c7d95",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "18847d38",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "01131eb7",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "41b69066",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "41b69066",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "b575dae2",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "b575dae2",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "acc3c8c1",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "acc3c8c1",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "1e876336",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "513df767",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "73687f19",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "73687f19",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "af8894f3",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "af8894f3",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "b27578dd",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "b27578dd",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "7425b352",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "1b0bbe62",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "68b77b30",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "68b77b30",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "58764d5e",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "58764d5e",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "929387b3",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "929387b3",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "e80219ac",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
       "weight": 1.0,
       "props": {}
     },
@@ -4455,227 +4522,10 @@
       "props": {}
     },
     {
-      "src": "38e7e5af",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "af28d5a9",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "af28d5a9",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "a853f527",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "a853f527",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "d206c427",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "d206c427",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "9d011267",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {}
-    },
-    {
-      "src": "1bd620fb",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "36b94afc",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "36b94afc",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "45956986",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "45956986",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "5ed1b49e",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "5ed1b49e",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "327ffc2a",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {}
-    },
-    {
-      "src": "b8ed37f9",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "0561b4fd",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "0561b4fd",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "cfb0a071",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "cfb0a071",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "5e88239a",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "5e88239a",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "f83ee31c",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {}
-    },
-    {
-      "src": "3831c0b2",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "4923d0e7",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "4923d0e7",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "aa07898a",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "aa07898a",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "34209fc8",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "34209fc8",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {}
-    },
-    {
-      "src": "6fa1febd",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
+      "src": "3a7a1d3a",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
       "props": {}
     },
     {
@@ -4719,6 +4569,15 @@
       "type": "BELONGS_TO",
       "weight": 0.8052550000000004,
       "props": {}
+    },
+    {
+      "src": "1b7dea8c",
+      "tgt": "76293dca",
+      "type": "RELATED_TO",
+      "weight": 0.7559289460184545,
+      "props": {
+        "method": "tf_vector"
+      }
     },
     {
       "src": "fe7d60c8",
@@ -4749,6 +4608,15 @@
       "props": {}
     },
     {
+      "src": "16c24a89",
+      "tgt": "99286bf3",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "readme"
+      }
+    },
+    {
       "src": "81dd2eb4",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -4770,115 +4638,37 @@
       "props": {}
     },
     {
-      "src": "1f28e04e",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
+      "src": "79c9405c",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "edd2c5af",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
+      "src": "79c9405c",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "edd2c5af",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {}
+      "src": "79c9405c",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "6bd284eb",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "6bd284eb",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "197e18a0",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "197e18a0",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "1690b3ca",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "957a9ce6",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "957a9ce6",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {}
-    },
-    {
-      "src": "279fee03",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {}
-    },
-    {
-      "src": "29f506e4",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {}
-    },
-    {
-      "src": "e6d65084",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {}
-    },
-    {
-      "src": "9d48a9da",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {}
-    },
-    {
-      "src": "d6049aff",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {}
-    },
-    {
-      "src": "d6049aff",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
+      "src": "79c9405c",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
       "props": {}
     },
     {
@@ -4892,6 +4682,13 @@
       "src": "75a55c6d",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "75a55c6d",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
       "weight": 0.6655000000000002,
       "props": {}
     },
@@ -4959,45 +4756,28 @@
       "props": {}
     },
     {
-      "src": "2626339f",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {}
+      "src": "6721d264",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "d1129e9b",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {}
+      "src": "6721d264",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
     },
     {
-      "src": "64448474",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {}
-    },
-    {
-      "src": "b1977c22",
-      "tgt": "person-thiagogaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {}
-    },
-    {
-      "src": "4a337b6c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {}
-    },
-    {
-      "src": "4a337b6c",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
+      "src": "6721d264",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
       "props": {}
     },
     {
@@ -5015,6 +4795,13 @@
       "props": {}
     },
     {
+      "src": "223940a2",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
       "src": "35278641",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -5029,6 +4816,15 @@
       "props": {}
     },
     {
+      "src": "35278641",
+      "tgt": "f8d0dc8d",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "core"
+      }
+    },
+    {
       "src": "3ee40d0e",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -5041,6 +4837,15 @@
       "type": "BELONGS_TO",
       "weight": 0.55,
       "props": {}
+    },
+    {
+      "src": "3ee40d0e",
+      "tgt": "a3095845",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "extras"
+      }
     },
     {
       "src": "a3095845",
@@ -5069,12 +4874,963 @@
       "type": "BELONGS_TO",
       "weight": 0.55,
       "props": {}
+    },
+    {
+      "src": "3742d3fd",
+      "tgt": "a77de1bc",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "genesis"
+      }
     },
     {
       "src": "f3d73e0a",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
       "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "53e1ed87",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "53e1ed87",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "99d27b58",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "ac9d3226",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a23868a8",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a23868a8",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2e6730d3",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "46ffe86c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "6c8589ea",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "6c8589ea",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "475dab4c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "475dab4c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "76293dca",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "76293dca",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5f110764",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5f110764",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "4d950964",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "4d950964",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "0d4acc23",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "0d4acc23",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "72d3ebff",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "72d3ebff",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d141a87",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d141a87",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "362bd1b1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "362bd1b1",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "802e1c1d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "480b4335",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "480b4335",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "90935be0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "90935be0",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "eadcc06d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "eadcc06d",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "382d705f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5fc2aceb",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5fc2aceb",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "6e3e1b2f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "6e3e1b2f",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2acb0005",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2acb0005",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "83642dad",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "415f4eaa",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "415f4eaa",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "48f2d20b",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "48f2d20b",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "46c9616c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "46c9616c",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c71281a9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c71281a9",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "872c0f95",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "872c0f95",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "eb333c9a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "eb333c9a",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fea18c15",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fea18c15",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c047e955",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "63c9a2d9",
+      "type": "RELATED_TO",
+      "weight": 0.8451542547285165,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "63c9a2d9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2ad2d9da",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2ad2d9da",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5e51d95c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5e51d95c",
+      "tgt": "3d5f0db0",
+      "type": "RELATED_TO",
+      "weight": 0.7715167498104596,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "3d5f0db0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "86bece09",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "86bece09",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 0.7715167498104596,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "e12afc4a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "8c20b6a9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5a3fa05d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5a3fa05d",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "7b8901d0",
+      "type": "RELATED_TO",
+      "weight": 0.8333333333333336,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "7b8901d0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7b8901d0",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "bf4c4521",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "bf4c4521",
+      "tgt": "b5bf7925",
+      "type": "RELATED_TO",
+      "weight": 0.7715167498104596,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "b5bf7925",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "b5bf7925",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "b8e5d3f5",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3d1457be",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3702133d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "81f71838",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "81f71838",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "afc822f6",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "afc822f6",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "797ed63f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c94f797c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c94f797c",
+      "tgt": "bf4cf47f",
+      "type": "RELATED_TO",
+      "weight": 0.9128709291752769,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "bf4cf47f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "ff5a2f32",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a6c3edcd",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5a98893e",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "5a98893e",
+      "tgt": "51501375",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "ANALISE_IMPLEMENTA.md"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "53e1ed87",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "fd10e0be",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "templates"
+      }
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "51501375",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "templates"
+      }
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "51501375",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "templates"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "f8d0dc8d",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "51501375",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "51501375",
+      "tgt": "f8d0dc8d",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "51501375",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "51501375",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "a77de1bc",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "f045840e",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
       "props": {}
     }
   ]
