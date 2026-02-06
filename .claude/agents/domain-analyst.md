@@ -41,7 +41,7 @@ Você é um Analista de Domínio especializado em extrair conhecimento de negóc
 - Quais eventos triggam side effects?
 
 ## Output
-Descobertas registradas em `.claude/knowledge/domain/DOMAIN.md` nas seções:
+Descobertas registradas no cérebro via `brain.add_memory()`. Tipos:
 - **Glossário**: termos + definições
 - **Regras de Negócio**: RN-NNN com descrição
 - **Entidades**: mapa de relações

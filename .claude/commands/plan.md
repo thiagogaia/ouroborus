@@ -38,5 +38,5 @@ Decisões necessárias:
   - [decisão que o dev precisa tomar antes de implementar]
 ```
 
-4. Se o plano envolver decisão arquitetural, sugerir registro em ADR_LOG.md
+4. Se o plano envolver decisão arquitetural, registrar no cérebro via `brain.add_memory(labels=["Decision", "ADR"])`
 5. Adicionar a tarefa em PRIORITY_MATRIX.md com ICE Score

@@ -1,5 +1,6 @@
 # Architecture Decision Records
-> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
+> Genesis-only: este arquivo é criado no setup e populado no /init-engram. Após isso, o cérebro é a fonte primária. Consulte: `python3 .claude/brain/recall.py "<tema>" --type ADR --top 10 --format json`
+> Última atualização: 2026-02-06 (genesis-only desde ADR-020)
 
 ## ADR-001: Sistema Metacircular
 **Data**: 2026-02-03
@@ -732,3 +733,25 @@ Auto-ativação do venv via `site.addsitedir()` no brain.py para que numpy/netwo
 - ✅ 195/195 testes passam sem mudança (testam JSON backend)
 - ✅ Health 0.97, 212 nós, 524+ arestas migradas sem perda
 - ✅ Rollback: BRAIN_BACKEND=json + graph.json exportado
+
+## ADR-018: CURRENT_STATE.md Genesis-Only
+**Data**: 2026-02-06
+**Status**: ✅ Aceito
+**Contexto**: CURRENT_STATE.md consumia ~4500 tokens/sessão e crescia indefinidamente. Toda informação já existia no cérebro (timestamps, commits, estado).
+**Decisão**: CURRENT_STATE.md é criado apenas no genesis (setup.sh + /init-engram primeira vez). Após isso, o cérebro é a fonte primária via recall temporal (--recent 7d). 30+ arquivos editados para remover referências ativas.
+**Consequências**:
+- ✅ Economia de ~4500 tokens/sessão
+- ✅ CURRENT_STATE.md fica como snapshot histórico no git
+- ✅ Cérebro usa temporal query para "onde estávamos?"
+- ⚠️ Requer temporal recall funcional (implementado em ADR-019)
+
+## ADR-019: Temporal Recall via since/sort_by
+**Data**: 2026-02-06
+**Status**: ✅ Aceito
+**Contexto**: brain_sqlite.py retrieve() ignorava timestamps (created_at, last_accessed) apesar de existirem no schema v2. Não era possível fazer queries temporais.
+**Decisão**: Adicionar `since` (ISO date ou relativo '7d'/'24h') e `sort_by` ('score'|'date') ao retrieve(). Helpers: `_resolve_since()`, `_created_after()`, `_sort_by_date()`. recall.py ganha `--recent`, `--since`, `--sort` flags.
+**Consequências**:
+- ✅ Substitui leitura de CURRENT_STATE.md
+- ✅ 11 novos testes (206 total)
+- ✅ Fix numpy truth value bug (not array → is None)
+- ✅ Fix JSON output corrompido por print() em stdout

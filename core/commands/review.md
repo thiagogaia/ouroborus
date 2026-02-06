@@ -15,7 +15,7 @@ Executar code review dos arquivos alterados.
 
 3. Apresentar resultado para cada arquivo revisado.
 
-4. Se encontrar padrão novo durante a review: registrar em PATTERNS.md.
+4. Se encontrar padrão novo durante a review: registrar no cérebro via `brain.add_memory(labels=["Pattern"])`.
 
 5. Veredito final:
    - ✅ APROVADO — pode commitar

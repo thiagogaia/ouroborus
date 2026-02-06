@@ -1,5 +1,6 @@
 # Padrões do Projeto
-> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
+> Genesis-only: este arquivo é criado no setup e populado no /init-engram. Após isso, o cérebro é a fonte primária. Consulte: `python3 .claude/brain/recall.py "<tema>" --type Pattern --top 10 --format json`
+> Última atualização: 2026-02-06 (genesis-only desde ADR-020)
 
 ## Padrões Aprovados
 
@@ -442,6 +443,21 @@
 - **Teste**: se nenhum script/command/skill referencia o componente, ele é órfão — remover ou integrar
 - **Exemplo**: SERVICE_MAP.md.tmpl, execution-pipeline, microservices-navigator removidos (commit c5b8efa)
 - **Descoberto em**: 2026-02-05
+
+---
+
+## Padrões de Lifecycle (sessão 11 — temporal recall)
+
+### PAT-035: Genesis-Only Bootstrap Files
+- **Contexto**: knowledge file cresce indefinidamente e a informação já existe no brain
+- **Solução**: arquivo criado uma única vez durante setup/genesis, depois substituído por queries ao cérebro
+  - setup.sh cria versão mínima (bootstrap)
+  - /init-engram popula com análise profunda (primeira e única vez)
+  - Sessões regulares usam recall temporal (--recent 7d)
+  - Arquivo permanece como snapshot histórico no git
+- **Exemplo**: CURRENT_STATE.md: 4500 tokens/sessão → 0 tokens (economia de 93%)
+- **Anti-padrão**: atualizar arquivo estático a cada sessão quando o brain já tem a informação
+- **Descoberto em**: 2026-02-06 (ADR-018)
 
 ### PAT-035: Detecção de Stack Deve Cobrir Infra
 - **Contexto**: analyze_project.py detectava linguagens, frameworks, ORMs, mas ignorava infra

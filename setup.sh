@@ -555,27 +555,25 @@ Idioma padrão: Português brasileiro. Código e commits em inglês.
 
 ## Princípio Central: Auto-Alimentação (Ouroboros)
 Este projeto usa Engram v${VERSION} — um sistema metacircular de retroalimentação.
-Toda decisão, padrão, erro corrigido ou insight DEVE ser registrado em \`.claude/knowledge/\`.
+Toda decisão, padrão, erro corrigido ou insight DEVE ser registrado **direto no cérebro** via \`brain.add_memory()\`.
 O sistema evolui a si mesmo: gera skills sob demanda, versiona mudanças, aposenta o inútil.
 
 ## Workflow Obrigatório
 
 ### Antes de Codificar
-1. Leia \`.claude/knowledge/context/CURRENT_STATE.md\`
-2. Consulte \`.claude/knowledge/priorities/PRIORITY_MATRIX.md\`
-3. Verifique \`.claude/knowledge/patterns/PATTERNS.md\`
-4. Se decisão arquitetural: consulte \`ADR_LOG.md\`
-5. Se lógica de negócio: consulte \`DOMAIN.md\`
-6. Se tarefa similar já resolvida: consulte \`EXPERIENCE_LIBRARY.md\`
+1. **O que mudou recentemente**: \`python3 .claude/brain/recall.py --recent 7d --type Commit --top 10 --format json\`
+2. **Conhecimento relevante**: \`python3 .claude/brain/recall.py "<tema da tarefa>" --top 10 --format json\`
+3. **Prioridades**: consulte \`PRIORITY_MATRIX.md\` (único .md ativamente atualizado)
+4. Só leia os \`.md\` de knowledge se o recall não cobrir
+
+> **Nota**: Os knowledge files (.md) são genesis-only — criados no setup e populados no /init-engram. Após o cérebro ser populado, não são mais atualizados. O recall os substitui.
 
 ### Ao Codificar
 ${RULES}
 ### Depois de Codificar
-1. Atualize \`CURRENT_STATE.md\`
-2. Registre padrões novos em \`PATTERNS.md\`
-3. Registre decisões em \`ADR_LOG.md\`
-4. Reavalie \`PRIORITY_MATRIX.md\`
-5. Registre aprendizados de domínio em \`DOMAIN.md\`
+1. Registre padrões, decisões e experiências **direto no cérebro** via \`brain.add_memory()\`
+2. Reavalie \`PRIORITY_MATRIX.md\` (único .md ativamente atualizado)
+3. Execute \`/learn\` para consolidar
 
 ## Stack
 ${STACK_LINES}

@@ -7,7 +7,7 @@ args: "[termo, pergunta ou 'analyze' para análise completa]"
 
 # /domain - Análise de Domínio
 
-Você é o Domain Expert. Analise conhecimento de domínio e atualize DOMAIN.md.
+Você é o Domain Expert. Analise conhecimento de domínio e registre no cérebro via `brain.add_memory()`. DOMAIN.md é genesis-only.
 
 ## Entrada do Usuário
 $ARGUMENTS
@@ -19,7 +19,7 @@ $ARGUMENTS
 2. **Verificar DOMAIN.md**: O termo já está documentado?
 3. **Se não está**: Buscar no código (grep por uso, validações, comentários)
 4. **Propor definição** ao usuário para validação
-5. **Se validado**: Adicionar ao DOMAIN.md na seção apropriada
+5. **Se validado**: Registrar no cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
 
 ### Se argumento é "analyze" ou vazio:
 1. **Invocar domain-analyst** via Task tool para análise completa do codebase
@@ -59,7 +59,7 @@ EntidadeA → relação → EntidadeB → relação → EntidadeC
 ## Output
 Após análise, mostre:
 1. **Descobertas**: O que foi encontrado
-2. **Proposta**: O que será adicionado ao DOMAIN.md
+2. **Proposta**: O que será registrado no cérebro
 3. **Ação**: Aguardar confirmação do usuário antes de editar
 
 ## Exemplos de Uso

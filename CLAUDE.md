@@ -18,7 +18,7 @@ O sistema evolui a si mesmo: gera skills sob demanda, versiona mudanças, aposen
 
 O cérebro é a **fonte primária e única**. O recall retorna conteúdo completo (campo `content`) e suporta **busca temporal** (`--recent Nd`, `--since YYYY-MM-DD`, `--sort date`). Os `.md` de knowledge são mantidos em sincronia como fallback, para git diffs e leitura humana.
 
-> **Nota**: CURRENT_STATE.md é gerado pelo genesis como bootstrap. Após o cérebro ser populado, não é mais lido nem atualizado — o recall temporal o substitui.
+> **Nota**: Os knowledge files (CURRENT_STATE.md, ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md) são genesis-only — criados no setup e populados no /init-engram. Após o cérebro ser populado, não são mais atualizados. O recall os substitui. Único .md ativo: PRIORITY_MATRIX.md.
 
 ### Ao Codificar
 - Validação de input em todas as APIs
@@ -26,9 +26,8 @@ O cérebro é a **fonte primária e única**. O recall retorna conteúdo complet
 
 ### Depois de Codificar
 1. Registre padrões, decisões, experiências e domínio **direto no cérebro** via `brain.add_memory()`
-2. Atualize os `.md` de knowledge quando houver conteúdo novo (PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md)
-3. Reavalie `PRIORITY_MATRIX.md`
-4. Execute `/learn` para consolidar
+2. Reavalie `PRIORITY_MATRIX.md` (único .md ativamente atualizado)
+3. Execute `/learn` para consolidar
 
 ## Stack
 

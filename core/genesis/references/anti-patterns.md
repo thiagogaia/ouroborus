@@ -51,6 +51,6 @@
 
 ## AP-9: Sem Conexão com Knowledge
 ❌ Skill que não consulta nem atualiza knowledge files
-✅ "Registre padrão descoberto em PATTERNS.md"
+✅ "Registre padrão descoberto no cérebro via brain.add_memory()"
 
 **Problema:** Quebra o ciclo de retroalimentação (princípio central do Engram).

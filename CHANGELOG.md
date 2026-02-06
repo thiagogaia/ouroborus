@@ -14,6 +14,9 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - `/commit` command now auto-updates CHANGELOG.md when core/ changes (`1e72d29`)
 
 ### Changed
+- ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md are now genesis-only (`de4a449`)
+- All agents, commands, skills, schemas updated to use `brain.add_memory()` instead of editing .md files (`de4a449`)
+- `setup.sh` generate_claude_md() template updated for brain-primary workflow (`de4a449`)
 - CURRENT_STATE.md is now genesis-only — brain is the primary source via temporal recall (`28734fe`)
 - Commands, skills, agents, schemas, docs updated to use brain recall instead of CURRENT_STATE.md (`28734fe`)
 - Doctor health check no longer monitors CURRENT_STATE.md freshness (`28734fe`)
@@ -21,6 +24,8 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - Shift from brain-only to brain-primary architecture with synced .md files (`05ac19c`)
 
 ### Fixed
+- `populate.py` parsers: ADR compact format, Anti-Padrões regex, domain entities/constraints, multi-section patterns (`de4a449`)
+- CWD-relative path bug in brain scripts creating ghost `.claude/brain/.claude/` directory (`de4a449`)
 - VERSION file is now the single source of truth for Engram version (`3d7905a`)
 
 ## [3.0.0] - 2026-02-03

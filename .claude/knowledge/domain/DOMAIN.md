@@ -1,5 +1,6 @@
 # Conhecimento de Domínio
-> Última atualização: 2026-02-05 (/learn sessao 4)
+> Genesis-only: este arquivo é criado no setup e populado no /init-engram. Após isso, o cérebro é a fonte primária. Consulte: `python3 .claude/brain/recall.py "<tema>" --type Concept --top 10 --format json`
+> Última atualização: 2026-02-06 (genesis-only desde ADR-020)
 
 ## Glossário
 
@@ -118,7 +119,7 @@
 - **RN-005**: Máximo 2 componentes runtime por sessão (evita explosão)
 - **RN-006**: Componentes nunca usados após 14 dias são candidatos a archive
 - **RN-007**: Knowledge files devem ser atualizados após cada tarefa significativa
-- **RN-008**: Decisões arquiteturais DEVEM ser registradas em ADR_LOG.md
+- **RN-008**: Decisões arquiteturais DEVEM ser registradas no cérebro via `brain.add_memory(labels=["Decision", "ADR"])` (ADR_LOG.md é genesis-only)
 - **RN-009**: Padrões repetidos DEVEM virar skills (DRY para prompts)
 - **RN-010**: Backups de componentes vão para .claude/versions/
 

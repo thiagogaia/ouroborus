@@ -85,19 +85,11 @@ brain.add_memory(
 brain.save()
 ```
 
-### 3.3 Atualizar Knowledge Files
+### 3.3 Atualizar PRIORITY_MATRIX.md
 
-Os .md são o espelho legível do cérebro — mantidos em sincronia para fallback, git diffs e leitura humana.
+Único knowledge file ativamente atualizado — desprioritizar tarefas completadas, adicionar novas.
 
-**PRIORITY_MATRIX.md** — desprioritizar tarefas completadas, adicionar novas
-
-**Knowledge files (atualizados quando houver conteúdo novo):**
-- **PATTERNS.md** — patterns novos ou refinados
-- **ADR_LOG.md** — decisões arquiteturais registradas
-- **DOMAIN.md** — regras de negócio e glossário
-- **EXPERIENCE_LIBRARY.md** — experiências reutilizáveis
-
-O cérebro já contém tudo via `add_memory()` (passo 3.2). O sono enriquece com conexões semânticas. Os .md garantem que o conhecimento permanece acessível sem rodar Python.
+> **Nota**: Os demais knowledge files (CURRENT_STATE.md, ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md) são genesis-only. Todo conhecimento vai direto para o cérebro via `brain.add_memory()` no passo 3.2. O cérebro já contém tudo. O sono enriquece com conexões semânticas.
 
 ## Fase 4: Consolidar
 

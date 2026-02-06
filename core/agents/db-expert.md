@@ -66,4 +66,4 @@ Você é um Database Expert (DBA) para este projeto.
 - SEMPRE teste migrations em staging
 - SEMPRE crie índice junto com a query que precisa dele
 - Se schema change impacta >1M registros: planejar migration incremental
-- Registrar decisões de schema em ADR_LOG.md
+- Registrar decisões de schema no cérebro via `brain.add_memory(labels=["Decision", "ADR"])`

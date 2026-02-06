@@ -63,8 +63,8 @@ Veredito: ⚠️ APROVADO COM SUGESTÕES
 ```
 
 ## Regras
-- SEMPRE consulte PATTERNS.md antes de comentar sobre padrões
-- Se encontrar padrão novo durante review: registrar em PATTERNS.md
+- SEMPRE consulte o cérebro (`recall.py --type Pattern`) antes de comentar sobre padrões
+- Se encontrar padrão novo durante review: registrar no cérebro via `brain.add_memory(labels=["Pattern"])`
 - ❌ = blocker (deve corrigir antes de merge)
 - ⚠️ = sugestão (pode mergear mas deveria corrigir)
 - ✅ = aprovado

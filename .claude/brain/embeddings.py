@@ -106,7 +106,7 @@ def _load_all_nodes(brain_path: Path) -> dict:
     return brain.get_all_nodes()
 
 
-def build_embeddings(brain_path: Path = Path(".claude/brain")):
+def build_embeddings(brain_path: Path = Path(__file__).parent):
     """Gera embeddings para todos os nos do grafo."""
     nodes = _load_all_nodes(brain_path)
 
@@ -166,7 +166,7 @@ def build_embeddings(brain_path: Path = Path(".claude/brain")):
 
 def search_embeddings(
     query: str,
-    brain_path: Path = Path(".claude/brain"),
+    brain_path: Path = Path(__file__).parent,
     top_k: int = 10
 ) -> List[dict]:
     """Busca semantica no grafo."""

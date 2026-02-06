@@ -1,6 +1,6 @@
 # Experience Library
-> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
-> Soluções reutilizáveis descobertas durante o trabalho
+> Genesis-only: este arquivo é criado no setup e populado no /init-engram. Após isso, o cérebro é a fonte primária. Consulte: `python3 .claude/brain/recall.py "<tema>" --type Experience --top 10 --format json`
+> Última atualização: 2026-02-06 (genesis-only desde ADR-020)
 
 ## EXP-001: Validar Componente Antes de Registrar
 - **Contexto**: Componente criado manualmente tinha erros no frontmatter
@@ -301,4 +301,14 @@
 - **Abordagem**: Fresh migration de graph.json + auto-detecção v1→v2 no load(). Schema version em tabela `meta`. Backup antes de drop. FTS5 rebuild após insert.
 - **Resultado**: 212/212 nós, 524/524 arestas, 523 labels normalizadas, 0 erros, 195/195 testes passam
 - **Aprendizado**: Manter rollback path (export_json + BRAIN_BACKEND=json). Testes do JSON backend são imunes a mudanças SQLite. Generated STORED columns são grátis em queries mas não assignable. Schema version em meta permite detecção automática.
+- **Data**: 2026-02-06
+
+---
+
+## EXP-027: Migrar Estado de .md Estático para Brain Temporal
+- **Contexto**: CURRENT_STATE.md consumia ~4500 tokens/sessão e crescia indefinidamente
+- **Stack**: Python, brain_sqlite.py, recall.py, 30+ arquivos de commands/skills/agents/schemas/docs
+- **Abordagem**: 1) Adicionar flags temporais (--recent, --since, --sort) no recall.py e retrieve() 2) Substituir leitura de CURRENT_STATE.md por recall temporal em TODOS os consumers 3) Manter dual-populate no /init-engram (CURRENT_STATE + brain.add_memory() na primeira vez) 4) setup.sh intocado (bootstrap correto)
+- **Descoberta**: grep exaustivo em todo codebase é essencial — CURRENT_STATE era referenciado em 30+ arquivos; .claude/ e core/ devem ser editados em sincronia
+- **Resultado**: 0 tokens/sessão de CURRENT_STATE, brain temporal como fonte primária, 206/206 testes passando
 - **Data**: 2026-02-06

@@ -57,7 +57,7 @@ PRIORITY_MATRIX.md → prioridades atuais
 ```
 Se o recall nao cobrir, os `.md` de knowledge continuam disponiveis:
 ```
-PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md
+Todos genesis-only (PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md). Cerebro e a fonte primaria.
 ```
 
 ### Passo 3: Entende o contexto completo antes de codificar
@@ -124,10 +124,10 @@ O sono (sleep.py) enriquece com conexoes semanticas automaticamente.
 #### 3b. Knowledge files refletem o cerebro
 Os .md sao o espelho legivel — mantidos em sincronia para fallback, git diffs e leitura humana:
 - **PRIORITY_MATRIX.md** → tarefas atualizadas
-- **PATTERNS.md** → patterns novos ou refinados
-- **ADR_LOG.md** → decisoes registradas
-- **DOMAIN.md** → regras de negocio e glossario
-- **EXPERIENCE_LIBRARY.md** → experiencias reutilizaveis
+- **PATTERNS.md** → genesis-only (cerebro: `--type Pattern`)
+- **ADR_LOG.md** → genesis-only (cerebro: `--type ADR`)
+- **DOMAIN.md** → genesis-only (cerebro: `--type Concept`)
+- **EXPERIENCE_LIBRARY.md** → genesis-only (cerebro: `--type Experience`)
 
 O cerebro contem tudo. Os .md garantem que o conhecimento permanece acessivel sem rodar Python.
 

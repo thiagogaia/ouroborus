@@ -1,10 +1,9 @@
 {
   "version": "1.0",
   "meta": {
-    "saved_at": "2026-02-06T09:42:05.804717",
-    "node_count": 222,
-    "edge_count": 567,
-    "backend": "sqlite_v2"
+    "saved_at": "2026-02-06T13:40:15.655678",
+    "node_count": 228,
+    "edge_count": 574
   },
   "nodes": {
     "a52ceda2": {
@@ -4878,6 +4877,129 @@
         "created_at": "2026-02-06T09:41:41.653399",
         "access_count": 0
       }
+    },
+    "9991942b": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-015: CURRENT_STATE.md Genesis-Only",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Contexto\nCURRENT_STATE.md consumia ~4500 tokens por sessão e crescia indefinidamente. Toda informação já existia no cérebro (timestamps, commits, estado).\n\n## Decisão\nCURRENT_STATE.md é criado apenas no genesis (setup.sh + /init-engram primeira vez). Após isso, o cérebro é a fonte primária via recall temporal (--recent 7d).\n\n## Consequências\n- Economia de ~4500 tokens/sessão\n- Cérebro precisa de temporal query funcional (implementado)\n- CURRENT_STATE.md fica como snapshot histórico no git\n- 30+ arquivos editados para remover referências ativas",
+        "summary": "Contexto CURRENT_STATE.md consumia ~4500 tokens por sessão e crescia indefinidamente. Toda informação já existia no cérebro (timestamps, commits, estado). Decisão CURRENT_STATE.md é criado apenas no genesis (setup.sh + /init-engram primeira vez). Após isso, o cérebro é a fonte primária via recall temporal (--recent 7d). Consequências - Economia de ~4500 tokens/sessão - Cérebro precisa de temporal query funcional (implementado) - CURRENT_STATE.md fica como snapshot histórico no git - 30+ arqui...",
+        "adr_id": "ADR-015",
+        "status": "Aceito",
+        "date": "2026-02-06"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.654372",
+        "created_at": "2026-02-06T13:40:15.654372",
+        "decay_rate": 0.001
+      }
+    },
+    "20ca1176": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-016: Temporal Recall via since/sort_by",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Contexto\nbrain_sqlite.py retrieve() ignorava timestamps (created_at, last_accessed) apesar deles existirem no schema. Não era possível fazer queries temporais como 'o que mudou nos últimos 7 dias?'.\n\n## Decisão\nAdicionar parâmetros since (ISO date ou relativo '7d'/'24h') e sort_by ('score'|'date') ao retrieve(). Adicionar _resolve_since(), _created_after(), _sort_by_date() como helpers. Suportar temporal-only query (sem texto, só filtro temporal).\n\n## Consequências\n- recall.py ganha --recent, --since, --sort flags\n- Substitui necessidade de ler CURRENT_STATE.md\n- Corrigido bug numpy truth value (not query_embedding → query_embedding is None)\n- 11 novos testes cobrindo temporal queries",
+        "summary": "Contexto brain_sqlite.py retrieve() ignorava timestamps (created_at, last_accessed) apesar deles existirem no schema. Não era possível fazer queries temporais como 'o que mudou nos últimos 7 dias?'. Decisão Adicionar parâmetros since (ISO date ou relativo '7d'/'24h') e sort_by ('score'|'date') ao retrieve(). Adicionar _resolve_since(), _created_after(), _sort_by_date() como helpers. Suportar temporal-only query (sem texto, só filtro temporal). Consequências - recall.py ganha --recent, --since...",
+        "adr_id": "ADR-016",
+        "status": "Aceito",
+        "date": "2026-02-06"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.654872",
+        "created_at": "2026-02-06T13:40:15.654872",
+        "decay_rate": 0.001
+      }
+    },
+    "cd6f18d6": {
+      "labels": [
+        "Episode",
+        "Experience"
+      ],
+      "props": {
+        "title": "EXP-025: Migrar estado de .md estático para brain temporal",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Contexto\nCURRENT_STATE.md era lido em toda sessão (~4500 tokens, crescendo). Precisava de alternativa zero-token.\n\n## Abordagem\n1. Descobrir que timestamps já existiam no brain schema (created_at generated column)\n2. Adicionar since/sort_by ao retrieve() com 3 helpers\n3. Adicionar --recent/--since/--sort ao recall.py CLI\n4. Slim CURRENT_STATE.md de 294→39 linhas (93%)\n5. Remover referências ativas em 30+ arquivos (commands, skills, agents, schemas, docs)\n6. Manter criação no genesis como bootstrap\n\n## Resultado\nSucesso. 206/206 testes passando. Zero tokens gastos com CURRENT_STATE em sessões regulares.\n\n## Aprendizado\nAntes de criar novos campos, verificar se já existem no schema. timestamps estavam lá desde o início, só não eram usados.",
+        "summary": "Contexto CURRENT_STATE.md era lido em toda sessão (~4500 tokens, crescendo). Precisava de alternativa zero-token. Abordagem 1. Descobrir que timestamps já existiam no brain schema (created_at generated column) 2. Adicionar since/sort_by ao retrieve() com 3 helpers 3. Adicionar --recent/--since/--sort ao recall.py CLI 4. Slim CURRENT_STATE.md de 294→39 linhas (93%) 5. Remover referências ativas em 30+ arquivos (commands, skills, agents, schemas, docs) 6. Manter criação no genesis como bootstra...",
+        "exp_id": "EXP-025",
+        "date": "2026-02-06"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.655206",
+        "created_at": "2026-02-06T13:40:15.655206",
+        "decay_rate": 0.01
+      }
+    },
+    "9b9aee48": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-022: Genesis-Only Bootstrap Files",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Descrição\nArquivos criados uma única vez durante setup/genesis, depois substituídos por queries ao cérebro. O arquivo físico permanece como snapshot histórico no git.\n\n## Quando Usar\nQuando um knowledge file cresce indefinidamente e a informação já existe no brain.\n\n## Exemplo\nCURRENT_STATE.md: criado pelo setup.sh → populado pelo /init-engram → nunca mais atualizado → cérebro assume via recall temporal.",
+        "summary": "Descrição Arquivos criados uma única vez durante setup/genesis, depois substituídos por queries ao cérebro. O arquivo físico permanece como snapshot histórico no git. Quando Usar Quando um knowledge file cresce indefinidamente e a informação já existe no brain. Exemplo CURRENT_STATE.md: criado pelo setup.sh → populado pelo /init-engram → nunca mais atualizado → cérebro assume via recall temporal.",
+        "pat_id": "PAT-022"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.655270",
+        "created_at": "2026-02-06T13:40:15.655270",
+        "decay_rate": 0.005
+      }
+    },
+    "19d132a3": {
+      "labels": [
+        "Episode",
+        "BugFix"
+      ],
+      "props": {
+        "title": "Bug: numpy truth value ambiguity in retrieve()",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Problema\n`if not query_embedding:` falhava com numpy array porque numpy arrays não suportam truth value test com `not`.\n\n## Solução\nTrocar para `if query_embedding is None:`.\n\n## Arquivos\n.claude/brain/brain_sqlite.py",
+        "summary": "Problema `if not query_embedding:` falhava com numpy array porque numpy arrays não suportam truth value test com `not`. Solução Trocar para `if query_embedding is None:`. Arquivos .claude/brain/brain_sqlite.py"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.655317",
+        "created_at": "2026-02-06T13:40:15.655317",
+        "decay_rate": 0.01
+      }
+    },
+    "a08c1a68": {
+      "labels": [
+        "Episode",
+        "BugFix"
+      ],
+      "props": {
+        "title": "Bug: JSON output corrupted by print() to stdout",
+        "author": "thiagogaia@gmail.com",
+        "content": "## Problema\n`print(f'Loaded: ...')` em brain_sqlite.py ia para stdout, corrompendo output JSON quando recall.py usava --format json.\n\n## Solução\nRedirecionar para sys.stderr.write(). Também precisou adicionar `import sys` que estava faltando.\n\n## Arquivos\n.claude/brain/brain_sqlite.py",
+        "summary": "Problema `print(f'Loaded: ...')` em brain_sqlite.py ia para stdout, corrompendo output JSON quando recall.py usava --format json. Solução Redirecionar para sys.stderr.write(). Também precisou adicionar `import sys` que estava faltando. Arquivos .claude/brain/brain_sqlite.py"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-06T13:40:15.655340",
+        "created_at": "2026-02-06T13:40:15.655340",
+        "decay_rate": 0.01
+      }
     }
   },
   "edges": [
@@ -4886,48 +5008,42 @@
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "a52ceda2",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "ee7eb926",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "ee7eb926",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "49d27394",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "49d27394",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "49d27394",
@@ -4936,24 +5052,21 @@
       "weight": 1.0,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "442d2f41",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "442d2f41",
       "tgt": "domain-auth",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "442d2f41",
@@ -4962,528 +5075,462 @@
       "weight": 1.0,
       "props": {
         "method": "embedding"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "a4d710c9",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "a4d710c9",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "3234b3e3",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "3234b3e3",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "bcec1e40",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "bcec1e40",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "ee7eb926",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "79abc0a5",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "9310bbae",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "f045840e",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "f2aad3c1",
       "type": "REFERENCES",
       "weight": 0.9601350000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e57d240c",
       "tgt": "68480711",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7b1fcb34",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7b1fcb34",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7b1fcb34",
       "tgt": "e57d240c",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "2638f530",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "2638f530",
       "tgt": "domain-auth",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "2638f530",
       "tgt": "e57d240c",
       "type": "REFERENCES",
       "weight": 0.9601350000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "e57d240c",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "7b1fcb34",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "f045840e",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "f2aad3c1",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "9310bbae",
       "tgt": "68480711",
       "type": "REFERENCES",
       "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "ed9c6f35",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "507ab390",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "507ab390",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "2477137c",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7f1b7fc0",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7f1b7fc0",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "582c6d8e",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "582c6d8e",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4c95e120",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4c95e120",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "f37972df",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "f37972df",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "83389b13",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "83389b13",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "b7eeca3f",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "b7eeca3f",
       "tgt": "domain-testing",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "aa7df3e8",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "aa7df3e8",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "bc660740",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "bc660740",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "130b74cb",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "130b74cb",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "be485898",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "03f48948",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "03f48948",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4c8fe0fb",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4c8fe0fb",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "76918b1d",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "76918b1d",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "805185e1",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "805185e1",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4d3e2c93",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "4d3e2c93",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "006a5881",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "006a5881",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "166da41d",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "46a30545",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "46a30545",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "46a30545",
@@ -5492,40 +5539,35 @@
       "weight": 0.9087192881107331,
       "props": {
         "method": "embedding"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "e1d6fff2",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e1d6fff2",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7a135a62",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7a135a62",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "7a135a62",
@@ -5534,128 +5576,112 @@
       "weight": 1.0,
       "props": {
         "method": "embedding"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "0c94c63e",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "1ae74437",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "1ae74437",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "e6447296",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "635af67f",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "635af67f",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "55501c4b",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "55501c4b",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "55501c4b",
       "tgt": "42cd5642",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "848cbb2d",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "848cbb2d",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "848cbb2d",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "43f7e06f",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "43f7e06f",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "43f7e06f",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "43f7e06f",
@@ -5664,72 +5690,63 @@
       "weight": 1.0,
       "props": {
         "method": "embedding"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "3b9b10fd",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "3b9b10fd",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "3b9b10fd",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "6f740934",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "6f740934",
       "tgt": "domain-testing",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "02a48240",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "02a48240",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "02a48240",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "02a48240",
@@ -5738,144 +5755,126 @@
       "weight": 1.0,
       "props": {
         "method": "embedding"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "c8be5372",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "c8be5372",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "c8be5372",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "69c0e925",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "69c0e925",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "69c0e925",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "c3ac2a3a",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "c3ac2a3a",
       "tgt": "domain-frontend",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "c3ac2a3a",
       "tgt": "258e7d75",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "96f2c2d1",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "96f2c2d1",
       "tgt": "domain-infra",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "96f2c2d1",
       "tgt": "42cd5642",
       "type": "CLUSTERED_IN",
       "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "389d2742",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "50ec5f8c",
       "tgt": "person-thiagogaia@gmail.com",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "50ec5f8c",
       "tgt": "domain-database",
       "type": "BELONGS_TO",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "28e6f731",
       "tgt": "person-thiagogaia@gmail.com",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "a1516559",
       "tgt": "person-thiagogaia@gmail.com",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "a1516559",
@@ -5884,16 +5883,14 @@
       "weight": 0.6734860000000001,
       "props": {
         "scope": "engram"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "13ef8a7c",
       "tgt": "person-thiagogaia@gmail.com",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "13ef8a7c",
@@ -5902,16 +5899,14 @@
       "weight": 1.0,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "78161cc1",
       "tgt": "person-thiagogaia@gmail.com",
       "type": "AUTHORED_BY",
       "weight": 1.0,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "78161cc1",
@@ -5920,8 +5915,7 @@
       "weight": 0.5856400000000002,
       "props": {
         "scope": "brain"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "78161cc1",
@@ -5930,16 +5924,14 @@
       "weight": 0.5324000000000001,
       "props": {
         "scope": "brain"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "78161cc1",
       "tgt": "ab2d7fea",
       "type": "BELONGS_TO_THEME",
       "weight": 0.7986000000000002,
-      "props": {},
-      "created_at": null
+      "props": {}
     },
     {
       "src": "78161cc1",
@@ -5948,8 +5940,7 @@
       "weight": 0.4840000000000001,
       "props": {
         "scope": "brain"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "78161cc1",
@@ -5958,8 +5949,7 @@
       "weight": 0.4,
       "props": {
         "scope": "brain"
-      },
-      "created_at": null
+      }
     },
     {
       "src": "78161cc1",
@@ -5968,3598 +5958,7 @@
       "weight": 0.4,
       "props": {
         "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "e57d240c",
-      "type": "REFERENCES",
-      "weight": 0.9681361250000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "812f0768",
-      "type": "SAME_SCOPE",
-      "weight": 0.7745089000000001,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "79c9405c",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "6721d264",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "835a2079",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "7665a274",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7463a6ea",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "90cb0bdf",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "90cb0bdf",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "b9a5cadd",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "b603724e",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "b603724e",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d1a007bc",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "0c361ed6",
-      "type": "SAME_SCOPE",
-      "weight": 0.5324000000000001,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "ab2d7fea",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.7986000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "176fb04a",
-      "type": "SAME_SCOPE",
-      "weight": 0.4840000000000001,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "20d4c1cc",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "37d5e104",
-      "tgt": "99153eac",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "79c9405c",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "6721d264",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "835a2079",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "7665a274",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "812f0768",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "9a2c7d95",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "9a2c7d95",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3a7a1d3a",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3a7a1d3a",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3a7a1d3a",
-      "tgt": "258e7d75",
-      "type": "CLUSTERED_IN",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "9118ae21",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "9118ae21",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "8ed780cf",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "8ed780cf",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "8ed780cf",
-      "tgt": "eb333c9a",
-      "type": "RELATED_TO",
-      "weight": 0.9293931668996812,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "1b7dea8c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1b7dea8c",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1b7dea8c",
-      "tgt": "76293dca",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "fe7d60c8",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fe7d60c8",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a1396a0f",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "16c24a89",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "16c24a89",
-      "tgt": "99286bf3",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "readme"
-      },
-      "created_at": null
-    },
-    {
-      "src": "81dd2eb4",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "6721d264",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "835a2079",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "7665a274",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "79c9405c",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "75a55c6d",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.9743585500000007,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "75a55c6d",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.9743585500000007,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "99286bf3",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "99286bf3",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "cd6cd21f",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "df4a7d40",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "27980a2a",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "27980a2a",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "588628c9",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "835a2079",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "7665a274",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "32b83c9b",
-      "type": "RELATED_TO",
-      "weight": 0.9625266325473787,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "3bc29518",
-      "type": "RELATED_TO",
-      "weight": 0.7912747859954834,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "6721d264",
-      "tgt": "be905097",
-      "type": "RELATED_TO",
-      "weight": 0.7832234273492444,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "223940a2",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "223940a2",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "223940a2",
-      "tgt": "42cd5642",
-      "type": "CLUSTERED_IN",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "35278641",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "35278641",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "35278641",
-      "tgt": "f8d0dc8d",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "core"
-      },
-      "created_at": null
-    },
-    {
-      "src": "35278641",
-      "tgt": "dbcf1516",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "core"
-      },
-      "created_at": null
-    },
-    {
-      "src": "35278641",
-      "tgt": "bbffee89",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3ee40d0e",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3ee40d0e",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3ee40d0e",
-      "tgt": "a3095845",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "extras"
-      },
-      "created_at": null
-    },
-    {
-      "src": "a3095845",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a3095845",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3742d3fd",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3742d3fd",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3742d3fd",
-      "tgt": "a77de1bc",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "genesis"
-      },
-      "created_at": null
-    },
-    {
-      "src": "f3d73e0a",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.8052550000000004,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "9310bbae",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "f045840e",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "e57d240c",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "f2aad3c1",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "79abc0a5",
-      "tgt": "68480711",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.8857805000000005,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "e57d240c",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "f2aad3c1",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f045840e",
-      "tgt": "9310bbae",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "53e1ed87",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "53e1ed87",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "53e1ed87",
-      "tgt": "a52ceda2",
-      "type": "REFERENCES",
-      "weight": 1.0,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "99d27b58",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "ac9d3226",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a23868a8",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a23868a8",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2e6730d3",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "46ffe86c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6c8589ea",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6c8589ea",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "475dab4c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "475dab4c",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "76293dca",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "76293dca",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5f110764",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5f110764",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "4d950964",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "4d950964",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "0d4acc23",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "0d4acc23",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "72d3ebff",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "72d3ebff",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1d141a87",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1d141a87",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "362bd1b1",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "362bd1b1",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "802e1c1d",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "480b4335",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "480b4335",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "90935be0",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "90935be0",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eadcc06d",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eadcc06d",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "382d705f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5fc2aceb",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5fc2aceb",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6e3e1b2f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "6e3e1b2f",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2acb0005",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2acb0005",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "83642dad",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "415f4eaa",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "415f4eaa",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "48f2d20b",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "48f2d20b",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "46c9616c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "46c9616c",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c71281a9",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c71281a9",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "872c0f95",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "872c0f95",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eb333c9a",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eb333c9a",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fea18c15",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fea18c15",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "12d4c5b1",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "5e51d95c",
-      "type": "RELATED_TO",
-      "weight": 0.9480733877420428,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "3d5f0db0",
-      "type": "RELATED_TO",
-      "weight": 0.9658884376287462,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "c047e955",
-      "tgt": "8c20b6a9",
-      "type": "RELATED_TO",
-      "weight": 0.9362230843305589,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "63c9a2d9",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "5e51d95c",
-      "type": "RELATED_TO",
-      "weight": 0.9165739095211031,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "3d5f0db0",
-      "type": "RELATED_TO",
-      "weight": 0.9690195977687838,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 0.9687073832750323,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "12d4c5b1",
-      "tgt": "8c20b6a9",
-      "type": "RELATED_TO",
-      "weight": 0.9519406211376191,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "63c9a2d9",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "63c9a2d9",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 0.934609290957451,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "2ad2d9da",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2ad2d9da",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5e51d95c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5e51d95c",
-      "tgt": "3d5f0db0",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "5e51d95c",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 0.9391785562038424,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "3d5f0db0",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3d5f0db0",
-      "tgt": "86bece09",
-      "type": "RELATED_TO",
-      "weight": 0.9700823819637301,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "3d5f0db0",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "3d5f0db0",
-      "tgt": "8c20b6a9",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "86bece09",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "86bece09",
-      "tgt": "e12afc4a",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "86bece09",
-      "tgt": "8c20b6a9",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "e12afc4a",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e12afc4a",
-      "tgt": "8c20b6a9",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "8c20b6a9",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a3fa05d",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a3fa05d",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e459cfa7",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e459cfa7",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e459cfa7",
-      "tgt": "7b8901d0",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7b8901d0",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7b8901d0",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "bf4c4521",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "bf4c4521",
-      "tgt": "b5bf7925",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "b5bf7925",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "b5bf7925",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "b8e5d3f5",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3d1457be",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3702133d",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "81f71838",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "81f71838",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "afc822f6",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "afc822f6",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "797ed63f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c94f797c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c94f797c",
-      "tgt": "bf4cf47f",
-      "type": "RELATED_TO",
-      "weight": 1.0,
-      "props": {
-        "method": "tf_vector"
-      },
-      "created_at": null
-    },
-    {
-      "src": "bf4cf47f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "ff5a2f32",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a6c3edcd",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0b05c77",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0b05c77",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0b05c77",
-      "tgt": "42cd5642",
-      "type": "CLUSTERED_IN",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d48dd7aa",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d48dd7aa",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d48dd7aa",
-      "tgt": "258e7d75",
-      "type": "CLUSTERED_IN",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a98893e",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a98893e",
-      "tgt": "51501375",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "ANALISE_IMPLEMENTA.md"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "53e1ed87",
-      "type": "REFERENCES",
-      "weight": 0.8418575000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "7665a274",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "knowledge"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "0c361ed6",
-      "type": "MODIFIES_SAME",
-      "weight": 0.6655000000000002,
-      "props": {
-        "file": ".claude/brain/graph.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "32b83c9b",
-      "type": "MODIFIES_SAME",
-      "weight": 0.6050000000000001,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "20d4c1cc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "3bc29518",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/evolution-activations.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "835a2079",
-      "tgt": "be905097",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/evolution-activations.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "75b8b777",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "75b8b777",
-      "tgt": "fd10e0be",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "templates"
-      },
-      "created_at": null
-    },
-    {
-      "src": "75b8b777",
-      "tgt": "51501375",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "templates"
-      },
-      "created_at": null
-    },
-    {
-      "src": "75b8b777",
-      "tgt": "50f6e99f",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "51501375",
-      "type": "SAME_SCOPE",
-      "weight": 0.5856400000000002,
-      "props": {
-        "scope": "templates"
-      },
-      "created_at": null
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "f8d0dc8d",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "a77de1bc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "50f6e99f",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "51501375",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "51501375",
-      "tgt": "f8d0dc8d",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "51501375",
-      "tgt": "a77de1bc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "51501375",
-      "tgt": "50f6e99f",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f8d0dc8d",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f8d0dc8d",
-      "tgt": "a77de1bc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.7320500000000003,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "f8d0dc8d",
-      "tgt": "dbcf1516",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "core"
-      },
-      "created_at": null
-    },
-    {
-      "src": "f8d0dc8d",
-      "tgt": "bbffee89",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a77de1bc",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "f045840e",
-      "type": "REFERENCES",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.8784600000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "0c361ed6",
-      "type": "MODIFIES_SAME",
-      "weight": 0.6655000000000002,
-      "props": {
-        "file": ".claude/brain/graph.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "32b83c9b",
-      "type": "MODIFIES_SAME",
-      "weight": 0.6050000000000001,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "20d4c1cc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "3bc29518",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/evolution-activations.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "7665a274",
-      "tgt": "be905097",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/evolution-activations.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "42cd5642",
-      "tgt": "258e7d75",
-      "type": "RELATED_TO",
-      "weight": 0.7999708868683503,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.7320500000000003,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "ab2d7fea",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.7986000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "176fb04a",
-      "type": "SAME_SCOPE",
-      "weight": 0.4840000000000001,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "32b83c9b",
-      "type": "MODIFIES_SAME",
-      "weight": 0.6050000000000001,
-      "props": {
-        "file": ".claude/brain/graph.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "20d4c1cc",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "99153eac",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "176fb04a",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "176fb04a",
-      "tgt": "ab2d7fea",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "176fb04a",
-      "tgt": "20d4c1cc",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "176fb04a",
-      "tgt": "99153eac",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "176fb04a",
-      "tgt": "a5a071fa",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": "CLAUDE.md"
-      },
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "f2aad3c1",
-      "type": "REFERENCES",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "20d4c1cc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "3bc29518",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/sleep-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "99153eac",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/embeddings.py"
-      },
-      "created_at": null
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "be905097",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/sleep-log.jsonl"
-      },
-      "created_at": null
-    },
-    {
-      "src": "8545986c",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "8545986c",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f5b8d64f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f5b8d64f",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6655000000000002,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "801b61db",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "801b61db",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "801b61db",
-      "tgt": "c8be5372",
-      "type": "REFERENCES",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "27a9601e",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "27a9601e",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "04312e43",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "04312e43",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e49fd844",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "362caaf6",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "362caaf6",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "362caaf6",
-      "tgt": "848cbb2d",
-      "type": "REFERENCES",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "655941d1",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eefc0e4f",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e9d6b403",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e9d6b403",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e6441d7a",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e6441d7a",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2d0a37a8",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2d0a37a8",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f729cc3c",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f729cc3c",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f729cc3c",
-      "tgt": "389d2742",
-      "type": "REFERENCES",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "111d92de",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "111d92de",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "96024239",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "96024239",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "96024239",
-      "tgt": "68480711",
-      "type": "RELATED_TO",
-      "weight": 0.7530378103256226,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "eb1f75cf",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eb1f75cf",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "eb1f75cf",
-      "tgt": "68480711",
-      "type": "RELATED_TO",
-      "weight": 0.7994628548622131,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": null
-    },
-    {
-      "src": "e2d42ee3",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "e2d42ee3",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a05bee2",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5a05bee2",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a32016e3",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a32016e3",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "45c0e0b6",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "45c0e0b6",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "79abc0a5",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "f045840e",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "e57d240c",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "f2aad3c1",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "68480711",
-      "tgt": "9310bbae",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f2aad3c1",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f2aad3c1",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f2aad3c1",
-      "tgt": "68480711",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f2aad3c1",
-      "tgt": "f045840e",
-      "type": "REFERENCES",
-      "weight": 0.7260000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "f2aad3c1",
-      "tgt": "9310bbae",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5e9fb657",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "5e9fb657",
-      "tgt": "domain-api",
-      "type": "BELONGS_TO",
-      "weight": 0.6050000000000001,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.55,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "ab2d7fea",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "99153eac",
-      "type": "SAME_SCOPE",
-      "weight": 0.4,
-      "props": {
-        "scope": "brain"
-      },
-      "created_at": null
-    },
-    {
-      "src": "3bc29518",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.55,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bc29518",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.55,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bc29518",
-      "tgt": "5e9fb657",
-      "type": "REFERENCES",
-      "weight": 0.55,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bc29518",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bc29518",
-      "tgt": "be905097",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/evolution-activations.json"
-      },
-      "created_at": null
-    },
-    {
-      "src": "99153eac",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "99153eac",
-      "tgt": "ab2d7fea",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1d2174d3",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1d2174d3",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1d2174d3",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "78f292dc",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "78f292dc",
-      "tgt": "1d2174d3",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "78f292dc",
-      "tgt": "d0b05c77",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "78f292dc",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "78f292dc",
-      "tgt": "258e7d75",
-      "type": "CLUSTERED_IN",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fe5f6d37",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fe5f6d37",
-      "tgt": "1d2174d3",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fe5f6d37",
-      "tgt": "78f292dc",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "fe5f6d37",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a5a071fa",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a5a071fa",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "a5a071fa",
-      "tgt": "63ff63e5",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": "docs/LIFECYCLE_GUIDE.md"
-      },
-      "created_at": null
-    },
-    {
-      "src": "63ff63e5",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "63ff63e5",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bd7b0da",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bd7b0da",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "3bd7b0da",
-      "tgt": "258e7d75",
-      "type": "CLUSTERED_IN",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7f9787ea",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "7f9787ea",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0a1dc73",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0a1dc73",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0a1dc73",
-      "tgt": "7b1fcb34",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0a1dc73",
-      "tgt": "a4d710c9",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "d0a1dc73",
-      "tgt": "e57d240c",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "28e09161",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "28e09161",
-      "tgt": "ccf19976",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": "batch-setup.sh"
-      },
-      "created_at": null
-    },
-    {
-      "src": "dbcf1516",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "dbcf1516",
-      "tgt": "bbffee89",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "ccf19976",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "be905097",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "be905097",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "be905097",
-      "tgt": "695f6814",
-      "type": "BELONGS_TO_THEME",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1c04c2fa",
-      "tgt": "person-Thiago Gaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "1c04c2fa",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "bbcd2ca0",
-      "tgt": "person-Thiago Gaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "bbcd2ca0",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "bbcd2ca0",
-      "tgt": "258e7d75",
-      "type": "CLUSTERED_IN",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "72f04c4f",
-      "tgt": "person-Thiago Gaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "72f04c4f",
-      "tgt": "domain-infra",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "72f04c4f",
-      "tgt": "42cd5642",
-      "type": "CLUSTERED_IN",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c1e3e79a",
-      "tgt": "person-Thiago Gaia",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "c1e3e79a",
-      "tgt": "domain-frontend",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2a37eab3",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2a37eab3",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "2a37eab3",
-      "tgt": "2638f530",
-      "type": "REFERENCES",
-      "weight": 0.6,
-      "props": {},
-      "created_at": null
-    },
-    {
-      "src": "50f6e99f",
-      "tgt": "bbffee89",
-      "type": "RELATED_TO",
-      "weight": 0.7967198103666305,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": "2026-02-06T02:05:42.920726"
-    },
-    {
-      "src": "1c04c2fa",
-      "tgt": "c1e3e79a",
-      "type": "RELATED_TO",
-      "weight": 0.7622241377830505,
-      "props": {
-        "method": "embedding"
-      },
-      "created_at": "2026-02-06T02:05:42.921171"
-    },
-    {
-      "src": "835a2079",
-      "tgt": "7665a274",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive-log.jsonl"
-      },
-      "created_at": "2026-02-06T09:36:41.038289"
-    },
-    {
-      "src": "fd10e0be",
-      "tgt": "51501375",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": "setup.sh"
-      },
-      "created_at": "2026-02-06T09:36:41.038861"
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "20d4c1cc",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:36:41.039018"
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "99153eac",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:36:41.039125"
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "99153eac",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:36:41.039250"
-    },
-    {
-      "src": "cf793b81",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.642312"
-    },
-    {
-      "src": "cf793b81",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.642651"
-    },
-    {
-      "src": "f2e9ec3f",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.642994"
-    },
-    {
-      "src": "f2e9ec3f",
-      "tgt": "domain-testing",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.643102"
-    },
-    {
-      "src": "cd9fd822",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.643524"
-    },
-    {
-      "src": "cd9fd822",
-      "tgt": "domain-auth",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.643631"
-    },
-    {
-      "src": "cd9fd822",
-      "tgt": "1c04c2fa",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.665175"
-    },
-    {
-      "src": "cd9fd822",
-      "tgt": "bbcd2ca0",
-      "type": "REFERENCES",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:38:58.665591"
-    },
-    {
-      "src": "a5083695",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.652220"
-    },
-    {
-      "src": "a5083695",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.652911"
-    },
-    {
-      "src": "f23c2cbb",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.653316"
-    },
-    {
-      "src": "f23c2cbb",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.653550"
-    },
-    {
-      "src": "7e4527b5",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.654746"
-    },
-    {
-      "src": "7e4527b5",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.654862"
-    },
-    {
-      "src": "9d64249a",
-      "tgt": "person-thiagogaia@gmail.com",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.655174"
-    },
-    {
-      "src": "9d64249a",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.655304"
-    },
-    {
-      "src": "ca597016",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.655787"
-    },
-    {
-      "src": "ca597016",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.655905"
-    },
-    {
-      "src": "d24b5746",
-      "tgt": "person-engram",
-      "type": "AUTHORED_BY",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.656179"
-    },
-    {
-      "src": "d24b5746",
-      "tgt": "domain-database",
-      "type": "BELONGS_TO",
-      "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:39:45.656267"
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "cf793b81",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:41:41.336683"
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "cf793b81",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337345"
-    },
-    {
-      "src": "99153eac",
-      "tgt": "cf793b81",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/brain.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337465"
-    },
-    {
-      "src": "0c361ed6",
-      "tgt": "cd9fd822",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337593"
-    },
-    {
-      "src": "cf793b81",
-      "tgt": "cd9fd822",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/cognitive.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337688"
-    },
-    {
-      "src": "20d4c1cc",
-      "tgt": "cd9fd822",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/populate.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337800"
-    },
-    {
-      "src": "32b83c9b",
-      "tgt": "cf793b81",
-      "type": "MODIFIES_SAME",
-      "weight": 0.5,
-      "props": {
-        "file": ".claude/brain/embeddings.py"
-      },
-      "created_at": "2026-02-06T09:41:41.337879"
+      }
     },
     {
       "src": "78161cc1",
@@ -9568,8 +5967,552 @@
       "weight": 0.8204683111862315,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.482729"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.9681361250000002,
+      "props": {}
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "812f0768",
+      "type": "SAME_SCOPE",
+      "weight": 0.7745089000000001,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "79c9405c",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "7463a6ea",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "90cb0bdf",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "90cb0bdf",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "b9a5cadd",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "b603724e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "b603724e",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "d1a007bc",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "0c361ed6",
+      "type": "SAME_SCOPE",
+      "weight": 0.5324000000000001,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.7986000000000002,
+      "props": {}
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "176fb04a",
+      "type": "SAME_SCOPE",
+      "weight": 0.4840000000000001,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "20d4c1cc",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "812f0768",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "812f0768",
+      "tgt": "79c9405c",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "812f0768",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "9a2c7d95",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "9a2c7d95",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "3a7a1d3a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "3a7a1d3a",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "3a7a1d3a",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "9118ae21",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "9118ae21",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "8ed780cf",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "8ed780cf",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "8ed780cf",
+      "tgt": "eb333c9a",
+      "type": "RELATED_TO",
+      "weight": 0.9293931668996812,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "1b7dea8c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "1b7dea8c",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "1b7dea8c",
+      "tgt": "76293dca",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "fe7d60c8",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "fe7d60c8",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "a1396a0f",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "16c24a89",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "16c24a89",
+      "tgt": "99286bf3",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "readme"
+      }
+    },
+    {
+      "src": "81dd2eb4",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "6721d264",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "79c9405c",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "75a55c6d",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.9743585500000007,
+      "props": {}
+    },
+    {
+      "src": "75a55c6d",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.9743585500000007,
+      "props": {}
+    },
+    {
+      "src": "99286bf3",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "99286bf3",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "cd6cd21f",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "df4a7d40",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "27980a2a",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "27980a2a",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "588628c9",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "6721d264",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "6721d264",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "6721d264",
+      "tgt": "835a2079",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "6721d264",
+      "tgt": "7665a274",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "knowledge"
+      }
+    },
+    {
+      "src": "6721d264",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "6721d264",
+      "tgt": "32b83c9b",
+      "type": "RELATED_TO",
+      "weight": 0.9625266325473787,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "6721d264",
+      "tgt": "3bc29518",
+      "type": "RELATED_TO",
+      "weight": 0.7912747859954834,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "6721d264",
+      "tgt": "be905097",
+      "type": "RELATED_TO",
+      "weight": 0.7832234273492444,
+      "props": {
+        "method": "tf_vector"
+      }
     },
     {
       "src": "6721d264",
@@ -9578,8 +6521,1389 @@
       "weight": 0.7751154783994246,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.529414"
+      }
+    },
+    {
+      "src": "223940a2",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "223940a2",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "223940a2",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "35278641",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "35278641",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "35278641",
+      "tgt": "f8d0dc8d",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "core"
+      }
+    },
+    {
+      "src": "35278641",
+      "tgt": "dbcf1516",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "core"
+      }
+    },
+    {
+      "src": "35278641",
+      "tgt": "bbffee89",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "3ee40d0e",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "3ee40d0e",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "3ee40d0e",
+      "tgt": "a3095845",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "extras"
+      }
+    },
+    {
+      "src": "a3095845",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "a3095845",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "3742d3fd",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "3742d3fd",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "3742d3fd",
+      "tgt": "a77de1bc",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "genesis"
+      }
+    },
+    {
+      "src": "f3d73e0a",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.8052550000000004,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "9310bbae",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "f045840e",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "f2aad3c1",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "79abc0a5",
+      "tgt": "68480711",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.8857805000000005,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "f2aad3c1",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "f045840e",
+      "tgt": "9310bbae",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "53e1ed87",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "53e1ed87",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "53e1ed87",
+      "tgt": "a52ceda2",
+      "type": "REFERENCES",
+      "weight": 1.0,
+      "props": {}
+    },
+    {
+      "src": "99d27b58",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "ac9d3226",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "a23868a8",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "a23868a8",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "2e6730d3",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "46ffe86c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "6c8589ea",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "6c8589ea",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "475dab4c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "475dab4c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "76293dca",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "76293dca",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5f110764",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5f110764",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "4d950964",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "4d950964",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "0d4acc23",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "0d4acc23",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "72d3ebff",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "72d3ebff",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "1d141a87",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "1d141a87",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "362bd1b1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "362bd1b1",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "802e1c1d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "480b4335",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "480b4335",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "90935be0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "90935be0",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "eadcc06d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "eadcc06d",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "382d705f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5fc2aceb",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5fc2aceb",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "6e3e1b2f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "6e3e1b2f",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "2acb0005",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "2acb0005",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "83642dad",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "415f4eaa",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "415f4eaa",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "48f2d20b",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "48f2d20b",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "46c9616c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "46c9616c",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c71281a9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c71281a9",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "872c0f95",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "872c0f95",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "eb333c9a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "eb333c9a",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "fea18c15",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "fea18c15",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c047e955",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c047e955",
+      "tgt": "12d4c5b1",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "c047e955",
+      "tgt": "5e51d95c",
+      "type": "RELATED_TO",
+      "weight": 0.9480733877420428,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "c047e955",
+      "tgt": "3d5f0db0",
+      "type": "RELATED_TO",
+      "weight": 0.9658884376287462,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "c047e955",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "c047e955",
+      "tgt": "8c20b6a9",
+      "type": "RELATED_TO",
+      "weight": 0.9362230843305589,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "63c9a2d9",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "5e51d95c",
+      "type": "RELATED_TO",
+      "weight": 0.9165739095211031,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "3d5f0db0",
+      "type": "RELATED_TO",
+      "weight": 0.9690195977687838,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 0.9687073832750323,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "12d4c5b1",
+      "tgt": "8c20b6a9",
+      "type": "RELATED_TO",
+      "weight": 0.9519406211376191,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "63c9a2d9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "63c9a2d9",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 0.934609290957451,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "2ad2d9da",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "2ad2d9da",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5e51d95c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5e51d95c",
+      "tgt": "3d5f0db0",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "5e51d95c",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 0.9391785562038424,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "3d5f0db0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "3d5f0db0",
+      "tgt": "86bece09",
+      "type": "RELATED_TO",
+      "weight": 0.9700823819637301,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "3d5f0db0",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "3d5f0db0",
+      "tgt": "8c20b6a9",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "86bece09",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "86bece09",
+      "tgt": "e12afc4a",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "86bece09",
+      "tgt": "8c20b6a9",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "e12afc4a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "e12afc4a",
+      "tgt": "8c20b6a9",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "8c20b6a9",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5a3fa05d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5a3fa05d",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "e459cfa7",
+      "tgt": "7b8901d0",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "7b8901d0",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "7b8901d0",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "bf4c4521",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "bf4c4521",
+      "tgt": "b5bf7925",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "b5bf7925",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "b5bf7925",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "b8e5d3f5",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "3d1457be",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "3702133d",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "81f71838",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "81f71838",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "afc822f6",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "afc822f6",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "797ed63f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c94f797c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "c94f797c",
+      "tgt": "bf4cf47f",
+      "type": "RELATED_TO",
+      "weight": 1.0,
+      "props": {
+        "method": "tf_vector"
+      }
+    },
+    {
+      "src": "bf4cf47f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "ff5a2f32",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "a6c3edcd",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d0b05c77",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "d48dd7aa",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5a98893e",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "5a98893e",
+      "tgt": "51501375",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "ANALISE_IMPLEMENTA.md"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "53e1ed87",
+      "type": "REFERENCES",
+      "weight": 0.8418575000000003,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "7665a274",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "835a2079",
+      "tgt": "0c361ed6",
+      "type": "MODIFIES_SAME",
+      "weight": 0.6655000000000002,
+      "props": {
+        "file": ".claude/brain/graph.json"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "32b83c9b",
+      "type": "MODIFIES_SAME",
+      "weight": 0.6050000000000001,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "20d4c1cc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "3bc29518",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/evolution-activations.json"
+      }
+    },
+    {
+      "src": "835a2079",
+      "tgt": "be905097",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/evolution-activations.json"
+      }
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "fd10e0be",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "templates"
+      }
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "51501375",
+      "type": "SAME_SCOPE",
+      "weight": 0.5856400000000002,
+      "props": {
+        "scope": "templates"
+      }
+    },
+    {
+      "src": "75b8b777",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "51501375",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "f8d0dc8d",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "fd10e0be",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "51501375",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "51501375",
+      "tgt": "f8d0dc8d",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "51501375",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "51501375",
+      "tgt": "50f6e99f",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "a77de1bc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.7320500000000003,
+      "props": {
+        "file": "setup.sh"
+      }
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "dbcf1516",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "core"
+      }
+    },
+    {
+      "src": "f8d0dc8d",
+      "tgt": "bbffee89",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "a77de1bc",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "f045840e",
+      "type": "REFERENCES",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.8784600000000002,
+      "props": {}
+    },
+    {
+      "src": "7665a274",
+      "tgt": "0c361ed6",
+      "type": "MODIFIES_SAME",
+      "weight": 0.6655000000000002,
+      "props": {
+        "file": ".claude/brain/graph.json"
+      }
+    },
+    {
+      "src": "7665a274",
+      "tgt": "32b83c9b",
+      "type": "MODIFIES_SAME",
+      "weight": 0.6050000000000001,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "7665a274",
+      "tgt": "20d4c1cc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "7665a274",
+      "tgt": "3bc29518",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/evolution-activations.json"
+      }
+    },
+    {
+      "src": "7665a274",
+      "tgt": "be905097",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/evolution-activations.json"
+      }
     },
     {
       "src": "7665a274",
@@ -9588,8 +7912,93 @@
       "weight": 0.76271276980969,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.624337"
+      }
+    },
+    {
+      "src": "50f6e99f",
+      "tgt": "bbffee89",
+      "type": "RELATED_TO",
+      "weight": 0.7967198103666305,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "42cd5642",
+      "tgt": "258e7d75",
+      "type": "RELATED_TO",
+      "weight": 0.7999708868683503,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.7320500000000003,
+      "props": {}
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.7986000000000002,
+      "props": {}
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "176fb04a",
+      "type": "SAME_SCOPE",
+      "weight": 0.4840000000000001,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "32b83c9b",
+      "type": "MODIFIES_SAME",
+      "weight": 0.6050000000000001,
+      "props": {
+        "file": ".claude/brain/graph.json"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "20d4c1cc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "99153eac",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "cf793b81",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "0c361ed6",
+      "tgt": "cd9fd822",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive.py"
+      }
     },
     {
       "src": "0c361ed6",
@@ -9598,8 +8007,121 @@
       "weight": 0.754670203732807,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.628874"
+      }
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "20d4c1cc",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "a5a071fa",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "CLAUDE.md"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "f2aad3c1",
+      "type": "REFERENCES",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "20d4c1cc",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive-log.jsonl"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "3bc29518",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/sleep-log.jsonl"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "99153eac",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/embeddings.py"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "be905097",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/sleep-log.jsonl"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "cf793b81",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/embeddings.py"
+      }
     },
     {
       "src": "32b83c9b",
@@ -9608,8 +8130,753 @@
       "weight": 0.758287544405155,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.631263"
+      }
+    },
+    {
+      "src": "8545986c",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "8545986c",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "f5b8d64f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "f5b8d64f",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6655000000000002,
+      "props": {}
+    },
+    {
+      "src": "801b61db",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "801b61db",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "801b61db",
+      "tgt": "c8be5372",
+      "type": "REFERENCES",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "27a9601e",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "27a9601e",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "04312e43",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "04312e43",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e49fd844",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "362caaf6",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "362caaf6",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "362caaf6",
+      "tgt": "848cbb2d",
+      "type": "REFERENCES",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "655941d1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "eefc0e4f",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e9d6b403",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e9d6b403",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e6441d7a",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e6441d7a",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "2d0a37a8",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "2d0a37a8",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "f729cc3c",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "f729cc3c",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "f729cc3c",
+      "tgt": "389d2742",
+      "type": "REFERENCES",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "111d92de",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "111d92de",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "96024239",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "96024239",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "96024239",
+      "tgt": "68480711",
+      "type": "RELATED_TO",
+      "weight": 0.7530378103256226,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "eb1f75cf",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "eb1f75cf",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "eb1f75cf",
+      "tgt": "68480711",
+      "type": "RELATED_TO",
+      "weight": 0.7994628548622131,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "e2d42ee3",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "e2d42ee3",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "5a05bee2",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "5a05bee2",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "a32016e3",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "a32016e3",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "45c0e0b6",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "45c0e0b6",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "79abc0a5",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "f045840e",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "f2aad3c1",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "68480711",
+      "tgt": "9310bbae",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "f2aad3c1",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "f2aad3c1",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "f2aad3c1",
+      "tgt": "68480711",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "f2aad3c1",
+      "tgt": "f045840e",
+      "type": "REFERENCES",
+      "weight": 0.7260000000000001,
+      "props": {}
+    },
+    {
+      "src": "f2aad3c1",
+      "tgt": "9310bbae",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "5e9fb657",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "5e9fb657",
+      "tgt": "domain-api",
+      "type": "BELONGS_TO",
+      "weight": 0.6050000000000001,
+      "props": {}
+    },
+    {
+      "src": "20d4c1cc",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "20d4c1cc",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "20d4c1cc",
+      "tgt": "99153eac",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "20d4c1cc",
+      "tgt": "cf793b81",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "20d4c1cc",
+      "tgt": "cd9fd822",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/populate.py"
+      }
+    },
+    {
+      "src": "3bc29518",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "3bc29518",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "3bc29518",
+      "tgt": "5e9fb657",
+      "type": "REFERENCES",
+      "weight": 0.55,
+      "props": {}
+    },
+    {
+      "src": "3bc29518",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "3bc29518",
+      "tgt": "be905097",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/evolution-activations.json"
+      }
+    },
+    {
+      "src": "99153eac",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "99153eac",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "99153eac",
+      "tgt": "cf793b81",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/brain.py"
+      }
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "1d2174d3",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "d0b05c77",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "1d2174d3",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "78f292dc",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "63ff63e5",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "docs/LIFECYCLE_GUIDE.md"
+      }
+    },
+    {
+      "src": "63ff63e5",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "63ff63e5",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7f9787ea",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7f9787ea",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0a1dc73",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0a1dc73",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0a1dc73",
+      "tgt": "7b1fcb34",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0a1dc73",
+      "tgt": "a4d710c9",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d0a1dc73",
+      "tgt": "e57d240c",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "28e09161",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "28e09161",
+      "tgt": "ccf19976",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "batch-setup.sh"
+      }
+    },
+    {
+      "src": "dbcf1516",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "dbcf1516",
+      "tgt": "bbffee89",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "ccf19976",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "be905097",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "be905097",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "be905097",
+      "tgt": "695f6814",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
     },
     {
       "src": "be905097",
@@ -9618,48 +8885,387 @@
       "weight": 0.8244627935973313,
       "props": {
         "method": "tf_vector"
-      },
-      "created_at": "2026-02-06T09:41:41.648433"
+      }
+    },
+    {
+      "src": "1c04c2fa",
+      "tgt": "person-Thiago Gaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1c04c2fa",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1c04c2fa",
+      "tgt": "c1e3e79a",
+      "type": "RELATED_TO",
+      "weight": 0.7622241377830505,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
+      "src": "bbcd2ca0",
+      "tgt": "person-Thiago Gaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "bbcd2ca0",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "bbcd2ca0",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "72f04c4f",
+      "tgt": "person-Thiago Gaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "72f04c4f",
+      "tgt": "domain-infra",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "72f04c4f",
+      "tgt": "42cd5642",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c1e3e79a",
+      "tgt": "person-Thiago Gaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "c1e3e79a",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2a37eab3",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2a37eab3",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "2a37eab3",
+      "tgt": "2638f530",
+      "type": "REFERENCES",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "cf793b81",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "cf793b81",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "cf793b81",
+      "tgt": "cd9fd822",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/cognitive.py"
+      }
     },
     {
       "src": "cf793b81",
       "tgt": "ab2d7fea",
       "type": "BELONGS_TO_THEME",
       "weight": 0.6,
-      "props": {},
-      "created_at": "2026-02-06T09:41:41.652609"
+      "props": {}
+    },
+    {
+      "src": "f2e9ec3f",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f2e9ec3f",
+      "tgt": "domain-testing",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
     },
     {
       "src": "f2e9ec3f",
       "tgt": "ab2d7fea",
       "type": "BELONGS_TO_THEME",
       "weight": 0.6,
-      "props": {},
-      "created_at": "2026-02-06T09:41:41.652727"
+      "props": {}
+    },
+    {
+      "src": "cd9fd822",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "cd9fd822",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "cd9fd822",
+      "tgt": "1c04c2fa",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "cd9fd822",
+      "tgt": "bbcd2ca0",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
     },
     {
       "src": "cd9fd822",
       "tgt": "695f6814",
       "type": "BELONGS_TO_THEME",
       "weight": 0.6,
-      "props": {},
-      "created_at": "2026-02-06T09:41:41.652857"
+      "props": {}
+    },
+    {
+      "src": "a5083695",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5083695",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f23c2cbb",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "f23c2cbb",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
     },
     {
       "src": "f23c2cbb",
       "tgt": "9d0a0b75",
       "type": "CLUSTERED_IN",
       "weight": 0.5,
-      "props": {},
-      "created_at": "2026-02-06T09:41:41.653756"
+      "props": {}
+    },
+    {
+      "src": "7e4527b5",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7e4527b5",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
     },
     {
       "src": "7e4527b5",
       "tgt": "9d0a0b75",
       "type": "CLUSTERED_IN",
       "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "9d64249a",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "9d64249a",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "ca597016",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "ca597016",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d24b5746",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "d24b5746",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "9991942b",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
       "props": {},
-      "created_at": "2026-02-06T09:41:41.653845"
+      "created_at": "2026-02-06T13:40:15.654676"
+    },
+    {
+      "src": "9991942b",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.654795"
+    },
+    {
+      "src": "20ca1176",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.654948"
+    },
+    {
+      "src": "20ca1176",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655195"
+    },
+    {
+      "src": "cd6f18d6",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655231"
+    },
+    {
+      "src": "cd6f18d6",
+      "tgt": "domain-auth",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655265"
+    },
+    {
+      "src": "9b9aee48",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655286"
+    },
+    {
+      "src": "9b9aee48",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655309"
+    },
+    {
+      "src": "19d132a3",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655326"
+    },
+    {
+      "src": "19d132a3",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655337"
+    },
+    {
+      "src": "a08c1a68",
+      "tgt": "person-thiagogaia@gmail.com",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655347"
+    },
+    {
+      "src": "a08c1a68",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-06T13:40:15.655366"
     }
   ]
 }

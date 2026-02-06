@@ -198,7 +198,7 @@ Você é um especialista em {name.replace('-', ' ')}.
 
 ## Regras
 - SEMPRE consulte os knowledge files antes de decidir
-- NUNCA modifique arquitetura sem registrar em ADR_LOG.md
+- NUNCA modifique arquitetura sem registrar no cérebro via brain.add_memory()
 - [TODO: Regras específicas deste agent]
 
 ## Output Esperado

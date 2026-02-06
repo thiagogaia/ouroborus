@@ -36,7 +36,7 @@ def migrate(base_path: Path = None, verify: bool = False, dry_run: bool = False)
         Dict with migration statistics
     """
     if base_path is None:
-        base_path = Path(".claude/brain")
+        base_path = Path(__file__).parent
     base_path = Path(base_path)
 
     graph_file = base_path / "graph.json"

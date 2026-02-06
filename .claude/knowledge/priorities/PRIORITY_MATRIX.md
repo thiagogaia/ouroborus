@@ -1,12 +1,12 @@
 # Priority Matrix
-> Ultima atualizacao: 2026-02-05 (/learn sessao 5)
+> Ultima atualizacao: 2026-02-06 (/learn sessao 7 — brain-primary)
 > ICE = (Impacto x Confianca) / Esforco - todos 1-10
 
 ## Ativas
 
 | # | Tarefa | I | C | E | ICE | Status |
 |---|--------|---|---|---|-----|--------|
-| 1 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🔵 pendente |
+| 1 | Adicionar testes unitários aos scripts | 7 | 9 | 5 | 12.6 | 🟢 concluído |
 
 ## Backlog
 
@@ -53,6 +53,11 @@
 | Melhorar REFERENCES no sleep | ✅ Concluído — 3→30 refs via canonical .md parsing | 2026-02-05 |
 | CO_ACCESSED no consolidate() | ✅ Concluído — cria edges entre nós co-acessados | 2026-02-05 |
 | populate_experiences() | ✅ Concluído — EXP nodes no grafo | 2026-02-05 |
+| Rewrite do_update() setup.sh | ✅ Concluído — 8 gaps corrigidos | 2026-02-06 |
+| Redesign SQLite schema v2 | ✅ Concluído — hybrid property graph, 212 nós migrados | 2026-02-06 |
+| Remover JSON fallback, SQLite v2 único backend | ✅ Concluído — brain_sqlite.py sole backend | 2026-02-06 |
+| 195 unit tests para brain scripts | ✅ Concluído — 206/206 passando | 2026-02-06 |
+| CURRENT_STATE genesis-only + temporal recall | ✅ Concluído — 30+ arquivos, 0 tokens/sessão | 2026-02-06 |
 
 ## Como Priorizar
 

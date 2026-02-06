@@ -32,30 +32,18 @@ from brain import get_current_developer
 
 
 def parse_adr_log(content: str) -> List[Dict]:
-    """Extrai ADRs do ADR_LOG.md"""
+    """Extrai ADRs do ADR_LOG.md.
+
+    Handles two formats:
+    - Block: ### Contexto\\n...text...\\n### Decisão\\n...
+    - Compact: **Contexto**: inline text\\n**Decisão**: inline text\\n
+    """
     adrs = []
 
-    # Pattern para encontrar ADRs
-    adr_pattern = re.compile(
-        r'## (ADR-\d+): (.+?)\n'
-        r'\*\*Data\*\*: (.+?)\n'
-        r'\*\*Status\*\*: (.+?)\n'
-        r'(?:\*\*(?:Decisores|Relacionado)\*\*: (.+?)\n)?'
-        r'.*?### Contexto\n(.+?)\n###',
-        re.DOTALL
-    )
-
-    # Pattern alternativo mais simples
-    simple_pattern = re.compile(
-        r'## (ADR-\d+): (.+?)\n',
-        re.MULTILINE
-    )
-
-    # Divide por ADRs
-    sections = re.split(r'\n---\n', content)
+    # Split by ADR headers (handles files with or without --- separators)
+    sections = re.split(r'\n(?=## ADR-\d+)', content)
 
     for section in sections:
-        # Tenta extrair informações básicas
         match = re.search(r'## (ADR-\d+): (.+)', section)
         if not match:
             continue
@@ -71,16 +59,22 @@ def parse_adr_log(content: str) -> List[Dict]:
         status_match = re.search(r'\*\*Status\*\*: (.+)', section)
         status = status_match.group(1).strip() if status_match else "Aceito"
 
-        # Extrai contexto
-        context_match = re.search(r'### Contexto\n(.+?)(?:\n###|\n## |$)', section, re.DOTALL)
+        # Extrai contexto — block format then compact fallback
+        context_match = re.search(r'### Contexto\n(.+?)(?:\n###|\n## |\Z)', section, re.DOTALL)
+        if not context_match:
+            context_match = re.search(r'\*\*Contexto\*\*[:\s]+(.+?)(?=\n\*\*[A-Z]|\n## |\Z)', section, re.DOTALL)
         context = context_match.group(1).strip() if context_match else ""
 
-        # Extrai decisão
-        decision_match = re.search(r'### Decisão\n(.+?)(?:\n###|\n## |$)', section, re.DOTALL)
+        # Extrai decisão — block format then compact fallback
+        decision_match = re.search(r'### Decis[ãa]o\n(.+?)(?:\n###|\n## |\Z)', section, re.DOTALL)
+        if not decision_match:
+            decision_match = re.search(r'\*\*Decis[ãa]o\*\*[:\s]+(.+?)(?=\n\*\*[A-Z]|\n## |\Z)', section, re.DOTALL)
         decision = decision_match.group(1).strip() if decision_match else ""
 
-        # Extrai consequências
-        conseq_match = re.search(r'### Consequências\n(.+?)(?:\n---|\n## |$)', section, re.DOTALL)
+        # Extrai consequências — block format then compact fallback
+        conseq_match = re.search(r'### Consequ[êe]ncias\n(.+?)(?:\n---|\n## |\Z)', section, re.DOTALL)
+        if not conseq_match:
+            conseq_match = re.search(r'\*\*Consequ[êe]ncias\*\*[:\s]*\n?(.+?)(?=\n\*\*[A-Z]|\n## |\Z)', section, re.DOTALL)
         consequences = conseq_match.group(1).strip() if conseq_match else ""
 
         adrs.append({
@@ -134,11 +128,12 @@ def parse_domain(content: str) -> List[Dict]:
             })
 
     # Extrai entidades
-    entities_match = re.search(r'## Entidades.*?\n(.+?)(?:\n## |$)', content, re.DOTALL)
+    entities_match = re.search(r'## Entidades.*?\n(.+?)(?:\n## |\Z)', content, re.DOTALL)
     if entities_match:
         entities = entities_match.group(1)
 
-        for match in re.finditer(r'\*\*([^*]+)\*\*[:\s]+(.+?)(?=\n\*\*|\n##|\n\n|$)', entities, re.DOTALL):
+        # Format 1: **entity**: description
+        for match in re.finditer(r'\*\*([^*]+)\*\*[:\s]+(.+?)(?=\n\*\*|\n##|\n\n|\Z)', entities, re.DOTALL):
             entity = match.group(1).strip()
             description = match.group(2).strip()
 
@@ -148,40 +143,93 @@ def parse_domain(content: str) -> List[Dict]:
                 "description": description
             })
 
-    return concepts
-
-
-def parse_patterns(content: str) -> List[Dict]:
-    """Extrai patterns do PATTERNS.md"""
-    patterns = []
-
-    # Extrai padrões aprovados
-    approved_match = re.search(r'## Padrões Aprovados.*?\n(.+?)(?:\n## Anti|$)', content, re.DOTALL)
-    if approved_match:
-        approved = approved_match.group(1)
-
-        # Padrão: ### Nome do Pattern
-        for match in re.finditer(r'### (.+?)\n(.+?)(?=\n###|\n## |$)', approved, re.DOTALL):
+        # Format 2: ### Subsection with code blocks or text
+        seen_entities = {c["name"] for c in concepts if c["type"] == "entity"}
+        for match in re.finditer(r'### (.+?)\n(.+?)(?=\n### |\n## |\Z)', entities, re.DOTALL):
             name = match.group(1).strip()
-            description = match.group(2).strip()
+            body = match.group(2).strip()
 
-            patterns.append({
-                "type": "approved",
+            if name in seen_entities or not body:
+                continue
+
+            # Extract code block content if present
+            code_blocks = re.findall(r'```\n?(.*?)```', body, re.DOTALL)
+            description = '\n'.join(cb.strip() for cb in code_blocks) if code_blocks else body
+
+            concepts.append({
+                "type": "entity",
                 "name": name,
                 "description": description
             })
 
-    # Extrai anti-patterns
-    anti_match = re.search(r'## Anti-[Pp]atterns.*?\n(.+?)(?:\n## |$)', content, re.DOTALL)
-    if anti_match:
-        anti = anti_match.group(1)
+    # Extrai restrições
+    constraints_match = re.search(r'## Restri[çc][õo]es.*?\n(.+?)(?:\n## |\Z)', content, re.DOTALL)
+    if constraints_match:
+        constraints = constraints_match.group(1)
 
-        for match in re.finditer(r'### (.+?)\n(.+?)(?=\n###|\n## |$)', anti, re.DOTALL):
+        # Format 1: ### Subsections (e.g. ### Técnicas, ### De Design)
+        has_subsections = bool(re.search(r'### ', constraints))
+        if has_subsections:
+            for match in re.finditer(r'### (.+?)\n(.+?)(?=\n### |\n## |\Z)', constraints, re.DOTALL):
+                cat_name = match.group(1).strip()
+                cat_content = match.group(2).strip()
+
+                concepts.append({
+                    "type": "constraint",
+                    "name": f"Restrição: {cat_name}",
+                    "description": cat_content
+                })
+        else:
+            # Format 2: Flat bullet list
+            for match in re.finditer(r'[-*]\s+(.+?)(?=\n[-*]|\n##|\n\n|\Z)', constraints, re.DOTALL):
+                item = match.group(1).strip()
+                concepts.append({
+                    "type": "constraint",
+                    "name": "Restrição",
+                    "description": item
+                })
+
+    return concepts
+
+
+def parse_patterns(content: str) -> List[Dict]:
+    """Extrai patterns do PATTERNS.md.
+
+    Handles multiple ## sections (Padrões Aprovados, Padrões de DevOps, etc.)
+    and both English/Portuguese anti-pattern headers.
+    """
+    patterns = []
+
+    # Remove code blocks and HTML comments to avoid false matches
+    clean = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    clean = re.sub(r'<!--.*?-->', '', clean, flags=re.DOTALL)
+
+    # Split by ## headers and track section context
+    for section_match in re.finditer(
+        r'^(## .+?)$(.+?)(?=^## |\Z)', clean, re.MULTILINE | re.DOTALL
+    ):
+        section_header = section_match.group(1).strip()
+        section_body = section_match.group(2)
+
+        is_anti = bool(re.match(r'## Anti-', section_header))
+
+        # Find all ### entries in this section
+        for match in re.finditer(r'### (.+?)\n(.+?)(?=\n### |\n## |\Z)', section_body, re.DOTALL):
             name = match.group(1).strip()
             description = match.group(2).strip()
 
+            # Skip templates (NNN placeholders)
+            if 'NNN' in name:
+                continue
+
+            # Classify: anti-pattern section or ANTI-NNN prefix
+            if is_anti or re.match(r'ANTI-\d+', name):
+                ptype = "anti"
+            else:
+                ptype = "approved"
+
             patterns.append({
-                "type": "anti",
+                "type": ptype,
                 "name": name,
                 "description": description
             })
@@ -466,6 +514,15 @@ def populate_domain(brain: Brain) -> int:
                 author="@engram"
             )
             print(f"  Added entity: {concept['name']} -> {node_id}")
+
+        elif concept["type"] == "constraint":
+            node_id = brain.add_memory(
+                title=concept["name"],
+                content=concept["description"],
+                labels=["Concept", "Constraint"],
+                author="@engram"
+            )
+            print(f"  Added constraint: {concept['name']} -> {node_id}")
 
         count += 1
 

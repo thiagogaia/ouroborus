@@ -21,7 +21,7 @@ Extrair de (em ordem de confiabilidade):
 - README e docs/
 - Mensagens de commit que mencionam "regra", "requisito", "negócio"
 
-### 2. O Que Registrar em DOMAIN.md
+### 2. O Que Registrar no Cérebro (DOMAIN.md é genesis-only)
 
 **Glossário**: Termos específicos do domínio
 ```
@@ -49,7 +49,7 @@ Cliente → possui → Pedidos → contém → Itens → referencia → Produto
 ### 3. Validação com o Dev
 Quando descobrir regra implícita no código:
 - Apresentar ao dev: "Detectei que [código] implementa [regra]. Está correto?"
-- Se confirmado → registrar em DOMAIN.md
+- Se confirmado → registrar no cérebro via `brain.add_memory(labels=["Concept", "BusinessRule"])`
 - Se incorreto → pode ser bug, registrar em PRIORITY_MATRIX.md
 
 ## Regras

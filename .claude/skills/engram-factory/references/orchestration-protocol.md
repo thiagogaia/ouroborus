@@ -116,7 +116,7 @@ Um componente é necessário quando a tarefa exige:
    - NUNCA dropar tabelas de sessão antes de migrar dados
    - SEMPRE manter backward compatibility durante transição
    - Testar com usuário existente E usuário novo
-   - Registrar decisão em ADR_LOG.md
+   - Registrar decisão no cérebro via `brain.add_memory(labels=["Decision", "ADR"])`
 
 5. VALIDAR
    python3 .claude/skills/engram-genesis/scripts/validate.py \

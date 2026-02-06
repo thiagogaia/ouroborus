@@ -97,4 +97,4 @@ Prevencao: [como evitar recorrencia]
 - SEMPRE testar em dev/staging antes de producao
 - SEMPRE ter plano de rollback antes de qualquer mudanca
 - Preferir `git revert` sobre rollback manual
-- Registrar mudancas de infra em ADR_LOG.md
+- Registrar mudancas de infra no cérebro via `brain.add_memory(labels=["Decision", "ADR"])`

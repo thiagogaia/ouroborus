@@ -15,21 +15,21 @@ Gerencia o ciclo de retroalimentação — o coração do Engram.
 | Arquivo | Propósito | Quando Atualizar |
 |---------|-----------|------------------|
 | `PRIORITY_MATRIX.md` | Tarefas com ICE Score | Ao completar/criar tarefas |
-| `PATTERNS.md` | Padrões e anti-padrões | Ao descobrir padrões |
-| `ADR_LOG.md` | Decisões arquiteturais | Ao tomar decisões |
-| `DOMAIN.md` | Glossário + regras de negócio | Ao aprender sobre domínio |
-| `EXPERIENCE_LIBRARY.md` | Soluções reutilizáveis | Ao resolver problemas bem |
+| `PATTERNS.md` | Padrões e anti-padrões | Genesis-only (cérebro: `--type Pattern`) |
+| `ADR_LOG.md` | Decisões arquiteturais | Genesis-only (cérebro: `--type ADR`) |
+| `DOMAIN.md` | Glossário + regras de negócio | Genesis-only (cérebro: `--type Concept`) |
+| `EXPERIENCE_LIBRARY.md` | Soluções reutilizáveis | Genesis-only (cérebro: `--type Experience`) |
 
 ## Workflow de Registro
 
 ### 1. Identificar Tipo de Conhecimento
 Classifique o que foi aprendido/decidido/feito:
 - **Estado** → cérebro via `brain.add_memory()` (labels: ["State"])
-- **Padrão** → PATTERNS.md (incluir: contexto, solução, exemplo)
-- **Decisão** → ADR_LOG.md (incluir: contexto, alternativas, trade-offs)
-- **Prioridade** → PRIORITY_MATRIX.md (incluir: ICE Score)
-- **Domínio** → DOMAIN.md (incluir: termo + definição ou regra)
-- **Experiência** → EXPERIENCE_LIBRARY.md (incluir: abordagem + resultado)
+- **Padrão** → cérebro via `brain.add_memory(labels=["Pattern", "ApprovedPattern"])`
+- **Decisão** → cérebro via `brain.add_memory(labels=["Decision", "ADR"])`
+- **Prioridade** → PRIORITY_MATRIX.md (incluir: ICE Score) — único .md ativo
+- **Domínio** → cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
+- **Experiência** → cérebro via `brain.add_memory(labels=["Episode", "Experience"])`
 
 ### 2. Registrar no Arquivo Correto
 - Ler o arquivo atual para evitar duplicação
@@ -38,7 +38,7 @@ Classifique o que foi aprendido/decidido/feito:
 
 ### 3. Cross-Reference
 Se o registro impacta outros files, atualize-os também:
-- ADR que cria padrão → atualizar PATTERNS.md
+- ADR que cria padrão → registrar ambos no cérebro com `references=`
 - Padrão que resolve prioridade → atualizar PRIORITY_MATRIX.md
 - Estado que revela bloqueio → atualizar PRIORITY_MATRIX.md
 

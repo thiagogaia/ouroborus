@@ -119,7 +119,7 @@ class Brain:
 
     def __init__(self, base_path: Path = None):
         if base_path is None:
-            base_path = Path(".claude/brain")
+            base_path = Path(__file__).parent
         self.base_path = Path(base_path)
         self.memory_path = self.base_path.parent / "memory"
 
