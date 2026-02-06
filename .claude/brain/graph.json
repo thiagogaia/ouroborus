@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "meta": {
-    "saved_at": "2026-02-05T19:26:53.344541",
-    "node_count": 194,
-    "edge_count": 456
+    "saved_at": "2026-02-05T23:30:56.599696",
+    "node_count": 202,
+    "edge_count": 488
   },
   "nodes": {
     "a52ceda2": {
@@ -22,8 +22,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 3,
-        "last_accessed": "2026-02-05T19:26:48.543936",
+        "access_count": 4,
+        "last_accessed": "2026-02-05T19:46:48.606979",
         "created_at": "2026-02-03T21:34:27.978670",
         "decay_rate": 0.001
       }
@@ -38,8 +38,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 2,
-        "last_accessed": "2026-02-05T19:26:48.543968",
+        "access_count": 5,
+        "last_accessed": "2026-02-05T23:27:07.927658",
         "created_at": "2026-02-03T21:34:27.978965",
         "decay_rate": 0.0001
       }
@@ -53,8 +53,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 2,
-        "last_accessed": "2026-02-05T19:26:48.543969",
+        "access_count": 5,
+        "last_accessed": "2026-02-05T23:27:07.927657",
         "created_at": "2026-02-03T21:34:27.979045",
         "decay_rate": 0.0001
       }
@@ -90,8 +90,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 0,
-        "last_accessed": "2026-02-03T21:34:27.979202",
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:46:56.257238",
         "created_at": "2026-02-03T21:34:27.979203",
         "decay_rate": 0.0001
       }
@@ -171,8 +171,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:27.979455",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:48.606980",
         "created_at": "2026-02-03T21:34:27.979455",
         "decay_rate": 0.001
       }
@@ -360,8 +360,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 3,
-        "last_accessed": "2026-02-05T19:26:48.543956",
+        "access_count": 4,
+        "last_accessed": "2026-02-05T19:46:48.606969",
         "created_at": "2026-02-03T21:34:27.981045",
         "decay_rate": 0.003
       }
@@ -379,8 +379,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:27.981125",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:48.606957",
         "created_at": "2026-02-03T21:34:27.981125",
         "decay_rate": 0.003
       }
@@ -1022,8 +1022,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:27.984379",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:56.257223",
         "created_at": "2026-02-03T21:34:27.984379",
         "decay_rate": 0.005
       }
@@ -1041,8 +1041,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:27.984478",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:56.257233",
         "created_at": "2026-02-03T21:34:27.984478",
         "decay_rate": 0.005
       }
@@ -1060,8 +1060,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T21:34:27.984578",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:56.257232",
         "created_at": "2026-02-03T21:34:27.984578",
         "decay_rate": 0.005
       }
@@ -1102,8 +1102,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 2,
-        "last_accessed": "2026-02-05T19:26:48.543971",
+        "access_count": 3,
+        "last_accessed": "2026-02-05T23:27:07.927655",
         "created_at": "2026-02-03T21:34:28.050980",
         "decay_rate": 0.0001
       }
@@ -1262,8 +1262,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-03T22:13:15.742242",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:56.257230",
         "created_at": "2026-02-03T22:13:15.742242",
         "decay_rate": 0.01
       }
@@ -1278,8 +1278,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 0,
-        "last_accessed": "2026-02-03T22:13:15.742747",
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:46:56.257237",
         "created_at": "2026-02-03T22:13:15.742749",
         "decay_rate": 0.0001
       }
@@ -1316,8 +1316,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 3,
-        "last_accessed": "2026-02-05T19:26:48.543962",
+        "access_count": 4,
+        "last_accessed": "2026-02-05T19:46:48.606967",
         "created_at": "2026-02-03T22:13:15.742988",
         "decay_rate": 0.003
       }
@@ -1418,8 +1418,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 3,
-        "last_accessed": "2026-02-05T19:26:48.543960",
+        "access_count": 4,
+        "last_accessed": "2026-02-05T23:27:07.927651",
         "created_at": "2026-02-04T01:39:00.826633",
         "decay_rate": 0.01
       }
@@ -1458,8 +1458,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:47:13.064443",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:48.606970",
         "created_at": "2026-02-04T01:47:13.064443",
         "decay_rate": 0.01
       }
@@ -1498,8 +1498,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-04T01:47:13.065036",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:48.606978",
         "created_at": "2026-02-04T01:47:13.065036",
         "decay_rate": 0.003
       }
@@ -1664,10 +1664,10 @@
     },
     "99286bf3": {
       "labels": [
-        "Documentation",
-        "Episode",
         "ReadmeDomain",
-        "Commit"
+        "Commit",
+        "Episode",
+        "Documentation"
       ],
       "props": {
         "title": "docs(readme): fix inaccuracies and update for batch-setup separation",
@@ -1837,10 +1837,10 @@
     },
     "35278641": {
       "labels": [
-        "Episode",
         "Commit",
-        "Refactor",
-        "CoreDomain"
+        "Episode",
+        "CoreDomain",
+        "Refactor"
       ],
       "props": {
         "title": "refactor(core): add infra detection and remove orphan extras",
@@ -1863,10 +1863,10 @@
     },
     "3ee40d0e": {
       "labels": [
-        "Feature",
-        "Episode",
+        "Commit",
         "ExtrasDomain",
-        "Commit"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(extras): add infra-expert agent for DevOps troubleshooting",
@@ -1889,10 +1889,10 @@
     },
     "a3095845": {
       "labels": [
-        "Feature",
-        "Episode",
+        "Commit",
         "ExtrasDomain",
-        "Commit"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(extras): add 4 niche skills with real-world content",
@@ -1915,10 +1915,10 @@
     },
     "3742d3fd": {
       "labels": [
-        "Feature",
+        "Commit",
         "Episode",
         "GenesisDomain",
-        "Commit"
+        "Feature"
       ],
       "props": {
         "title": "feat(genesis): use pre-built templates before generating generic scaffolds",
@@ -1941,10 +1941,10 @@
     },
     "f3d73e0a": {
       "labels": [
-        "Feature",
-        "Episode",
+        "InitengramDomain",
         "Commit",
-        "InitengramDomain"
+        "Episode",
+        "Feature"
       ],
       "props": {
         "title": "feat(init-engram): add template skills staging and evaluation flow",
@@ -2019,8 +2019,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 0,
-        "last_accessed": "2026-02-05T17:05:19.873325",
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:27:07.927659",
         "created_at": "2026-02-05T17:05:19.873325",
         "decay_rate": 0.0001
       }
@@ -2098,8 +2098,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-05T17:05:19.875292",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T23:27:07.927654",
         "created_at": "2026-02-05T17:05:19.875292",
         "decay_rate": 0.003
       }
@@ -2193,8 +2193,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-05T17:05:19.875881",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:48.606972",
         "created_at": "2026-02-05T17:05:19.875881",
         "decay_rate": 0.003
       }
@@ -3164,8 +3164,8 @@
     "5a98893e": {
       "labels": [
         "Commit",
-        "AnalysisDomain",
         "Documentation",
+        "AnalysisDomain",
         "Episode"
       ],
       "props": {
@@ -3186,7 +3186,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.954224",
+        "last_accessed": "2026-02-05T23:29:21.305607",
         "created_at": "2026-02-05T17:05:20.309320",
         "decay_rate": 0.01
       }
@@ -3194,8 +3194,8 @@
     "835a2079": {
       "labels": [
         "Commit",
-        "Episode",
-        "KnowledgeDomain"
+        "KnowledgeDomain",
+        "Episode"
       ],
       "props": {
         "title": "chore(knowledge): record /learn session with ADR-013, PAT-034/035, EXP-021",
@@ -3218,15 +3218,15 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.954255",
+        "last_accessed": "2026-02-05T23:29:21.305629",
         "created_at": "2026-02-05T17:05:20.309951",
         "decay_rate": 0.01
       }
     },
     "75b8b777": {
       "labels": [
-        "TemplatesDomain",
         "Commit",
+        "TemplatesDomain",
         "Refactor",
         "Episode"
       ],
@@ -3251,15 +3251,15 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955624",
+        "last_accessed": "2026-02-05T23:29:21.306005",
         "created_at": "2026-02-05T17:05:20.310634",
         "decay_rate": 0.01
       }
     },
     "fd10e0be": {
       "labels": [
-        "TemplatesDomain",
         "Commit",
+        "TemplatesDomain",
         "Refactor",
         "Episode"
       ],
@@ -3284,7 +3284,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955647",
+        "last_accessed": "2026-02-05T23:29:21.306024",
         "created_at": "2026-02-05T17:05:20.310738",
         "decay_rate": 0.01
       }
@@ -3316,7 +3316,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955666",
+        "last_accessed": "2026-02-05T23:29:21.306041",
         "created_at": "2026-02-05T17:05:20.310842",
         "decay_rate": 0.01
       }
@@ -3324,9 +3324,9 @@
     "f8d0dc8d": {
       "labels": [
         "Commit",
-        "CoreDomain",
         "Feature",
-        "Episode"
+        "Episode",
+        "CoreDomain"
       ],
       "props": {
         "title": "feat(core): add base-ingester seed skill and /ingest command",
@@ -3349,15 +3349,15 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955686",
+        "last_accessed": "2026-02-05T23:29:21.306058",
         "created_at": "2026-02-05T17:05:20.310955",
         "decay_rate": 0.01
       }
     },
     "a77de1bc": {
       "labels": [
-        "Commit",
         "GenesisDomain",
+        "Commit",
         "Feature",
         "Episode"
       ],
@@ -3380,7 +3380,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955708",
+        "last_accessed": "2026-02-05T23:29:21.306074",
         "created_at": "2026-02-05T17:05:20.311086",
         "decay_rate": 0.01
       }
@@ -3388,8 +3388,8 @@
     "7665a274": {
       "labels": [
         "Commit",
-        "KnowledgeDomain",
-        "Episode"
+        "Episode",
+        "KnowledgeDomain"
       ],
       "props": {
         "title": "chore(knowledge): record /learn session with ADR-012 and PAT-033",
@@ -3412,7 +3412,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:09:48.955729",
+        "last_accessed": "2026-02-05T19:30:42.741832",
         "created_at": "2026-02-05T17:05:20.311214",
         "decay_rate": 0.01
       }
@@ -3486,19 +3486,19 @@
         "content": "Cluster of 9 patterns in 'frontend' domain"
       },
       "memory": {
-        "strength": 0.7,
-        "access_count": 0,
-        "last_accessed": "2026-02-05T17:05:25.721997",
+        "strength": 0.735,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:46:56.257240",
         "created_at": "2026-02-05T17:05:25.721997",
         "decay_rate": 0.003
       }
     },
     "0c361ed6": {
       "labels": [
-        "Episode",
         "Commit",
+        "Feature",
         "BrainDomain",
-        "Feature"
+        "Episode"
       ],
       "props": {
         "title": "feat(brain): add sleep cycle for semantic consolidation",
@@ -3521,7 +3521,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:59:31.990145",
+        "last_accessed": "2026-02-05T23:29:21.305591",
         "created_at": "2026-02-05T17:20:53.768670",
         "decay_rate": 0.01
       }
@@ -3538,19 +3538,19 @@
         "content": "Theme 'brain' with 3 commits: feat(3)"
       },
       "memory": {
-        "strength": 0.8,
-        "access_count": 0,
-        "last_accessed": "2026-02-05T17:21:00.596867",
+        "strength": 0.8400000000000001,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:27:07.927646",
         "created_at": "2026-02-05T17:21:00.596867",
         "decay_rate": 0.002
       }
     },
     "176fb04a": {
       "labels": [
-        "Episode",
-        "BrainDomain",
         "Commit",
-        "Feature"
+        "Feature",
+        "BrainDomain",
+        "Episode"
       ],
       "props": {
         "title": "feat(brain): make brain the primary knowledge source in CLAUDE.md",
@@ -3568,17 +3568,17 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-05T18:59:31.989644",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T23:29:21.305331",
         "created_at": "2026-02-05T18:09:48.953339",
         "decay_rate": 0.01
       }
     },
     "32b83c9b": {
       "labels": [
-        "Episode",
         "Commit",
-        "KnowledgeDomain"
+        "KnowledgeDomain",
+        "Episode"
       ],
       "props": {
         "title": "chore(knowledge): record /learn session with ADR-014, PAT-036, EXP-022",
@@ -3601,7 +3601,7 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:59:31.989674",
+        "last_accessed": "2026-02-05T23:29:21.305350",
         "created_at": "2026-02-05T18:09:48.953866",
         "decay_rate": 0.01
       }
@@ -3758,8 +3758,8 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-05T18:51:08.044406",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T19:46:56.257213",
         "created_at": "2026-02-05T18:51:08.044406",
         "decay_rate": 0.01
       }
@@ -4066,10 +4066,10 @@
     },
     "20d4c1cc": {
       "labels": [
-        "Episode",
         "Commit",
         "Feature",
-        "BrainDomain"
+        "BrainDomain",
+        "Episode"
       ],
       "props": {
         "title": "feat(brain): read canonical .md files in sleep and create CO_ACCESSED edges",
@@ -4091,17 +4091,17 @@
       },
       "memory": {
         "strength": 1.0,
-        "access_count": 1,
-        "last_accessed": "2026-02-05T18:59:31.988749",
+        "access_count": 2,
+        "last_accessed": "2026-02-05T23:29:21.305248",
         "created_at": "2026-02-05T18:59:31.988749",
         "decay_rate": 0.01
       }
     },
     "3bc29518": {
       "labels": [
-        "Episode",
         "Commit",
-        "KnowledgeDomain"
+        "KnowledgeDomain",
+        "Episode"
       ],
       "props": {
         "title": "chore(knowledge): record /learn session with LIFECYCLE_GUIDE, RN-038/039/040, EXP-023",
@@ -4124,9 +4124,202 @@
       "memory": {
         "strength": 1.0,
         "access_count": 1,
-        "last_accessed": "2026-02-05T18:59:31.989438",
+        "last_accessed": "2026-02-05T23:29:21.305273",
         "created_at": "2026-02-05T18:59:31.989438",
         "decay_rate": 0.01
+      }
+    },
+    "99153eac": {
+      "labels": [
+        "Commit",
+        "Feature",
+        "BrainDomain",
+        "Episode"
+      ],
+      "props": {
+        "title": "feat(brain): make brain the single source of truth with self-feeding loop",
+        "author": "@thiagogaia",
+        "content": "feat(brain): make brain the single source of truth with self-feeding loop\n\nContent stored in-graph (props.content) instead of disk .md files.\n\n**Files changed:** .claude/brain/brain.py, .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings.npz, .claude/brain/embeddings.py, .claude/brain/graph.json",
+        "summary": "feat(brain): make brain the single source of truth with self-feeding loop Content stored in-graph (props.content) instead of disk .md files. Files changed: .claude/brain/brain.py, .claude/brain/cognitive-log.jsonl, .claude/brain/embeddings.npz, .claude/brain/embeddings.py, .claude/brain/graph.json",
+        "commit_hash": "b33fd9cd",
+        "date": "2026-02-05",
+        "commit_type": "feat",
+        "scope": "brain",
+        "files_count": 10,
+        "files": [
+          ".claude/brain/brain.py",
+          ".claude/brain/cognitive-log.jsonl",
+          ".claude/brain/embeddings.npz",
+          ".claude/brain/embeddings.py",
+          ".claude/brain/graph.json"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 2,
+        "last_accessed": "2026-02-05T23:29:21.305222",
+        "created_at": "2026-02-05T19:30:42.740536",
+        "decay_rate": 0.01
+      }
+    },
+    "1d2174d3": {
+      "labels": [
+        "Decision",
+        "ADR"
+      ],
+      "props": {
+        "title": "ADR-015: Brain-Only Self-Feeding Architecture",
+        "author": "@thiagogaia",
+        "content": "## Contexto\nO cérebro era um índice derivado dos .md files. Conteúdo ficava em disco (.claude/memory/*.md) e o grafo só tinha summary de 200 chars. Para ver o conteúdo completo, era necessário ler os .md files — que iriam crescer e não caber no contexto.\n\n## Decisão\nMigrar o cérebro de 'índice derivado dos .md' para 'fonte única de verdade auto-alimentada':\n- Conteúdo armazenado in-graph em props.content\n- brain.add_memory() não toca disco (zero I/O)\n- recall.py persiste reforço via brain.save() (fecha o loop)\n- sleep.py trabalha inteiramente in-memory\n- embeddings.py usa content[:1000] para vetores mais ricos\n- Apenas CURRENT_STATE.md e PRIORITY_MATRIX.md mantidos como boot files\n\n## Consequências\n- O grafo cresceu de ~200KB para ~350KB (conteúdo completo in-graph)\n- Sem impacto de performance (tudo in-memory)\n- Loop de auto-alimentação: recall→reforça→salva | add_memory→sleep→embeddings\n- populate.py adrs/domain/patterns/experiences marcados como MIGRATION ONLY\n- Novo comando: populate.py refresh (commits + cross-refs only)\n- Novo comando: populate.py migrate (one-time, migrou 184 nós)",
+        "summary": "Contexto O cérebro era um índice derivado dos .md files. Conteúdo ficava em disco (.claude/memory/*.md) e o grafo só tinha summary de 200 chars. Para ver o conteúdo completo, era necessário ler os .md files — que iriam crescer e não caber no contexto. Decisão Migrar o cérebro de 'índice derivado dos .md' para 'fonte única de verdade auto-alimentada': - Conteúdo armazenado in-graph em props.content - brain.add_memory() não toca disco (zero I/O) - recall.py persiste reforço via brain.save() (fe...",
+        "adr_id": "ADR-015",
+        "status": "Aceito",
+        "date": "2026-02-05"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:31:13.271225",
+        "created_at": "2026-02-05T19:31:13.271225",
+        "decay_rate": 0.001
+      }
+    },
+    "78f292dc": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-037: In-Graph Content Storage",
+        "author": "@thiagogaia",
+        "content": "Armazenar conteúdo completo diretamente no grafo (props.content) ao invés de em arquivos .md no disco.\n\n**Quando usar**: Sempre que brain.add_memory() for chamado — é o padrão agora.\n\n**Como funciona**:\n- brain.add_memory() salva content em props.content (não cria .md)\n- recall.py retorna campo 'content' (até 2000 chars) nos resultados\n- sleep.py lê de props.content para cross-references (zero disk I/O)\n- embeddings.py usa content[:1000] para vetores mais ricos\n\n**Benefícios**:\n- Zero I/O de disco para knowledge\n- Recall já retorna conteúdo completo (sem necessidade de ler .md)\n- Sleep funciona inteiramente in-memory\n- Loop de auto-alimentação fechado (recall→reinforce→save)\n\n**Relacionado**: [[ADR-015]], [[PAT-012]]",
+        "summary": "Armazenar conteúdo completo diretamente no grafo (props.content) ao invés de em arquivos .md no disco. Quando usar: Sempre que brain.add_memory() for chamado — é o padrão agora. Como funciona: - brain.add_memory() salva content em props.content (não cria .md) - recall.py retorna campo 'content' (até 2000 chars) nos resultados - sleep.py lê de props.content para cross-references (zero disk I/O) - embeddings.py usa content[:1000] para vetores mais ricos Benefícios: - Zero I/O de disco para know...",
+        "pat_id": "PAT-037"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:31:13.271525",
+        "created_at": "2026-02-05T19:31:13.271525",
+        "decay_rate": 0.005
+      }
+    },
+    "fe5f6d37": {
+      "labels": [
+        "Episode",
+        "Experience"
+      ],
+      "props": {
+        "title": "EXP-024: Migração Brain-Only com 184 Nós",
+        "author": "@thiagogaia",
+        "content": "**Contexto**: Migrar de conteúdo em .md files para in-graph como parte da arquitetura brain-only.\n\n**Abordagem**:\n1. Criar comando populate.py migrate que itera todos os nós com content_path\n2. Ler .md de disco, extrair conteúdo após separador ---\n3. Salvar em props.content e remover content_path\n4. Para nós sem .md mas com summary, usar summary como content\n\n**Resultado**: 184 de 194 nós migrados com sucesso (10 são Person/Domain/Theme sem content_path). Health score manteve 0.93.\n\n**Aprendizado**:\n- Migração in-place no grafo é segura — basta iterar e atualizar props\n- O separador --- do frontmatter facilita extrair conteúdo\n- Fallback para summary garante que nenhum nó fica sem content\n- O grafo cresceu ~150KB mas sem impacto de performance\n\n**Relacionado**: [[ADR-015]], [[PAT-037]]",
+        "summary": "Contexto: Migrar de conteúdo em .md files para in-graph como parte da arquitetura brain-only. Abordagem: 1. Criar comando populate.py migrate que itera todos os nós com content_path 2. Ler .md de disco, extrair conteúdo após separador --- 3. Salvar em props.content e remover content_path 4. Para nós sem .md mas com summary, usar summary como content Resultado: 184 de 194 nós migrados com sucesso (10 são Person/Domain/Theme sem content_path). Health score manteve 0.93. Aprendizado: - Migração ...",
+        "exp_id": "EXP-024"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T19:31:13.271653",
+        "created_at": "2026-02-05T19:31:13.271653",
+        "decay_rate": 0.01
+      }
+    },
+    "a5a071fa": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation"
+      ],
+      "props": {
+        "title": "docs: shift from brain-only to brain-primary with synced .md files",
+        "author": "@thiagogaia",
+        "content": "docs: shift from brain-only to brain-primary with synced .md files\n\nThe philosophy is not \"brain only\" — essential .md files continue to\n\n**Files changed:** .claude/commands/learn.md, CLAUDE.md, core/commands/learn.md, docs/LIFECYCLE_GUIDE.md",
+        "summary": "docs: shift from brain-only to brain-primary with synced .md files The philosophy is not \"brain only\" — essential .md files continue to Files changed: .claude/commands/learn.md, CLAUDE.md, core/commands/learn.md, docs/LIFECYCLE_GUIDE.md",
+        "commit_hash": "05ac19cf",
+        "date": "2026-02-05",
+        "commit_type": "docs",
+        "scope": null,
+        "files_count": 4,
+        "files": [
+          ".claude/commands/learn.md",
+          "CLAUDE.md",
+          "core/commands/learn.md",
+          "docs/LIFECYCLE_GUIDE.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:29:21.304933",
+        "created_at": "2026-02-05T23:29:21.304933",
+        "decay_rate": 0.01
+      }
+    },
+    "63ff63e5": {
+      "labels": [
+        "Episode",
+        "Commit",
+        "Documentation"
+      ],
+      "props": {
+        "title": "docs: update LIFECYCLE_GUIDE.md to reflect brain-only architecture",
+        "author": "@thiagogaia",
+        "content": "docs: update LIFECYCLE_GUIDE.md to reflect brain-only architecture\n\nAlign the lifecycle guide with the current brain-only architecture\n\n**Files changed:** docs/LIFECYCLE_GUIDE.md",
+        "summary": "docs: update LIFECYCLE_GUIDE.md to reflect brain-only architecture Align the lifecycle guide with the current brain-only architecture Files changed: docs/LIFECYCLE_GUIDE.md",
+        "commit_hash": "25000055",
+        "date": "2026-02-05",
+        "commit_type": "docs",
+        "scope": null,
+        "files_count": 1,
+        "files": [
+          "docs/LIFECYCLE_GUIDE.md"
+        ]
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:29:21.305164",
+        "created_at": "2026-02-05T23:29:21.305164",
+        "decay_rate": 0.01
+      }
+    },
+    "3bd7b0da": {
+      "labels": [
+        "Pattern",
+        "ApprovedPattern"
+      ],
+      "props": {
+        "title": "PAT-038: Point-by-Point Guided Review for Architecture Docs",
+        "author": "@thiagogaia",
+        "content": "Quando atualizar documentacao de arquitetura que afeta multiplos arquivos:\n1. Listar todos os pontos de divergencia\n2. Apresentar cada ponto ao dev com opcoes claras\n3. Registrar decisoes pendentes para resolver depois\n4. Aplicar todas as decisoes confirmadas de uma vez\n5. Varrer todos os arquivos por terminologia inconsistente apos aplicar\n\nEvita: decisoes unilaterais, inconsistencias entre arquivos, retrabalho.",
+        "summary": "Quando atualizar documentacao de arquitetura que afeta multiplos arquivos: 1. Listar todos os pontos de divergencia 2. Apresentar cada ponto ao dev com opcoes claras 3. Registrar decisoes pendentes para resolver depois 4. Aplicar todas as decisoes confirmadas de uma vez 5. Varrer todos os arquivos por terminologia inconsistente apos aplicar Evita: decisoes unilaterais, inconsistencias entre arquivos, retrabalho.",
+        "pat_id": "PAT-038"
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:29:48.792712",
+        "created_at": "2026-02-05T23:29:48.792712",
+        "decay_rate": 0.005
+      }
+    },
+    "7f9787ea": {
+      "labels": [
+        "Concept",
+        "Glossary"
+      ],
+      "props": {
+        "title": "Brain-Primary",
+        "author": "@engram",
+        "content": "Modelo arquitetural onde o cerebro (grafo) e a fonte primaria de conhecimento para busca e conexoes, mas os arquivos .md sao mantidos em sincronia como espelho legivel, fallback e camada de git diffs. Diferente de brain-only (sem .md) ou md-first (cerebro como indice).",
+        "summary": "Modelo arquitetural onde o cerebro (grafo) e a fonte primaria de conhecimento para busca e conexoes, mas os arquivos .md sao mantidos em sincronia como espelho legivel, fallback e camada de git diffs. Diferente de brain-only (sem .md) ou md-first (cerebro como indice)."
+      },
+      "memory": {
+        "strength": 1.0,
+        "access_count": 1,
+        "last_accessed": "2026-02-05T23:29:48.793184",
+        "created_at": "2026-02-05T23:29:48.793184",
+        "decay_rate": 0.003
       }
     }
   },
@@ -5080,6 +5273,15 @@
       }
     },
     {
+      "src": "78161cc1",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
       "src": "7463a6ea",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -5236,6 +5438,15 @@
     {
       "src": "37d5e104",
       "tgt": "20d4c1cc",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "37d5e104",
+      "tgt": "99153eac",
       "type": "SAME_SCOPE",
       "weight": 0.4,
       "props": {
@@ -5605,6 +5816,15 @@
       }
     },
     {
+      "src": "6721d264",
+      "tgt": "3bc29518",
+      "type": "RELATED_TO",
+      "weight": 0.7912747859954834,
+      "props": {
+        "method": "embedding"
+      }
+    },
+    {
       "src": "223940a2",
       "tgt": "person-engram",
       "type": "AUTHORED_BY",
@@ -5824,7 +6044,7 @@
       "src": "53e1ed87",
       "tgt": "a52ceda2",
       "type": "REFERENCES",
-      "weight": 0.7260000000000001,
+      "weight": 0.9601350000000001,
       "props": {}
     },
     {
@@ -6940,7 +7160,7 @@
       "src": "42cd5642",
       "tgt": "258e7d75",
       "type": "RELATED_TO",
-      "weight": 0.8420746177561582,
+      "weight": 0.7999708868683503,
       "props": {
         "method": "embedding"
       }
@@ -6987,6 +7207,15 @@
       }
     },
     {
+      "src": "0c361ed6",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
       "src": "176fb04a",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -7008,6 +7237,25 @@
       "props": {
         "scope": "brain"
       }
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
+      "src": "176fb04a",
+      "tgt": "a5a071fa",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "CLAUDE.md"
+      },
+      "created_at": "2026-02-05T23:30:56.378207"
     },
     {
       "src": "32b83c9b",
@@ -7053,6 +7301,15 @@
       "weight": 0.5,
       "props": {
         "file": ".claude/brain/sleep-log.jsonl"
+      }
+    },
+    {
+      "src": "32b83c9b",
+      "tgt": "99153eac",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": ".claude/brain/embeddings.py"
       }
     },
     {
@@ -7466,6 +7723,15 @@
       "props": {}
     },
     {
+      "src": "20d4c1cc",
+      "tgt": "99153eac",
+      "type": "SAME_SCOPE",
+      "weight": 0.4,
+      "props": {
+        "scope": "brain"
+      }
+    },
+    {
       "src": "3bc29518",
       "tgt": "person-thiagogaia",
       "type": "AUTHORED_BY",
@@ -7491,6 +7757,179 @@
       "tgt": "695f6814",
       "type": "BELONGS_TO_THEME",
       "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "99153eac",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "99153eac",
+      "tgt": "ab2d7fea",
+      "type": "BELONGS_TO_THEME",
+      "weight": 0.6,
+      "props": {}
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "domain-database",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "1d2174d3",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-05T23:30:56.368079"
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "1d2174d3",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "d0b05c77",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "78f292dc",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "1d2174d3",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "78f292dc",
+      "type": "REFERENCES",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "fe5f6d37",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "a5a071fa",
+      "tgt": "63ff63e5",
+      "type": "MODIFIES_SAME",
+      "weight": 0.5,
+      "props": {
+        "file": "docs/LIFECYCLE_GUIDE.md"
+      },
+      "created_at": "2026-02-05T23:30:56.378216"
+    },
+    {
+      "src": "63ff63e5",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "63ff63e5",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "person-thiagogaia",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "3bd7b0da",
+      "tgt": "258e7d75",
+      "type": "CLUSTERED_IN",
+      "weight": 0.5,
+      "props": {},
+      "created_at": "2026-02-05T23:30:56.598751"
+    },
+    {
+      "src": "7f9787ea",
+      "tgt": "person-engram",
+      "type": "AUTHORED_BY",
+      "weight": 0.5,
+      "props": {}
+    },
+    {
+      "src": "7f9787ea",
+      "tgt": "domain-frontend",
+      "type": "BELONGS_TO",
+      "weight": 0.5,
       "props": {}
     }
   ]

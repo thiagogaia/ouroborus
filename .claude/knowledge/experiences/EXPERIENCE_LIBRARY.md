@@ -1,5 +1,5 @@
 # Experience Library
-> Última atualização: 2026-02-05 (/learn sessao 4)
+> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
 > Soluções reutilizáveis descobertas durante o trabalho
 
 ## EXP-001: Validar Componente Antes de Registrar
@@ -277,3 +277,12 @@
 - Foco na abordagem, nao no codigo especifico
 - Experiencias mais recentes tem prioridade
 - Populado pelo /learn quando interacoes sao bem-sucedidas
+
+---
+
+## EXP-024: Alinhar Filosofia do Sistema Across Docs
+- **Contexto**: LIFECYCLE_GUIDE dizia brain-only, CLAUDE.md dizia fonte única, MEMORY.md dizia brain-only
+- **Abordagem**: revisão ponto-a-ponto (10 decisões), aplicar em batch, grep por terminologia antiga
+- **Resultado**: 5 arquivos alinhados (CLAUDE.md, learn.md x2, LIFECYCLE_GUIDE.md, MEMORY.md)
+- **Aprendizado**: sempre grep por terminologia antiga após mudança filosófica — inconsistências se escondem
+- **Data**: 2026-02-05

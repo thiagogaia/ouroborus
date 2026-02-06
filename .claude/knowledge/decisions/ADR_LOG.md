@@ -1,5 +1,5 @@
 # Architecture Decision Records
-> Última atualização: 2026-02-05 (/learn commit 4ea39bc)
+> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
 
 ## ADR-001: Sistema Metacircular
 **Data**: 2026-02-03
@@ -697,3 +697,14 @@ Auto-ativação do venv via `site.addsitedir()` no brain.py para que numpy/netwo
 - ✅ Benefício 2
 - ⚠️ Trade-off 1
 ```
+
+## ADR-015: Brain-Primary Architecture with Synced .md Files
+**Data**: 2026-02-05
+**Status**: Aceito
+**Contexto**: A arquitetura brain-only tratava o cérebro como fonte única de verdade e os .md de knowledge como legado. Risco: fallback fica stale se .md não são atualizados.
+**Decisão**: Adotar brain-primary — cérebro é fonte primária para busca/conexões, .md de knowledge mantidos em sincronia como espelho legível (PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md). Boot files (CURRENT_STATE.md, PRIORITY_MATRIX.md) sempre atualizados.
+**Consequências**:
+- ✅ /learn atualiza cérebro E .md na mesma fase
+- ✅ Fallback real (não stale), git diffs mostram evolução
+- ✅ Conhecimento acessível sem Python
+- ⚠️ Dual-write — dois lugares para manter em sincronia

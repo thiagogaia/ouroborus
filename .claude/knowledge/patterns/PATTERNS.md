@@ -1,5 +1,5 @@
 # Padrões do Projeto
-> Última atualização: 2026-02-05 (/learn commit 4ea39bc)
+> Última atualização: 2026-02-05 (/learn sessão 6 — brain-primary)
 
 ## Padrões Aprovados
 
@@ -469,3 +469,14 @@
 - **Vantagem**: não precisa ativar venv externamente, funciona com `python3 script.py` direto
 - **Anti-padrão**: criar venv e esperar que chamadores saibam ativá-lo (PAT-012 documentado mas nunca implementado)
 - **Descoberto em**: 2026-02-05 (commit 4ea39bc)
+
+### PAT-038: Revisão Guiada Ponto-a-Ponto para Docs de Arquitetura
+- **Quando usar**: atualizar documentação de arquitetura que afeta múltiplos arquivos
+- **Solução**:
+  1. Listar todos os pontos de divergência
+  2. Apresentar cada ponto ao dev com opções claras
+  3. Registrar decisões pendentes para resolver depois
+  4. Aplicar todas as decisões confirmadas de uma vez
+  5. Varrer todos os arquivos por terminologia inconsistente após aplicar
+- **Evita**: decisões unilaterais, inconsistências entre arquivos, retrabalho
+- **Descoberto em**: 2026-02-05 (sessão de alinhamento LIFECYCLE_GUIDE)

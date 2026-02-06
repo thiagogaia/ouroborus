@@ -1,11 +1,11 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-05 (/learn sessao 4 - lifecycle guide + push)
+> Ultima atualizacao: 2026-02-05 (/learn sessao 7 - Brain-Primary com .md Sincronizados)
 
 ## Status Geral
-- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (estável, documentado)
-- **Saúde**: 🟡 Needs Attention (Health Score 0.79)
-- **Cérebro**: 167 nós, 330 arestas (75 semânticas), 167 embeddings
-- **Próximo Marco**: Testes unitários + melhorar REFERENCES (atualmente só 3)
+- **Fase**: v3.0.0 — Engram com Cérebro Organizacional (brain-primary, .md sincronizados)
+- **Saúde**: 🟢 Healthy (Health Score 0.95, Doctor 96%)
+- **Cérebro**: 209 nós, 489+ arestas, 198 embeddings — **fonte primária**
+- **Próximo Marco**: Testes unitários + observar loop de auto-alimentação em ação
 
 ## Identidade
 **Engram v3** — Sistema metacircular de memória persistente para Claude Code.
@@ -31,13 +31,15 @@ engram/
 └── docs/                          # Documentação
 ```
 
-### Fluxo de Dados
+### Fluxo de Dados (Brain-Only)
 ```
 setup.sh → instala DNA (schemas) + genesis + evolution + seeds + brain
               ↓
 /init-engram → genesis analisa projeto → popula cérebro → gera skills
               ↓
-/learn → evolution rastreia uso → cria memórias → propõe melhorias
+/recall → busca semântica → reforça memórias → PERSISTE (brain.save())
+              ↓
+/learn → brain.add_memory() direto → sleep in-memory → embeddings ricos
               ↓
 genesis → evolui componentes → ciclo recomeça
 ```
@@ -118,6 +120,9 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, /recall, **/domain**
 
 ## O Que Mudou Recentemente
+- [2026-02-05] **Brain-Primary com .md Sincronizados (commits 2500005, 05ac19c)**: Filosofia mudou de brain-only para brain-primary. Cérebro é fonte primária, .md mantidos em sincronia como espelho legível. LIFECYCLE_GUIDE, CLAUDE.md, learn.md alinhados. [[ADR-015]], [[PAT-038]], [[EXP-024]] | Impacto: CRÍTICO
+- [2026-02-05] **Brain-Only Self-Feeding Architecture (commit b33fd9c)**: Conteúdo in-graph (props.content), recall persiste reforço, sleep zero disk I/O, embeddings com content[:1000]. 184 nós migrados. | Impacto: CRÍTICO
+- [2026-02-05] **REFERENCES fix + CO_ACCESSED + EXP nodes (commit e39c7f5)**: sleep.py lê .md canônicos para cross-refs (REFERENCES: 3→30). consolidate() cria CO_ACCESSED edges. populate_experiences() cria nós EXP. pat_id nos patterns. Health: 0.79→0.89. | Impacto: CRÍTICO
 - [2026-02-05] **LIFECYCLE_GUIDE.md criado**: Guia completo do ciclo de vida (instalar → trabalhar → aprender → evoluir → dormir). Documenta relação .md ↔ cérebro. | Impacto: ALTO
 - [2026-02-05] **CLAUDE.md como fonte primária (commit d5d40ce)**: Cérebro promovido a consulta primária, .md como fallback. Push de 4 commits ao origin. | Impacto: ALTO
 - [2026-02-05] **Ciclo de Sono do Cérebro (commit 4ea39bc)**: sleep.py com 5 fases (dedup/connect/relate/themes/calibrate). IDs determinísticos, upsert, _resolve_link corrigido, auto-ativação de venv. De 0 para 68 arestas semânticas, 134 duplicatas removidas. [[ADR-014]], [[PAT-036]], [[EXP-022]] | Impacto: CRÍTICO
@@ -165,8 +170,8 @@ genesis → evolui componentes → ciclo recomeça
 | Tipo | Descrição | Prioridade |
 |------|-----------|------------|
 | Composição | engram-evolution + project-analyzer (37% co-ativação) | 🟡 Média |
-| Embeddings | Gerar embeddings para 127 nós (0 atual) | 🟡 Média |
 | Stale | 8 componentes nunca usados - avaliar necessidade | 🟢 Baixa |
+| Observar | CO_ACCESSED edges — serão criadas conforme /recall for usado | 🟢 Info |
 - [2026-02-03] **/learn integrado**: Fase 4 adicionada para criar memórias automaticamente | Impacto: ALTO
 - [2026-02-03] **maintain.sh**: Script de manutenção para cron/manual | Impacto: MÉDIO
 - [2026-02-03] **[[ADR-011]]**: Arquitetura de Cérebro Organizacional implementada | Impacto: CRÍTICO
@@ -205,29 +210,28 @@ Nenhum bloqueio ativo.
 
 ## Contexto Para Próxima Sessão
 
-### Cérebro Organizacional Implementado
+### Cérebro Organizacional (Brain-Only)
 
-Arquitetura definida em [[ADR-011]]. Sistema de memória com grafo de conhecimento real.
+Arquitetura: [[ADR-011]] (original) + [[ADR-015]] (brain-only). Fonte única de verdade auto-alimentada.
 
-**Estrutura Implementada:**
+**Estrutura:**
 ```
 .claude/
-├── brain/                    ← GRAFO E PROCESSOS
-│   ├── brain.py             ← Núcleo (NetworkX + operações)
-│   ├── embeddings.py        ← Busca semântica
-│   ├── cognitive.py         ← Consolidate, decay, archive
-│   ├── graph.json           ← Grafo serializado
-│   └── state/               ← Estado por dev
+├── brain/                    ← FONTE ÚNICA DE VERDADE
+│   ├── brain.py             ← Núcleo (NetworkX + content in-graph)
+│   ├── recall.py            ← Busca + persistência de reforço
+│   ├── sleep.py             ← Consolidação semântica (in-memory)
+│   ├── embeddings.py        ← Vetores com content[:1000]
+│   ├── populate.py          ← Commits (refresh) + migrate (one-time)
+│   ├── cognitive.py         ← Health, consolidate, decay
+│   └── graph.json           ← Grafo com conteúdo completo
 │
-├── memory/                   ← CONTEÚDO LEGÍVEL
-│   ├── episodes/            ← Memória episódica
-│   ├── concepts/            ← Memória semântica
-│   ├── patterns/            ← Memória procedural
-│   ├── decisions/           ← ADRs
-│   ├── people/              ← Expertise
-│   └── domains/             ← Áreas
+├── knowledge/context/        ← BOOT FILES (apenas 2)
+│   └── CURRENT_STATE.md     ← Contexto rápido para iniciar sessão
+├── knowledge/priorities/
+│   └── PRIORITY_MATRIX.md   ← Prioridades
 │
-├── consolidated/             ← Summaries
+├── memory/                   ← LEGADO (conteúdo migrado para graph.json)
 └── archive/                  ← Memórias arquivadas
 ```
 
@@ -242,6 +246,8 @@ Arquitetura definida em [[ADR-011]]. Sistema de memória com grafo de conhecimen
 - ✅ **IDs determinísticos**: md5(title|labels) — repopular é idempotente
 - ✅ **Auto-ativação de venv**: numpy/networkx sempre disponíveis
 - ✅ **8 tipos de aresta semântica**: REFERENCES, INFORMED_BY, APPLIES, RELATED_TO, SAME_SCOPE, MODIFIES_SAME, BELONGS_TO_THEME, CLUSTERED_IN
+- ✅ **Brain-Only Architecture**: Conteúdo in-graph, recall persiste reforço, sleep zero disk I/O
+- ✅ **Self-Feeding Loop**: recall→reinforce→save | add_memory→sleep→embeddings
 
 **Uso:**
 ```bash
@@ -276,3 +282,4 @@ python .claude/brain/embeddings.py search "como resolver bugs"
 9. [x] Ciclo de Sono — consolidação semântica com 5 fases ✅
 10. [x] Gerar embeddings para todos os nós ✅ (167/167)
 11. [x] Integrar sleep no workflow do Claude — cérebro como fonte primária ✅ (CLAUDE.md atualizado)
+12. [x] Brain-Only Self-Feeding Architecture ✅ (ADR-015, 184 nós migrados)
