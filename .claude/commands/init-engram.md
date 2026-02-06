@@ -118,11 +118,11 @@ A análise profunda vai para **ambos** — é a única vez que CURRENT_STATE.md 
 ```python
 import sys
 sys.path.insert(0, '.claude/brain')
-from brain import Brain, get_current_developer
+from brain_sqlite import BrainSQLite as Brain
 
 brain = Brain()
 brain.load()
-dev = get_current_developer()
+dev = {"author": "@engram"}  # ou get_current_developer() se disponível
 
 # Estado inicial do projeto
 brain.add_memory(
@@ -189,12 +189,23 @@ Isso irá:
 python3 .claude/brain/embeddings.py build
 ```
 
+Isso irá:
+- Usar ChromaDB HNSW como vector store primário (instalado pelo setup.sh)
+- Auto-migrar embeddings.npz existentes se ChromaDB estiver vazio
+- Fallback para npz se ChromaDB não estiver disponível
+- Modelo local: `all-MiniLM-L6-v2` (384 dims, offline, gratuito)
+
 ### 5.4 Verificar Saúde do Cérebro
 ```bash
 python3 .claude/brain/cognitive.py health
 ```
 
 Se `status: healthy`, continuar. Se não, seguir recomendações.
+Verificar que `vector_backend: chromadb` — se mostrar `npz`, reinstalar deps:
+```bash
+source .claude/brain/.venv/bin/activate && pip install chromadb pydantic-settings
+python3 .claude/brain/patch_chromadb.py
+```
 
 ### 5.5 Reportar ao Dev
 ```
@@ -210,6 +221,7 @@ Memórias criadas:
 Total: [N] nós, [M] arestas
 Grau médio: [G] (conectividade)
 Embeddings: [E] vetores gerados
+Vector store: [chromadb | npz]
 
 Status: 🟢 Saudável
 ```

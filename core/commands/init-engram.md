@@ -118,11 +118,11 @@ A análise profunda vai para **ambos** — é a única vez que CURRENT_STATE.md 
 ```python
 import sys
 sys.path.insert(0, '.claude/brain')
-from brain import Brain, get_current_developer
+from brain_sqlite import BrainSQLite as Brain
 
 brain = Brain()
 brain.load()
-dev = get_current_developer()
+dev = {"author": "@engram"}  # ou get_current_developer() se disponível
 
 # Estado inicial do projeto
 brain.add_memory(

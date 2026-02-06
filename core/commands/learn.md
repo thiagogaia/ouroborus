@@ -32,11 +32,11 @@ Para cada tipo de conhecimento descoberto, use `brain.add_memory()` diretamente:
 ```python
 import sys
 sys.path.insert(0, '.claude/brain')
-from brain import Brain, get_current_developer
+from brain_sqlite import BrainSQLite as Brain
 
 brain = Brain()
 brain.load()
-dev = get_current_developer()
+dev = {"author": "@engram"}  # ou get_current_developer() se disponível
 
 # ADR (decisão arquitetural)
 brain.add_memory(

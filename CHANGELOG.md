@@ -14,6 +14,10 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - `/commit` command now auto-updates CHANGELOG.md when core/ changes (`1e72d29`)
 
 ### Changed
+- Commands (init-engram, learn) and base-ingester now use `brain_sqlite` instead of deprecated `brain.py` (`ed75a23`)
+- `/learn` error message includes chromadb and pydantic-settings (`ed75a23`)
+- `/doctor` now runs `cognitive.py health` to check vector_backend (`ed75a23`)
+- `/init-engram` Fase 5.3 documents ChromaDB HNSW, auto-migrate, and troubleshooting (`ed75a23`)
 - ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md are now genesis-only (`de4a449`)
 - All agents, commands, skills, schemas updated to use `brain.add_memory()` instead of editing .md files (`de4a449`)
 - `setup.sh` generate_claude_md() template updated for brain-primary workflow (`de4a449`)

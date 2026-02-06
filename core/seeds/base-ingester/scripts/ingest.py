@@ -224,7 +224,10 @@ def ingest(
 
     # Add brain to sys.path for import
     sys.path.insert(0, str(brain_path))
-    from brain import Brain, get_current_developer
+    try:
+        from brain_sqlite import BrainSQLite as Brain
+    except ImportError:
+        from brain import Brain
 
     if author is None:
         author = get_author()
