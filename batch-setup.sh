@@ -130,12 +130,12 @@ for target in "${TARGET_DIRS[@]}"; do
     # Build command
     CMD=("$SCRIPT_DIR/setup.sh")
     [[ -n "$MODE" ]] && CMD+=("$MODE")
+    $BATCH_MODE && CMD+=("--force")
     CMD+=("$target")
 
     # Run setup.sh
-    # In batch mode, we auto-confirm by piping "y" to stdin
     if $BATCH_MODE; then
-        if echo "y" | "${CMD[@]}" 2>&1; then
+        if "${CMD[@]}" 2>&1; then
             ((success++)) || true
         else
             print_error "Falha em: $target"
