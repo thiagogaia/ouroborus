@@ -93,16 +93,40 @@ def get_embedding(text: str) -> np.ndarray:
         return get_embedding_local(text)
 
 
+def _load_all_nodes(brain_path: Path) -> dict:
+    """Load all nodes from the brain using the appropriate backend.
+
+    Returns {node_id: node_data} dict. Tries SQLite first, then JSON fallback.
+    """
+    sys.path.insert(0, str(Path(__file__).parent))
+    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
+
+    if _backend != "json":
+        try:
+            from brain_sqlite import BrainSQLite
+            brain = BrainSQLite(base_path=brain_path)
+            if brain.db_path.exists():
+                brain.load()
+                return brain.get_all_nodes()
+        except Exception:
+            pass
+
+    # Fallback: read graph.json directly (original behavior, works in tests)
+    graph_file = brain_path / "graph.json"
+    if graph_file.exists():
+        data = json.loads(graph_file.read_text(encoding="utf-8"))
+        return data.get("nodes", {})
+
+    return {}
+
+
 def build_embeddings(brain_path: Path = Path(".claude/brain")):
     """Gera embeddings para todos os nos do grafo."""
-    graph_file = brain_path / "graph.json"
+    nodes = _load_all_nodes(brain_path)
 
-    if not graph_file.exists():
-        print(f"Error: No graph found at {graph_file}")
+    if not nodes:
+        print("Error: No nodes found in brain")
         return
-
-    graph = json.loads(graph_file.read_text())
-    nodes = graph.get("nodes", {})
 
     print(f"Building embeddings for {len(nodes)} nodes...")
 
@@ -160,14 +184,11 @@ def search_embeddings(
     top_k: int = 10
 ) -> List[dict]:
     """Busca semantica no grafo."""
-    # Carrega grafo
-    graph_file = brain_path / "graph.json"
-    if not graph_file.exists():
-        print(f"Error: No graph found at {graph_file}")
-        return []
+    nodes = _load_all_nodes(brain_path)
 
-    graph = json.loads(graph_file.read_text())
-    nodes = graph.get("nodes", {})
+    if not nodes:
+        print("Error: No nodes found in brain")
+        return []
 
     # Carrega embeddings
     emb_file = brain_path / "embeddings.npz"

@@ -29,10 +29,42 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from brain import Brain, HAS_NUMPY
+
+import os as _os
+_backend = _os.environ.get("BRAIN_BACKEND", "sqlite")
+if _backend == "json":
+    from brain import Brain, HAS_NUMPY
+else:
+    try:
+        from brain_sqlite import BrainSQLite as Brain, HAS_NUMPY
+    except ImportError:
+        from brain import Brain, HAS_NUMPY
 
 if HAS_NUMPY:
     import numpy as np
+
+
+def _update_node_labels(brain, node_id: str, labels: list):
+    """Update a node's labels via the appropriate backend."""
+    if hasattr(brain, '_set_labels'):
+        # SQLite v2 backend — normalized node_labels table
+        brain._set_labels(node_id, labels)
+        brain._get_conn().commit()
+    elif hasattr(brain, '_get_conn'):
+        # SQLite v1 backend (legacy)
+        import json as _json
+        conn = brain._get_conn()
+        conn.execute("UPDATE nodes SET labels = ? WHERE node_id = ?",
+                     (_json.dumps(labels), node_id))
+        conn.commit()
+    else:
+        # JSON backend — direct graph mutation
+        try:
+            node = brain.graph.nodes[node_id]
+        except (KeyError, TypeError):
+            node = brain.graph._nodes.get(node_id)
+        if node:
+            node["labels"] = labels
 
 
 # ══════════════════════════════════════════════════════════
@@ -81,7 +113,7 @@ def phase_dedup(brain: Brain) -> Dict:
         for nid in nids:
             if not brain._node_exists(nid):
                 continue
-            degree = len(list(brain.graph.successors(nid))) + len(list(brain.graph.predecessors(nid)))
+            degree = len(brain.get_neighbors(nid)) + len(brain.get_predecessors(nid))
             if degree > best_degree:
                 best_degree = degree
                 best_id = nid
@@ -95,27 +127,25 @@ def phase_dedup(brain: Brain) -> Dict:
                 continue
 
             # Transfer incoming edges
-            for pred in list(brain.graph.predecessors(nid)):
+            for pred in list(brain.get_predecessors(nid)):
                 if pred != best_id and not brain.has_edge(pred, best_id):
                     edge = brain.get_edge(pred, nid)
                     if edge:
                         brain.add_edge(pred, best_id, edge.get("type", "REFERENCES"), edge.get("weight", 0.5))
 
             # Transfer outgoing edges
-            for succ in list(brain.graph.successors(nid)):
+            for succ in list(brain.get_neighbors(nid)):
                 if succ != best_id and not brain.has_edge(best_id, succ):
                     edge = brain.get_edge(nid, succ)
                     if edge:
                         brain.add_edge(best_id, succ, edge.get("type", "REFERENCES"), edge.get("weight", 0.5))
 
-            # Merge labels
+            # Merge labels — use API for SQLite compat
             survivor = brain.get_node(best_id)
             victim = brain.get_node(nid)
             if survivor and victim:
                 merged_labels = list(set(survivor.get("labels", []) + victim.get("labels", [])))
-                if brain._node_exists(best_id):
-                    node = brain.graph.nodes[best_id] if hasattr(brain.graph, 'has_edge') else brain.graph._nodes[best_id]
-                    node["labels"] = merged_labels
+                _update_node_labels(brain, best_id, merged_labels)
 
             brain.remove_node(nid)
             stats["merged"] += 1
@@ -267,7 +297,7 @@ def phase_connect(brain: Brain) -> Dict:
         # Connect recent commits in same scope (max 5 per scope to avoid explosion)
         for i, nid_a in enumerate(nids[:5]):
             for nid_b in nids[i+1:6]:
-                if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                if not brain.has_edge(nid_a, nid_b, "SAME_SCOPE") and not brain.has_edge(nid_b, nid_a, "SAME_SCOPE"):
                     brain.add_edge(nid_a, nid_b, "SAME_SCOPE", 0.4,
                                    props={"scope": scope})
                     stats["same_scope"] += 1
@@ -288,7 +318,7 @@ def phase_connect(brain: Brain) -> Dict:
         # Connect commits touching same file (max 3 per file)
         for i, nid_a in enumerate(nids[:3]):
             for nid_b in nids[i+1:4]:
-                if not brain.has_edge(nid_a, nid_b) and not brain.has_edge(nid_b, nid_a):
+                if not brain.has_edge(nid_a, nid_b, "MODIFIES_SAME") and not brain.has_edge(nid_b, nid_a, "MODIFIES_SAME"):
                     brain.add_edge(nid_a, nid_b, "MODIFIES_SAME", 0.5,
                                    props={"file": filepath})
                     stats["modifies_same"] += 1
@@ -473,27 +503,41 @@ def phase_themes(brain: Brain) -> Dict:
                       ", ".join(f"{ct}({n})" for ct, n in sorted(commit_types.items(), key=lambda x: -x[1]))
 
             now = datetime.now().isoformat()
-            node_data = {
-                "labels": ["Theme"],
-                "props": {
-                    "title": theme_title,
-                    "scope": scope,
-                    "commit_count": len(commit_ids),
-                    "summary": summary
-                },
-                "memory": {
-                    "strength": 0.8,
-                    "access_count": 0,
-                    "last_accessed": now,
-                    "created_at": now,
-                    "decay_rate": 0.002
-                }
-            }
 
-            # Add node directly (Theme is a synthetic node)
-            if hasattr(brain.graph, 'has_edge'):  # NetworkX
-                brain.graph.add_node(theme_id, **node_data)
+            # Use add_node_raw for synthetic nodes (works on both backends)
+            if hasattr(brain, 'add_node_raw'):
+                brain.add_node_raw(theme_id,
+                    labels=["Theme"],
+                    props={
+                        "title": theme_title,
+                        "scope": scope,
+                        "commit_count": len(commit_ids),
+                        "summary": summary
+                    },
+                    memory={
+                        "strength": 0.8,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.002
+                    })
             else:
+                node_data = {
+                    "labels": ["Theme"],
+                    "props": {
+                        "title": theme_title,
+                        "scope": scope,
+                        "commit_count": len(commit_ids),
+                        "summary": summary
+                    },
+                    "memory": {
+                        "strength": 0.8,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.002
+                    }
+                }
                 brain.graph.add_node(theme_id, **node_data)
 
             stats["themes_created"] += 1
@@ -510,7 +554,7 @@ def phase_themes(brain: Brain) -> Dict:
         if "Pattern" not in ndata.get("labels", []):
             continue
         # Find domain edge
-        for succ in brain.graph.successors(nid):
+        for succ in brain.get_neighbors(nid):
             if brain.has_edge(nid, succ, "BELONGS_TO"):
                 succ_node = brain.get_node(succ)
                 if succ_node and "Domain" in succ_node.get("labels", []):
@@ -529,26 +573,40 @@ def phase_themes(brain: Brain) -> Dict:
 
         if not brain._node_exists(cluster_id):
             now = datetime.now().isoformat()
-            node_data = {
-                "labels": ["PatternCluster"],
-                "props": {
-                    "title": cluster_title,
-                    "domain": domain,
-                    "pattern_count": len(pattern_ids),
-                    "summary": f"Cluster of {len(pattern_ids)} patterns in '{domain}' domain"
-                },
-                "memory": {
-                    "strength": 0.7,
-                    "access_count": 0,
-                    "last_accessed": now,
-                    "created_at": now,
-                    "decay_rate": 0.003
-                }
-            }
 
-            if hasattr(brain.graph, 'has_edge'):
-                brain.graph.add_node(cluster_id, **node_data)
+            if hasattr(brain, 'add_node_raw'):
+                brain.add_node_raw(cluster_id,
+                    labels=["PatternCluster"],
+                    props={
+                        "title": cluster_title,
+                        "domain": domain,
+                        "pattern_count": len(pattern_ids),
+                        "summary": f"Cluster of {len(pattern_ids)} patterns in '{domain}' domain"
+                    },
+                    memory={
+                        "strength": 0.7,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.003
+                    })
             else:
+                node_data = {
+                    "labels": ["PatternCluster"],
+                    "props": {
+                        "title": cluster_title,
+                        "domain": domain,
+                        "pattern_count": len(pattern_ids),
+                        "summary": f"Cluster of {len(pattern_ids)} patterns in '{domain}' domain"
+                    },
+                    "memory": {
+                        "strength": 0.7,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.003
+                    }
+                }
                 brain.graph.add_node(cluster_id, **node_data)
 
             stats["clusters_created"] += 1
@@ -576,41 +634,105 @@ def phase_calibrate(brain: Brain) -> Dict:
     stats = {"boosted": 0, "decayed": 0}
     structural_types = {"AUTHORED_BY", "BELONGS_TO"}
 
-    edges_list = list(brain.graph.edges) if hasattr(brain.graph, 'has_edge') else list(brain.graph._edges.keys())
+    if hasattr(brain, '_get_conn'):
+        # SQLite backend — batch UPDATE via SQL
+        conn = brain._get_conn()
 
-    for edge_key in edges_list:
-        u, v = edge_key
-        if hasattr(brain.graph, 'has_edge'):
-            edge = brain.graph.edges[u, v]
+        # Detect v2 schema (edges have from_id/to_id) vs v1 (src/tgt)
+        edge_cols = conn.execute("PRAGMA table_info(edges)").fetchall()
+        col_names = {r["name"] for r in edge_cols}
+        is_v2 = "from_id" in col_names
+
+        if is_v2:
+            rows = conn.execute(
+                """SELECT e.id, e.type, e.weight,
+                          n1.access_count AS src_access, n2.access_count AS tgt_access
+                   FROM edges e
+                   JOIN nodes n1 ON e.from_id = n1.id
+                   JOIN nodes n2 ON e.to_id = n2.id"""
+            ).fetchall()
+
+            for row in rows:
+                etype = row["type"]
+                current_weight = row["weight"]
+                combined_access = row["src_access"] + row["tgt_access"]
+                is_semantic = etype not in structural_types
+
+                new_weight = current_weight
+                if combined_access > 5 and is_semantic:
+                    new_weight = min(1.0, current_weight * 1.15)
+                    stats["boosted"] += 1
+                elif combined_access == 0 and current_weight > 0.2:
+                    new_weight = max(0.1, current_weight * 0.95)
+                    stats["decayed"] += 1
+
+                if new_weight != current_weight:
+                    conn.execute(
+                        "UPDATE edges SET weight = ? WHERE id = ?",
+                        (new_weight, row["id"])
+                    )
         else:
-            edge = brain.graph._edges.get((u, v), {})
+            rows = conn.execute(
+                """SELECT e.src, e.tgt, e.type, e.weight,
+                          n1.access_count AS src_access, n2.access_count AS tgt_access
+                   FROM edges e
+                   JOIN nodes n1 ON e.src = n1.node_id
+                   JOIN nodes n2 ON e.tgt = n2.node_id"""
+            ).fetchall()
 
-        etype = edge.get("type", "")
-        current_weight = edge.get("weight", 0.5)
+            for row in rows:
+                etype = row["type"]
+                current_weight = row["weight"]
+                combined_access = row["src_access"] + row["tgt_access"]
+                is_semantic = etype not in structural_types
 
-        # Get access counts
-        u_node = brain.get_node(u)
-        v_node = brain.get_node(v)
-        if not u_node or not v_node:
-            continue
+                new_weight = current_weight
+                if combined_access > 5 and is_semantic:
+                    new_weight = min(1.0, current_weight * 1.15)
+                    stats["boosted"] += 1
+                elif combined_access == 0 and current_weight > 0.2:
+                    new_weight = max(0.1, current_weight * 0.95)
+                    stats["decayed"] += 1
 
-        u_access = u_node.get("memory", {}).get("access_count", 0)
-        v_access = v_node.get("memory", {}).get("access_count", 0)
-        combined_access = u_access + v_access
+                if new_weight != current_weight:
+                    conn.execute(
+                        "UPDATE edges SET weight = ? WHERE src = ? AND tgt = ?",
+                        (new_weight, row["src"], row["tgt"])
+                    )
 
-        # Boost for semantic edges
-        is_semantic = etype not in structural_types
+        conn.commit()
+    else:
+        # JSON backend — direct mutation
+        edges_list = list(brain.graph.edges) if hasattr(brain.graph, 'has_edge') else list(brain.graph._edges.keys())
 
-        if combined_access > 5 and is_semantic:
-            # Active nodes: boost edge
-            new_weight = min(1.0, current_weight * 1.15)
-            edge["weight"] = new_weight
-            stats["boosted"] += 1
-        elif combined_access == 0 and current_weight > 0.2:
-            # Never accessed: slight decay
-            new_weight = max(0.1, current_weight * 0.95)
-            edge["weight"] = new_weight
-            stats["decayed"] += 1
+        for edge_key in edges_list:
+            u, v = edge_key
+            if hasattr(brain.graph, 'has_edge'):
+                edge = brain.graph.edges[u, v]
+            else:
+                edge = brain.graph._edges.get((u, v), {})
+
+            etype = edge.get("type", "")
+            current_weight = edge.get("weight", 0.5)
+
+            u_node = brain.get_node(u)
+            v_node = brain.get_node(v)
+            if not u_node or not v_node:
+                continue
+
+            u_access = u_node.get("memory", {}).get("access_count", 0)
+            v_access = v_node.get("memory", {}).get("access_count", 0)
+            combined_access = u_access + v_access
+            is_semantic = etype not in structural_types
+
+            if combined_access > 5 and is_semantic:
+                new_weight = min(1.0, current_weight * 1.15)
+                edge["weight"] = new_weight
+                stats["boosted"] += 1
+            elif combined_access == 0 and current_weight > 0.2:
+                new_weight = max(0.1, current_weight * 0.95)
+                edge["weight"] = new_weight
+                stats["decayed"] += 1
 
     return stats
 

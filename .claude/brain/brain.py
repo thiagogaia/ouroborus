@@ -417,6 +417,33 @@ class Brain:
                 created_at=datetime.now().isoformat()
             )
 
+    def add_node_raw(self, node_id: str, labels: List[str] = None,
+                     props: Dict[str, Any] = None, memory: Dict[str, Any] = None):
+        """Add a synthetic node directly (for Theme, PatternCluster, etc.).
+
+        Bypasses add_memory() — no author edge, no domain inference.
+        """
+        labels = labels or []
+        props = props or {}
+        memory = memory or {}
+        now = datetime.now().isoformat()
+
+        if not memory.get("last_accessed"):
+            memory["last_accessed"] = now
+        if not memory.get("created_at"):
+            memory["created_at"] = now
+
+        node_data = {
+            "labels": labels,
+            "props": props,
+            "memory": memory
+        }
+
+        if HAS_NETWORKX:
+            self.graph.add_node(node_id, **node_data)
+        else:
+            self.graph.add_node(node_id, **node_data)
+
     def _get_content_type(self, labels: List[str]) -> str:
         """[DEPRECATED] Determina tipo de conteudo pelos labels.
 
@@ -1151,6 +1178,21 @@ class Brain:
 
         return neighbors
 
+    def get_predecessors(self, node_id: str, edge_type: str = None) -> List[str]:
+        """Return predecessors of a node."""
+        predecessors = []
+        for neighbor in self.graph.predecessors(node_id):
+            if edge_type is None:
+                predecessors.append(neighbor)
+            else:
+                if HAS_NETWORKX:
+                    if self.graph.edges[neighbor, node_id].get("type") == edge_type:
+                        predecessors.append(neighbor)
+                else:
+                    if self.graph._edges.get((neighbor, node_id), {}).get("type") == edge_type:
+                        predecessors.append(neighbor)
+        return predecessors
+
     def get_all_nodes(self) -> Dict[str, Dict]:
         """Return all nodes as {id: data} dict."""
         result = {}
@@ -1312,7 +1354,16 @@ def get_current_developer() -> Dict[str, str]:
 if __name__ == "__main__":
     import sys
 
-    brain = Brain()
+    # Feature flag: BRAIN_BACKEND=sqlite (default) or json
+    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
+    if _backend == "sqlite":
+        try:
+            from brain_sqlite import BrainSQLite
+            brain = BrainSQLite()
+        except ImportError:
+            brain = Brain()
+    else:
+        brain = Brain()
 
     if len(sys.argv) < 2:
         print("Usage: brain.py <command> [args]")

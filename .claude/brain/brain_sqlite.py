@@ -1,0 +1,1739 @@
+#!/usr/bin/env python3
+"""
+brain_sqlite.py - SQLite + FTS5 backend for the Organizational Brain (Schema v2)
+
+Drop-in replacement for Brain (brain.py). Same public API, backed by
+SQLite instead of in-memory graph + JSON.
+
+Schema v2 improvements over v1:
+- Single source of truth: `properties` JSON column with GENERATED STORED columns
+- Normalized labels: `node_labels` table with indexed lookups (no json_each scans)
+- Multi-edge support: UNIQUE(from_id, to_id, type) instead of PRIMARY KEY(src, tgt)
+- Zero json.loads() in Python: all extraction done via SQL generated columns
+
+Usage:
+    from brain_sqlite import BrainSQLite as Brain
+
+    brain = Brain()
+    brain.load()
+    brain.add_memory(...)
+    results = brain.retrieve(query="authentication")
+"""
+
+import json
+import math
+import hashlib
+import subprocess
+import re
+import os
+import site
+import sqlite3
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Optional, List, Dict, Any, Tuple
+from uuid import uuid4
+
+# ── Auto-activate brain venv (PAT-012) ──
+_venv_dir = Path(__file__).parent / ".venv"
+if _venv_dir.exists() and "brain/.venv" not in os.environ.get("VIRTUAL_ENV", ""):
+    _site_packages = list(_venv_dir.glob("lib/python*/site-packages"))
+    if _site_packages:
+        site.addsitedir(str(_site_packages[0]))
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+
+
+# ══════════════════════════════════════════════════════════
+# SCHEMA v2 — Hybrid Property Graph with Generated Columns
+# ══════════════════════════════════════════════════════════
+
+SCHEMA_VERSION = "2"
+
+SCHEMA_SQL = """\
+PRAGMA journal_mode = WAL;
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS nodes (
+    id          TEXT PRIMARY KEY,
+    properties  JSON NOT NULL DEFAULT '{}',
+    -- Generated STORED columns (auto-extracted from properties)
+    title       TEXT GENERATED ALWAYS AS (json_extract(properties, '$.title')) STORED,
+    author      TEXT GENERATED ALWAYS AS (json_extract(properties, '$.author')) STORED,
+    content     TEXT GENERATED ALWAYS AS (json_extract(properties, '$.content')) STORED,
+    summary     TEXT GENERATED ALWAYS AS (json_extract(properties, '$.summary')) STORED,
+    strength    REAL GENERATED ALWAYS AS (COALESCE(json_extract(properties, '$.strength'), 1.0)) STORED,
+    access_count INTEGER GENERATED ALWAYS AS (COALESCE(json_extract(properties, '$.access_count'), 0)) STORED,
+    last_accessed TEXT GENERATED ALWAYS AS (json_extract(properties, '$.last_accessed')) STORED,
+    created_at  TEXT GENERATED ALWAYS AS (json_extract(properties, '$.created_at')) STORED,
+    decay_rate  REAL GENERATED ALWAYS AS (COALESCE(json_extract(properties, '$.decay_rate'), 0.02)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS node_labels (
+    node_id TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
+    label   TEXT NOT NULL,
+    PRIMARY KEY (node_id, label)
+);
+
+CREATE TABLE IF NOT EXISTS edges (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_id    TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
+    to_id      TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
+    type       TEXT NOT NULL DEFAULT 'REFERENCES',
+    weight     REAL NOT NULL DEFAULT 0.5,
+    properties JSON NOT NULL DEFAULT '{}',
+    created_at TEXT,
+    UNIQUE(from_id, to_id, type)
+);
+
+CREATE TABLE IF NOT EXISTS meta (
+    key   TEXT PRIMARY KEY,
+    value TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_labels_label ON node_labels(label);
+CREATE INDEX IF NOT EXISTS idx_nodes_author ON nodes(author);
+CREATE INDEX IF NOT EXISTS idx_nodes_strength ON nodes(strength);
+CREATE INDEX IF NOT EXISTS idx_nodes_last_accessed ON nodes(last_accessed);
+CREATE INDEX IF NOT EXISTS idx_edges_from ON edges(from_id);
+CREATE INDEX IF NOT EXISTS idx_edges_to ON edges(to_id);
+CREATE INDEX IF NOT EXISTS idx_edges_type ON edges(type);
+"""
+
+FTS_SCHEMA_SQL = """\
+CREATE VIRTUAL TABLE IF NOT EXISTS nodes_fts USING fts5(
+    title, content, summary,
+    content='nodes', content_rowid='rowid',
+    tokenize='porter unicode61'
+);
+
+CREATE TRIGGER IF NOT EXISTS nodes_ai AFTER INSERT ON nodes BEGIN
+    INSERT INTO nodes_fts(rowid, title, content, summary)
+    VALUES (new.rowid, new.title, new.content, new.summary);
+END;
+
+CREATE TRIGGER IF NOT EXISTS nodes_ad AFTER DELETE ON nodes BEGIN
+    INSERT INTO nodes_fts(nodes_fts, rowid, title, content, summary)
+    VALUES ('delete', old.rowid, old.title, old.content, old.summary);
+END;
+
+CREATE TRIGGER IF NOT EXISTS nodes_au AFTER UPDATE ON nodes BEGIN
+    INSERT INTO nodes_fts(nodes_fts, rowid, title, content, summary)
+    VALUES ('delete', old.rowid, old.title, old.content, old.summary);
+    INSERT INTO nodes_fts(rowid, title, content, summary)
+    VALUES (new.rowid, new.title, new.content, new.summary);
+END;
+"""
+
+
+class BrainSQLite:
+    """
+    Organizational brain backed by SQLite + FTS5 (Schema v2).
+    Same public API as Brain (brain.py).
+    """
+
+    def __init__(self, base_path: Path = None):
+        if base_path is None:
+            base_path = Path(".claude/brain")
+        self.base_path = Path(base_path)
+        self.memory_path = self.base_path.parent / "memory"
+        self.db_path = self.base_path / "brain.db"
+
+        # Connection (lazy — opened on load())
+        self._conn: Optional[sqlite3.Connection] = None
+
+        # Embeddings (loaded lazily)
+        self.embeddings: Dict[str, Any] = {}
+        self._embeddings_dirty = False
+
+        # Cache
+        self._stats_cache = None
+        self._stats_time = None
+
+    # ══════════════════════════════════════════════════════════
+    # CONNECTION
+    # ══════════════════════════════════════════════════════════
+
+    def _get_conn(self) -> sqlite3.Connection:
+        """Get or create the SQLite connection."""
+        if self._conn is None:
+            self.base_path.mkdir(parents=True, exist_ok=True)
+            self._conn = sqlite3.connect(str(self.db_path))
+            self._conn.row_factory = sqlite3.Row
+            self._conn.execute("PRAGMA journal_mode = WAL")
+            self._conn.execute("PRAGMA foreign_keys = ON")
+        return self._conn
+
+    def _init_schema(self):
+        """Create tables, indexes, and FTS if they don't exist."""
+        conn = self._get_conn()
+        conn.executescript(SCHEMA_SQL)
+        try:
+            conn.executescript(FTS_SCHEMA_SQL)
+        except sqlite3.OperationalError:
+            pass
+        # Set schema version
+        conn.execute(
+            "INSERT OR IGNORE INTO meta (key, value) VALUES ('schema_version', ?)",
+            (SCHEMA_VERSION,)
+        )
+        conn.commit()
+
+    def _get_schema_version(self) -> Optional[str]:
+        """Get the current schema version from the database."""
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT value FROM meta WHERE key = 'schema_version'"
+            ).fetchone()
+            return row[0] if row else None
+        except sqlite3.OperationalError:
+            return None
+
+    def _needs_migration(self) -> bool:
+        """Check if in-place migration from v1 to v2 is needed."""
+        conn = self._get_conn()
+        try:
+            # Check if v1 schema is present (nodes table with node_id column)
+            row = conn.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name='nodes'"
+            ).fetchone()
+            if row is None:
+                return False
+            schema_sql = row[0]
+            # v1 has node_id column; v2 has id column
+            if 'node_id' in schema_sql and 'properties' not in schema_sql:
+                return True
+            return False
+        except sqlite3.OperationalError:
+            return False
+
+    def _migrate_v1_to_v2(self):
+        """In-place migration from schema v1 to v2."""
+        print("Migrating brain.db from schema v1 to v2...")
+        conn = self._get_conn()
+
+        # 1. Read all data from v1 tables
+        nodes_v1 = conn.execute("SELECT * FROM nodes").fetchall()
+        edges_v1 = conn.execute("SELECT * FROM edges").fetchall()
+
+        # 2. Drop old tables (including FTS and triggers)
+        conn.executescript("""\
+            DROP TRIGGER IF EXISTS nodes_ai;
+            DROP TRIGGER IF EXISTS nodes_ad;
+            DROP TRIGGER IF EXISTS nodes_au;
+            DROP TABLE IF EXISTS nodes_fts;
+            DROP TABLE IF EXISTS edges;
+            DROP TABLE IF EXISTS node_labels;
+            DROP TABLE IF EXISTS nodes;
+        """)
+        conn.commit()
+
+        # 3. Create v2 schema
+        conn.executescript(SCHEMA_SQL)
+        try:
+            conn.executescript(FTS_SCHEMA_SQL)
+        except sqlite3.OperationalError:
+            pass
+
+        # 4. Migrate nodes
+        node_count = 0
+        for row in nodes_v1:
+            node_id = row["node_id"]
+            labels = json.loads(row["labels"])
+            extra_props = json.loads(row["props_json"])
+
+            # Build unified properties blob
+            properties = {
+                "title": row["title"],
+                "author": row["author"],
+                "content": row["content"],
+                "summary": row["summary"],
+                "strength": row["strength"],
+                "access_count": row["access_count"],
+                "last_accessed": row["last_accessed"],
+                "created_at": row["created_at"],
+                "decay_rate": row["decay_rate"],
+                **extra_props
+            }
+
+            conn.execute(
+                "INSERT INTO nodes (id, properties) VALUES (?, ?)",
+                (node_id, json.dumps(properties, default=str))
+            )
+
+            # Insert labels
+            for label in labels:
+                conn.execute(
+                    "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                    (node_id, label)
+                )
+
+            node_count += 1
+
+        # 5. Migrate edges (with multi-edge support)
+        edge_count = 0
+        for row in edges_v1:
+            try:
+                conn.execute(
+                    """INSERT INTO edges (from_id, to_id, type, weight, properties, created_at)
+                       VALUES (?, ?, ?, ?, ?, ?)
+                       ON CONFLICT(from_id, to_id, type) DO UPDATE SET
+                           weight = MAX(weight, excluded.weight)""",
+                    (row["src"], row["tgt"], row["type"], row["weight"],
+                     row["props_json"], row["created_at"])
+                )
+                edge_count += 1
+            except sqlite3.IntegrityError:
+                pass
+
+        # 6. Update schema version
+        conn.execute(
+            "INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)",
+            (SCHEMA_VERSION,)
+        )
+        conn.commit()
+
+        # 7. Rebuild FTS
+        try:
+            conn.execute("INSERT INTO nodes_fts(nodes_fts) VALUES('rebuild')")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass
+
+        print(f"Migration complete: {node_count} nodes, {edge_count} edges")
+
+    # ══════════════════════════════════════════════════════════
+    # PERSISTENCE
+    # ══════════════════════════════════════════════════════════
+
+    def load(self) -> bool:
+        """Open brain.db (or create it). Load embeddings lazily."""
+        if not self.db_path.exists():
+            graph_file = self.base_path / "graph.json"
+            if graph_file.exists():
+                print(f"Info: brain.db not found but graph.json exists. Auto-migrating...")
+                self._init_schema()
+                try:
+                    from migrate_to_sqlite import migrate
+                    migrate(self.base_path, verify=False)
+                    return self._finish_load()
+                except Exception as e:
+                    print(f"Auto-migration failed: {e}. Creating empty DB.")
+                    self._init_schema()
+                    return True
+            else:
+                print(f"Info: No brain data found at {self.base_path}")
+                self._init_schema()
+                return True
+
+        # DB exists — check if migration needed
+        if self._needs_migration():
+            self._migrate_v1_to_v2()
+        else:
+            self._init_schema()
+
+        return self._finish_load()
+
+    def _finish_load(self) -> bool:
+        """Finish loading: print stats and return True."""
+        conn = self._get_conn()
+        node_count = conn.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
+        edge_count = conn.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+        print(f"Loaded: {node_count} nodes, {edge_count} edges")
+        return True
+
+    def _ensure_embeddings(self):
+        """Load embeddings from disk if not already loaded."""
+        if self.embeddings:
+            return
+        if not HAS_NUMPY:
+            return
+        emb_file = self.base_path / "embeddings.npz"
+        if emb_file.exists():
+            try:
+                loaded = np.load(emb_file)
+                self.embeddings = {k: loaded[k] for k in loaded.files}
+                print(f"Loaded: {len(self.embeddings)} embeddings")
+            except Exception as e:
+                print(f"Error loading embeddings: {e}")
+
+    def save(self):
+        """No-op for graph data (SQLite auto-persists).
+
+        Only saves embeddings.npz if they changed.
+        """
+        if self._embeddings_dirty and HAS_NUMPY and self.embeddings:
+            self.base_path.mkdir(parents=True, exist_ok=True)
+            emb_file = self.base_path / "embeddings.npz"
+            np.savez_compressed(emb_file, **self.embeddings)
+            print(f"Saved: {emb_file}")
+            self._embeddings_dirty = False
+
+    def close(self):
+        """Close the database connection."""
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
+
+    # ══════════════════════════════════════════════════════════
+    # PROPERTIES HELPERS
+    # ══════════════════════════════════════════════════════════
+
+    def _build_properties(self, title: str, author: str, content: str,
+                          summary: str, strength: float, access_count: int,
+                          last_accessed: str, created_at: str, decay_rate: float,
+                          extra_props: Dict[str, Any] = None) -> str:
+        """Build a unified properties JSON blob."""
+        props = {
+            "title": title,
+            "author": author,
+            "content": content,
+            "summary": summary,
+            "strength": strength,
+            "access_count": access_count,
+            "last_accessed": last_accessed,
+            "created_at": created_at,
+            "decay_rate": decay_rate,
+        }
+        if extra_props:
+            props.update(extra_props)
+        return json.dumps(props, default=str)
+
+    def _set_labels(self, node_id: str, labels: List[str]):
+        """Set labels for a node (replaces existing)."""
+        conn = self._get_conn()
+        conn.execute("DELETE FROM node_labels WHERE node_id = ?", (node_id,))
+        for label in labels:
+            conn.execute(
+                "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                (node_id, label)
+            )
+
+    def _add_labels(self, node_id: str, labels: List[str]):
+        """Add labels to a node (keeps existing)."""
+        conn = self._get_conn()
+        for label in labels:
+            conn.execute(
+                "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                (node_id, label)
+            )
+
+    def _get_labels(self, node_id: str) -> List[str]:
+        """Get labels for a node."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            "SELECT label FROM node_labels WHERE node_id = ?", (node_id,)
+        ).fetchall()
+        return [r["label"] for r in rows]
+
+    # ══════════════════════════════════════════════════════════
+    # ENCODING (create memory)
+    # ══════════════════════════════════════════════════════════
+
+    def add_memory(
+        self,
+        title: str,
+        content: str,
+        labels: List[str],
+        author: str,
+        props: Dict[str, Any] = None,
+        references: List[str] = None,
+        embedding: Any = None
+    ) -> str:
+        """Add a new memory to the brain. Same API as Brain.add_memory()."""
+        # Deterministic ID: md5(title|labels) for dedup
+        id_source = f"{title}|{'|'.join(sorted(labels))}"
+        node_id = hashlib.md5(id_source.encode()).hexdigest()[:8]
+        now = datetime.now().isoformat()
+
+        # Upsert: if node already exists, update
+        if self._node_exists(node_id):
+            return self._upsert_node(node_id, title, content, labels, author, props, references, embedding)
+
+        summary = self._generate_summary(content)
+        extra_props = dict(props or {})
+        decay_rate = self._get_decay_rate(labels)
+
+        properties_json = self._build_properties(
+            title=title, author=author, content=content, summary=summary,
+            strength=1.0, access_count=1, last_accessed=now, created_at=now,
+            decay_rate=decay_rate, extra_props=extra_props
+        )
+
+        conn = self._get_conn()
+        conn.execute(
+            "INSERT INTO nodes (id, properties) VALUES (?, ?)",
+            (node_id, properties_json)
+        )
+        self._set_labels(node_id, labels)
+        conn.commit()
+
+        # Embedding
+        if embedding is not None and HAS_NUMPY:
+            self.embeddings[node_id] = np.array(embedding)
+            self._embeddings_dirty = True
+
+        # Author edge
+        author_node = self._ensure_person_node(author)
+        self.add_edge(node_id, author_node, "AUTHORED_BY")
+
+        # Reference edges
+        if references:
+            for ref_id in references:
+                if self._node_exists(ref_id):
+                    self.add_edge(node_id, ref_id, "REFERENCES")
+
+        # Extract [[links]] from content
+        links = self._extract_links(content)
+        for link in links:
+            target = self._resolve_link(link)
+            if target:
+                self.add_edge(node_id, target, "REFERENCES")
+
+        # Domain inference
+        domain = self._infer_domain(content, labels)
+        if domain:
+            domain_node = self._ensure_domain_node(domain)
+            self.add_edge(node_id, domain_node, "BELONGS_TO")
+
+        return node_id
+
+    def _upsert_node(
+        self,
+        node_id: str,
+        title: str,
+        content: str,
+        labels: List[str],
+        author: str,
+        props: Dict[str, Any] = None,
+        references: List[str] = None,
+        embedding: Any = None
+    ) -> str:
+        """Update existing node instead of creating duplicate."""
+        conn = self._get_conn()
+        row = conn.execute("SELECT properties FROM nodes WHERE id = ?", (node_id,)).fetchone()
+        if row is None:
+            return node_id
+
+        existing_props = json.loads(row["properties"])
+
+        # Merge extra props
+        if props:
+            existing_props.update(props)
+
+        # Update core fields
+        existing_props["title"] = title
+        existing_props["content"] = content
+        existing_props["summary"] = self._generate_summary(content)
+        existing_props["last_accessed"] = datetime.now().isoformat()
+
+        conn.execute(
+            "UPDATE nodes SET properties = ? WHERE id = ?",
+            (json.dumps(existing_props, default=str), node_id)
+        )
+
+        # Merge labels (union)
+        existing_labels = set(self._get_labels(node_id))
+        existing_labels.update(labels)
+        self._set_labels(node_id, list(existing_labels))
+        conn.commit()
+
+        # Embedding
+        if embedding is not None and HAS_NUMPY:
+            self.embeddings[node_id] = np.array(embedding)
+            self._embeddings_dirty = True
+
+        # New references
+        if references:
+            for ref_id in references:
+                resolved = self._resolve_link(ref_id) if not self._node_exists(ref_id) else ref_id
+                if resolved and not self.has_edge(node_id, resolved):
+                    self.add_edge(node_id, resolved, "REFERENCES")
+
+        return node_id
+
+    def add_edge(
+        self,
+        source: str,
+        target: str,
+        edge_type: str,
+        weight: float = 0.5,
+        props: Dict[str, Any] = None
+    ):
+        """Add an edge to the graph. Multi-edge safe (unique per type)."""
+        conn = self._get_conn()
+        now = datetime.now().isoformat()
+        try:
+            conn.execute(
+                """INSERT INTO edges (from_id, to_id, type, weight, properties, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?)
+                   ON CONFLICT(from_id, to_id, type) DO UPDATE SET
+                       weight = MAX(weight, excluded.weight)""",
+                (source, target, edge_type, weight,
+                 json.dumps(props or {}, default=str), now)
+            )
+            conn.commit()
+        except sqlite3.IntegrityError:
+            pass  # FK violation — endpoint doesn't exist
+
+    def add_node_raw(self, node_id: str, labels: List[str] = None,
+                     props: Dict[str, Any] = None, memory: Dict[str, Any] = None):
+        """Add a synthetic node directly (for Theme, PatternCluster, etc.).
+
+        This bypasses add_memory() — no author edge, no domain inference.
+        Used by sleep.py for synthetic nodes.
+        """
+        labels = labels or []
+        props = props or {}
+        memory = memory or {}
+        now = datetime.now().isoformat()
+
+        # Build properties blob merging props + memory
+        properties = {
+            "title": props.get("title", ""),
+            "author": props.get("author", ""),
+            "content": props.get("content", ""),
+            "summary": props.get("summary", ""),
+            "strength": memory.get("strength", 1.0),
+            "access_count": memory.get("access_count", 0),
+            "last_accessed": memory.get("last_accessed", now),
+            "created_at": memory.get("created_at", now),
+            "decay_rate": memory.get("decay_rate", 0.02),
+        }
+        # Add extra props that aren't core fields
+        for k, v in props.items():
+            if k not in ("title", "author", "content", "summary"):
+                properties[k] = v
+
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                "INSERT OR IGNORE INTO nodes (id, properties) VALUES (?, ?)",
+                (node_id, json.dumps(properties, default=str))
+            )
+            for label in labels:
+                conn.execute(
+                    "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                    (node_id, label)
+                )
+            conn.commit()
+        except sqlite3.IntegrityError:
+            pass
+
+    # ══════════════════════════════════════════════════════════
+    # HELPERS (same as brain.py)
+    # ══════════════════════════════════════════════════════════
+
+    def _generate_summary(self, content: str, max_length: int = 500) -> str:
+        """Generate summary from content."""
+        text = re.sub(r'#+ ', '', content)
+        text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+        text = re.sub(r'\[\[([^\]]+)\]\]', r'\1', text)
+        text = re.sub(r'\n+', ' ', text)
+        text = text.strip()
+        if len(text) <= max_length:
+            return text
+        return text[:max_length - 3] + "..."
+
+    def _get_decay_rate(self, labels: List[str]) -> float:
+        """Decay rate per memory type."""
+        if "Decision" in labels:
+            return 0.001
+        elif "Pattern" in labels:
+            return 0.005
+        elif "Concept" in labels:
+            return 0.003
+        elif "Episode" in labels:
+            return 0.01
+        elif "Person" in labels:
+            return 0.0001
+        else:
+            return 0.02
+
+    def _ensure_person_node(self, author: str) -> str:
+        """Ensure a Person node exists for the author."""
+        if "@" in author and not author.startswith("@"):
+            person_id = f"person-{author}"
+            display_name = author.split("@")[0]
+        elif author.startswith("@"):
+            existing = self._find_person_by_alias(author)
+            if existing:
+                return existing
+            person_id = f"person-{author[1:]}"
+            display_name = author[1:]
+        else:
+            person_id = f"person-{author}"
+            display_name = author
+
+        if not self._node_exists(person_id):
+            now = datetime.now().isoformat()
+            extra_props = {
+                "email": author if "@" in author and not author.startswith("@") else "",
+                "name": display_name,
+                "aliases": [author] if author.startswith("@") else [],
+            }
+            properties = self._build_properties(
+                title=display_name, author="", content="", summary="",
+                strength=1.0, access_count=0, last_accessed=now,
+                created_at=now, decay_rate=0.0001, extra_props=extra_props
+            )
+            conn = self._get_conn()
+            conn.execute(
+                "INSERT OR IGNORE INTO nodes (id, properties) VALUES (?, ?)",
+                (person_id, properties)
+            )
+            conn.execute(
+                "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                (person_id, "Person")
+            )
+            conn.commit()
+
+        return person_id
+
+    def _find_person_by_alias(self, alias: str) -> Optional[str]:
+        """Find Person node by alias (@username)."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT n.id, n.properties FROM nodes n
+               JOIN node_labels nl ON n.id = nl.node_id
+               WHERE nl.label = 'Person'"""
+        ).fetchall()
+        for row in rows:
+            p = json.loads(row["properties"])
+            if alias in p.get("aliases", []):
+                return row["id"]
+        return None
+
+    def _ensure_domain_node(self, domain: str) -> str:
+        """Ensure a Domain node exists."""
+        domain_id = f"domain-{domain.lower()}"
+        if not self._node_exists(domain_id):
+            now = datetime.now().isoformat()
+            properties = self._build_properties(
+                title=domain, author="", content="", summary="",
+                strength=1.0, access_count=0, last_accessed=now,
+                created_at=now, decay_rate=0.0001,
+                extra_props={"name": domain}
+            )
+            conn = self._get_conn()
+            conn.execute(
+                "INSERT OR IGNORE INTO nodes (id, properties) VALUES (?, ?)",
+                (domain_id, properties)
+            )
+            conn.execute(
+                "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
+                (domain_id, "Domain")
+            )
+            conn.commit()
+        return domain_id
+
+    def _node_exists(self, node_id: str) -> bool:
+        """Check if node exists."""
+        conn = self._get_conn()
+        row = conn.execute("SELECT 1 FROM nodes WHERE id = ?", (node_id,)).fetchone()
+        return row is not None
+
+    def _extract_links(self, content: str) -> List[str]:
+        """Extract [[links]] from content."""
+        return re.findall(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', content)
+
+    def _resolve_link(self, link: str) -> Optional[str]:
+        """Resolve link to node ID."""
+        conn = self._get_conn()
+
+        # Person
+        if link.startswith("@"):
+            pid = f"person-{link[1:]}"
+            if self._node_exists(pid):
+                return pid
+            return None
+
+        # ADR-XXX
+        if link.upper().startswith("ADR-"):
+            found = self._find_node_by_prop("adr_id", link.upper())
+            if found:
+                return found
+            legacy = f"decision-{link.lower()}"
+            if self._node_exists(legacy):
+                return legacy
+
+        # PAT-XXX
+        if link.upper().startswith("PAT-"):
+            found = self._find_node_by_prop("pat_id", link.upper())
+            if found:
+                return found
+
+        # EXP-XXX
+        if link.upper().startswith("EXP-"):
+            found = self._find_node_by_prop("exp_id", link.upper())
+            if found:
+                return found
+
+        # Title prefix match
+        found = self._find_node_by_title_prefix(link)
+        if found:
+            return found
+
+        # Exact title match
+        row = conn.execute(
+            "SELECT id FROM nodes WHERE LOWER(title) = LOWER(?)", (link,)
+        ).fetchone()
+        if row:
+            return row["id"]
+
+        return None
+
+    def _find_node_by_prop(self, prop_name: str, prop_value: str) -> Optional[str]:
+        """Find a node by a specific property value."""
+        conn = self._get_conn()
+        row = conn.execute(
+            "SELECT id FROM nodes WHERE UPPER(json_extract(properties, ?)) = UPPER(?)",
+            (f"$.{prop_name}", prop_value)
+        ).fetchone()
+        if row:
+            return row["id"]
+        return None
+
+    def _find_node_by_title_prefix(self, prefix: str) -> Optional[str]:
+        """Find a node whose title starts with prefix."""
+        conn = self._get_conn()
+        row = conn.execute(
+            "SELECT id FROM nodes WHERE LOWER(title) LIKE LOWER(?) || '%'",
+            (prefix,)
+        ).fetchone()
+        if row:
+            return row["id"]
+        return None
+
+    def _infer_domain(self, content: str, labels: List[str]) -> Optional[str]:
+        """Infer domain from content."""
+        content_lower = content.lower()
+        domain_keywords = {
+            "auth": ["auth", "login", "jwt", "token", "password", "session", "oauth"],
+            "payments": ["payment", "billing", "stripe", "invoice", "subscription"],
+            "database": ["database", "sql", "postgres", "migration", "query", "index"],
+            "api": ["api", "endpoint", "rest", "graphql", "request", "response"],
+            "frontend": ["react", "vue", "component", "css", "html", "ui", "ux"],
+            "infra": ["deploy", "docker", "kubernetes", "ci", "cd", "aws", "cloud"],
+            "testing": ["test", "spec", "mock", "fixture", "coverage"]
+        }
+        scores = {}
+        for domain, keywords in domain_keywords.items():
+            score = sum(1 for kw in keywords if kw in content_lower)
+            if score > 0:
+                scores[domain] = score
+        if scores:
+            return max(scores, key=scores.get)
+        return None
+
+    # ══════════════════════════════════════════════════════════
+    # RETRIEVAL
+    # ══════════════════════════════════════════════════════════
+
+    def search_by_embedding(
+        self,
+        query_embedding: Any,
+        top_k: int = 10
+    ) -> List[Tuple[str, float]]:
+        """Semantic similarity search using embeddings."""
+        self._ensure_embeddings()
+        if not HAS_NUMPY or not self.embeddings:
+            return []
+
+        query_emb = np.array(query_embedding)
+        results = []
+
+        for node_id, emb in self.embeddings.items():
+            dot = np.dot(query_emb, emb)
+            norm = np.linalg.norm(query_emb) * np.linalg.norm(emb)
+            if norm > 0:
+                sim = dot / norm
+                results.append((node_id, float(sim)))
+
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
+
+    def spreading_activation(
+        self,
+        seed_nodes: List[str],
+        max_depth: int = 3,
+        decay: float = 0.5
+    ) -> Dict[str, float]:
+        """Spreading activation from seed nodes."""
+        activation = {node: 1.0 for node in seed_nodes if self._node_exists(node)}
+        frontier = set(seed_nodes)
+        conn = self._get_conn()
+
+        for depth in range(max_depth):
+            next_frontier = set()
+
+            for node in frontier:
+                if not self._node_exists(node):
+                    continue
+
+                current_activation = activation.get(node, 0)
+                row = conn.execute(
+                    "SELECT strength FROM nodes WHERE id = ?", (node,)
+                ).fetchone()
+                node_strength = row["strength"] if row else 1.0
+
+                # Out-edges (successors)
+                out_edges = conn.execute(
+                    "SELECT to_id, weight FROM edges WHERE from_id = ?", (node,)
+                ).fetchall()
+                for edge_row in out_edges:
+                    neighbor = edge_row["to_id"]
+                    edge_weight = edge_row["weight"]
+                    nb_row = conn.execute(
+                        "SELECT strength FROM nodes WHERE id = ?", (neighbor,)
+                    ).fetchone()
+                    neighbor_strength = nb_row["strength"] if nb_row else 1.0
+
+                    new_activation = current_activation * edge_weight * decay * neighbor_strength
+
+                    if neighbor in activation:
+                        activation[neighbor] = max(activation[neighbor], new_activation)
+                    else:
+                        activation[neighbor] = new_activation
+                        next_frontier.add(neighbor)
+
+                # In-edges (predecessors)
+                in_edges = conn.execute(
+                    "SELECT from_id, weight FROM edges WHERE to_id = ?", (node,)
+                ).fetchall()
+                for edge_row in in_edges:
+                    neighbor = edge_row["from_id"]
+                    edge_weight = edge_row["weight"]
+                    nb_row = conn.execute(
+                        "SELECT strength FROM nodes WHERE id = ?", (neighbor,)
+                    ).fetchone()
+                    neighbor_strength = nb_row["strength"] if nb_row else 1.0
+
+                    new_activation = current_activation * edge_weight * decay * 0.5 * neighbor_strength
+
+                    if neighbor in activation:
+                        activation[neighbor] = max(activation[neighbor], new_activation)
+                    else:
+                        activation[neighbor] = new_activation
+                        next_frontier.add(neighbor)
+
+            frontier = next_frontier
+            if not frontier:
+                break
+
+        return activation
+
+    def retrieve(
+        self,
+        query: str = None,
+        query_embedding: Any = None,
+        labels: List[str] = None,
+        author: str = None,
+        top_k: int = 20,
+        spread_depth: int = 2
+    ) -> List[Dict]:
+        """Full search: embedding + spreading activation + FTS5 + filters."""
+        results = {}
+
+        # 1. Embedding search
+        if query_embedding is not None and HAS_NUMPY:
+            self._ensure_embeddings()
+            seeds = self.search_by_embedding(query_embedding, top_k=5)
+            seed_nodes = [node_id for node_id, _ in seeds]
+
+            activated = self.spreading_activation(seed_nodes, max_depth=spread_depth)
+
+            for node_id, score in seeds:
+                results[node_id] = score * 2
+
+            for node_id, act_score in activated.items():
+                if node_id in results:
+                    results[node_id] += act_score
+                else:
+                    results[node_id] = act_score
+
+        # 2. Text search (FTS5 or fallback)
+        elif query:
+            results = self._text_search(query)
+
+        # 3. Apply filters
+        if labels:
+            results = {
+                nid: score for nid, score in results.items()
+                if self._has_labels(nid, labels)
+            }
+
+        if author:
+            results = {
+                nid: score for nid, score in results.items()
+                if self._has_author(nid, author)
+            }
+
+        # 4. Sort
+        sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
+
+        # 5. Reinforce accessed memories
+        for node_id, _ in sorted_results[:10]:
+            self._reinforce(node_id)
+
+        # 6. Format output
+        output = []
+        conn = self._get_conn()
+        for node_id, score in sorted_results[:top_k]:
+            row = conn.execute("SELECT * FROM nodes WHERE id = ?", (node_id,)).fetchone()
+            if row:
+                output.append(self._row_to_legacy_dict(row, score))
+
+        return output
+
+    def _text_search(self, query: str) -> Dict[str, float]:
+        """Full-text search using FTS5 with fallback to LIKE."""
+        conn = self._get_conn()
+        results = {}
+
+        # Try FTS5 first
+        try:
+            fts_query = self._sanitize_fts_query(query)
+            if fts_query:
+                rows = conn.execute(
+                    """SELECT n.id, bm25(nodes_fts) AS rank
+                       FROM nodes_fts
+                       JOIN nodes n ON n.rowid = nodes_fts.rowid
+                       WHERE nodes_fts MATCH ?
+                       ORDER BY rank
+                       LIMIT 50""",
+                    (fts_query,)
+                ).fetchall()
+
+                for row in rows:
+                    results[row["id"]] = -row["rank"]
+
+                if results:
+                    return results
+        except sqlite3.OperationalError:
+            pass
+
+        # Fallback: LIKE search
+        query_lower = query.lower()
+        rows = conn.execute("SELECT id, title, summary, content FROM nodes").fetchall()
+        for row in rows:
+            score = 0.0
+            if row["title"] and query_lower in row["title"].lower():
+                score += 1.0
+            if row["summary"] and query_lower in row["summary"].lower():
+                score += 0.5
+            if row["content"] and query_lower in row["content"].lower():
+                score += 0.3
+            if score > 0:
+                results[row["id"]] = score
+
+        return results
+
+    def _sanitize_fts_query(self, query: str) -> str:
+        """Sanitize a user query for FTS5 MATCH syntax."""
+        words = re.findall(r'[\w]+', query, re.UNICODE)
+        if not words:
+            return ""
+        return " OR ".join(f'"{w}"' for w in words)
+
+    def _row_to_legacy_dict(self, row: sqlite3.Row, score: float = 0.0) -> Dict:
+        """Convert a SQLite row to the legacy dict format expected by consumers."""
+        all_props = json.loads(row["properties"])
+
+        # Separate memory fields from regular props
+        memory_keys = {"strength", "access_count", "last_accessed", "created_at", "decay_rate"}
+        props = {k: v for k, v in all_props.items() if k not in memory_keys}
+        memory = {k: all_props.get(k, None) for k in memory_keys}
+        # Defaults
+        memory.setdefault("strength", 1.0)
+        memory.setdefault("access_count", 0)
+        memory.setdefault("decay_rate", 0.02)
+
+        labels = self._get_labels(row["id"])
+
+        return {
+            "id": row["id"],
+            "score": score,
+            "labels": labels,
+            "props": props,
+            "memory": memory
+        }
+
+    def _has_labels(self, node_id: str, labels: List[str]) -> bool:
+        """Check if node has any of the given labels."""
+        conn = self._get_conn()
+        placeholders = ",".join("?" for _ in labels)
+        row = conn.execute(
+            f"SELECT 1 FROM node_labels WHERE node_id = ? AND label IN ({placeholders})",
+            (node_id, *labels)
+        ).fetchone()
+        return row is not None
+
+    def _has_author(self, node_id: str, author: str) -> bool:
+        """Check if node was created by author."""
+        conn = self._get_conn()
+        row = conn.execute("SELECT author FROM nodes WHERE id = ?", (node_id,)).fetchone()
+        if not row or not row["author"]:
+            return False
+        return author.lower() in row["author"].lower()
+
+    def _reinforce(self, node_id: str):
+        """Reinforce an accessed memory — single UPDATE via json_set, no Python parse."""
+        conn = self._get_conn()
+        conn.execute(
+            """UPDATE nodes SET properties = json_set(
+                   json_set(
+                       json_set(properties,
+                           '$.access_count', COALESCE(json_extract(properties, '$.access_count'), 0) + 1),
+                       '$.last_accessed', ?),
+                   '$.strength', MIN(1.0, COALESCE(json_extract(properties, '$.strength'), 0.5) * 1.05)
+               ) WHERE id = ?""",
+            (datetime.now().isoformat(), node_id)
+        )
+        conn.commit()
+
+    # ══════════════════════════════════════════════════════════
+    # CONSOLIDATION
+    # ══════════════════════════════════════════════════════════
+
+    def consolidate(self) -> Dict:
+        """Consolidation process — strengthen co-accessed edges, create CO_ACCESSED edges."""
+        stats = {
+            "edges_strengthened": 0,
+            "edges_created": 0,
+            "patterns_detected": 0,
+            "summaries_created": 0
+        }
+        conn = self._get_conn()
+        recent_cutoff = (datetime.now() - timedelta(days=7)).isoformat()
+
+        # 1. Strengthen edges between recently accessed nodes
+        rows = conn.execute(
+            """SELECT e.id, e.from_id, e.to_id, e.weight
+               FROM edges e
+               JOIN nodes n1 ON e.from_id = n1.id
+               JOIN nodes n2 ON e.to_id = n2.id
+               WHERE n1.last_accessed > ? AND n2.last_accessed > ?""",
+            (recent_cutoff, recent_cutoff)
+        ).fetchall()
+
+        for row in rows:
+            new_weight = min(1.0, row["weight"] * 1.1)
+            conn.execute(
+                "UPDATE edges SET weight = ? WHERE id = ?",
+                (new_weight, row["id"])
+            )
+            stats["edges_strengthened"] += 1
+
+        # 2. Create CO_ACCESSED edges between recently co-accessed nodes
+        recent_nodes = conn.execute(
+            """SELECT n.id FROM nodes n
+               LEFT JOIN node_labels nl ON n.id = nl.node_id AND nl.label IN ('Person', 'Domain')
+               WHERE n.access_count >= 2 AND n.last_accessed > ?
+               AND nl.node_id IS NULL""",
+            (recent_cutoff,)
+        ).fetchall()
+        recent_ids = [r["id"] for r in recent_nodes]
+
+        created = 0
+        max_new = 50
+        for i, nid_a in enumerate(recent_ids):
+            if created >= max_new:
+                break
+            for nid_b in recent_ids[i + 1:]:
+                if created >= max_new:
+                    break
+                if not self.has_edge(nid_a, nid_b) and not self.has_edge(nid_b, nid_a):
+                    self.add_edge(nid_a, nid_b, "CO_ACCESSED", 0.3)
+                    created += 1
+
+        stats["edges_created"] = created
+
+        # 3. Identify hubs
+        hubs_rows = conn.execute(
+            """SELECT n.id,
+                  (SELECT COUNT(*) FROM edges WHERE from_id = n.id) +
+                  (SELECT COUNT(*) FROM edges WHERE to_id = n.id) AS degree
+               FROM nodes n
+               ORDER BY degree DESC
+               LIMIT 20"""
+        ).fetchall()
+        stats["hubs"] = [(r["id"], r["degree"]) for r in hubs_rows]
+
+        conn.commit()
+        return stats
+
+    # ══════════════════════════════════════════════════════════
+    # DECAY
+    # ══════════════════════════════════════════════════════════
+
+    def apply_decay(self) -> Dict:
+        """Apply Ebbinghaus forgetting curve — batch SQL, minimal Python."""
+        now = datetime.now()
+        conn = self._get_conn()
+        weak = []
+        to_archive = []
+
+        rows = conn.execute(
+            "SELECT id, strength, last_accessed, decay_rate FROM nodes"
+        ).fetchall()
+
+        for row in rows:
+            last_accessed = row["last_accessed"]
+            if not last_accessed:
+                continue
+            try:
+                last_time = datetime.fromisoformat(
+                    last_accessed.replace('Z', '+00:00').split('+')[0])
+                days_since = (now - last_time).days
+                decay_rate = row["decay_rate"]
+                decay_factor = math.exp(-decay_rate * days_since)
+                new_strength = row["strength"] * decay_factor
+
+                node_id = row["id"]
+                labels = self._get_labels(node_id)
+
+                if new_strength < 0.1:
+                    to_archive.append(node_id)
+                elif new_strength < 0.3:
+                    weak.append(node_id)
+                    if "WeakMemory" not in labels:
+                        self._add_labels(node_id, ["WeakMemory"])
+                else:
+                    if "WeakMemory" in labels:
+                        conn.execute(
+                            "DELETE FROM node_labels WHERE node_id = ? AND label = 'WeakMemory'",
+                            (node_id,)
+                        )
+
+                # Update strength via json_set
+                conn.execute(
+                    "UPDATE nodes SET properties = json_set(properties, '$.strength', ?) WHERE id = ?",
+                    (new_strength, node_id)
+                )
+            except Exception:
+                pass
+
+        conn.commit()
+
+        return {
+            "weak_count": len(weak),
+            "archive_count": len(to_archive),
+            "weak_nodes": weak[:10],
+            "archive_nodes": to_archive[:10]
+        }
+
+    # ══════════════════════════════════════════════════════════
+    # QUERIES
+    # ══════════════════════════════════════════════════════════
+
+    def get_by_label(self, label: str) -> List[str]:
+        """Return nodes with a specific label (indexed via node_labels)."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            "SELECT node_id FROM node_labels WHERE label = ?",
+            (label,)
+        ).fetchall()
+        return [r["node_id"] for r in rows]
+
+    def get_node(self, node_id: str) -> Optional[Dict]:
+        """Return node data in legacy dict format (labels, props, memory)."""
+        conn = self._get_conn()
+        row = conn.execute("SELECT * FROM nodes WHERE id = ?", (node_id,)).fetchone()
+        if row is None:
+            return None
+
+        all_props = json.loads(row["properties"])
+        memory_keys = {"strength", "access_count", "last_accessed", "created_at", "decay_rate"}
+        props = {k: v for k, v in all_props.items() if k not in memory_keys}
+        memory = {k: all_props.get(k, None) for k in memory_keys}
+        memory.setdefault("strength", 1.0)
+        memory.setdefault("access_count", 0)
+        memory.setdefault("decay_rate", 0.02)
+
+        return {
+            "labels": self._get_labels(node_id),
+            "props": props,
+            "memory": memory
+        }
+
+    def get_neighbors(self, node_id: str, edge_type: str = None) -> List[str]:
+        """Return successors of a node."""
+        conn = self._get_conn()
+        if edge_type:
+            rows = conn.execute(
+                "SELECT to_id FROM edges WHERE from_id = ? AND type = ?",
+                (node_id, edge_type)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT DISTINCT to_id FROM edges WHERE from_id = ?", (node_id,)
+            ).fetchall()
+        return [r["to_id"] for r in rows]
+
+    def get_predecessors(self, node_id: str, edge_type: str = None) -> List[str]:
+        """Return predecessors of a node."""
+        conn = self._get_conn()
+        if edge_type:
+            rows = conn.execute(
+                "SELECT from_id FROM edges WHERE to_id = ? AND type = ?",
+                (node_id, edge_type)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT DISTINCT from_id FROM edges WHERE to_id = ?", (node_id,)
+            ).fetchall()
+        return [r["from_id"] for r in rows]
+
+    def get_all_nodes(self) -> Dict[str, Dict]:
+        """Return all nodes as {id: data} dict."""
+        conn = self._get_conn()
+        rows = conn.execute("SELECT * FROM nodes").fetchall()
+        result = {}
+        for row in rows:
+            all_props = json.loads(row["properties"])
+            memory_keys = {"strength", "access_count", "last_accessed", "created_at", "decay_rate"}
+            props = {k: v for k, v in all_props.items() if k not in memory_keys}
+            memory = {k: all_props.get(k, None) for k in memory_keys}
+            memory.setdefault("strength", 1.0)
+            memory.setdefault("access_count", 0)
+            memory.setdefault("decay_rate", 0.02)
+
+            result[row["id"]] = {
+                "labels": self._get_labels(row["id"]),
+                "props": props,
+                "memory": memory
+            }
+        return result
+
+    def has_edge(self, source: str, target: str, edge_type: str = None) -> bool:
+        """Check if edge exists. Supports optional edge_type filter."""
+        conn = self._get_conn()
+        if edge_type:
+            row = conn.execute(
+                "SELECT 1 FROM edges WHERE from_id = ? AND to_id = ? AND type = ?",
+                (source, target, edge_type)
+            ).fetchone()
+        else:
+            row = conn.execute(
+                "SELECT 1 FROM edges WHERE from_id = ? AND to_id = ?",
+                (source, target)
+            ).fetchone()
+        return row is not None
+
+    def get_edge(self, source: str, target: str, edge_type: str = None) -> Optional[Dict]:
+        """Get edge data between two nodes. If edge_type given, returns that specific edge."""
+        conn = self._get_conn()
+        if edge_type:
+            row = conn.execute(
+                "SELECT * FROM edges WHERE from_id = ? AND to_id = ? AND type = ?",
+                (source, target, edge_type)
+            ).fetchone()
+        else:
+            row = conn.execute(
+                "SELECT * FROM edges WHERE from_id = ? AND to_id = ? LIMIT 1",
+                (source, target)
+            ).fetchone()
+        if row is None:
+            return None
+        return {
+            "type": row["type"],
+            "weight": row["weight"],
+            "props": json.loads(row["properties"]),
+            "created_at": row["created_at"]
+        }
+
+    def remove_node(self, node_id: str):
+        """Remove a node and all its edges."""
+        conn = self._get_conn()
+        # node_labels and edges are removed by ON DELETE CASCADE
+        conn.execute("DELETE FROM nodes WHERE id = ?", (node_id,))
+        conn.commit()
+        self.embeddings.pop(node_id, None)
+
+    def get_edges_by_type(self, edge_type: str) -> List[Tuple[str, str, Dict]]:
+        """Return all edges of a specific type."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            "SELECT from_id, to_id, type, weight, properties, created_at FROM edges WHERE type = ?",
+            (edge_type,)
+        ).fetchall()
+        result = []
+        for row in rows:
+            result.append((row["from_id"], row["to_id"], {
+                "type": row["type"],
+                "weight": row["weight"],
+                "props": json.loads(row["properties"]),
+                "created_at": row["created_at"]
+            }))
+        return result
+
+    def get_stats(self) -> Dict:
+        """Brain statistics."""
+        conn = self._get_conn()
+        self._ensure_embeddings()
+
+        node_count = conn.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
+        edge_count = conn.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+
+        # Count by label (from node_labels table — no JSON parsing)
+        label_counts = {}
+        label_rows = conn.execute(
+            "SELECT label, COUNT(*) as cnt FROM node_labels GROUP BY label"
+        ).fetchall()
+        for row in label_rows:
+            label_counts[row["label"]] = row["cnt"]
+
+        weak_count = label_counts.get("WeakMemory", 0)
+
+        # Count by edge type
+        edge_type_counts = {}
+        edge_rows = conn.execute("SELECT type, COUNT(*) as cnt FROM edges GROUP BY type").fetchall()
+        for row in edge_rows:
+            edge_type_counts[row["type"]] = row["cnt"]
+
+        structural_types = {"AUTHORED_BY", "BELONGS_TO"}
+        semantic_edges = sum(v for k, v in edge_type_counts.items() if k not in structural_types)
+
+        # Average degree
+        if node_count > 0:
+            avg_degree = (edge_count * 2) / node_count
+        else:
+            avg_degree = 0
+
+        return {
+            "nodes": node_count,
+            "edges": edge_count,
+            "semantic_edges": semantic_edges,
+            "embeddings": len(self.embeddings),
+            "by_label": label_counts,
+            "by_edge_type": edge_type_counts,
+            "weak_memories": weak_count,
+            "avg_degree": avg_degree
+        }
+
+    def number_of_nodes(self) -> int:
+        """Return number of nodes in the graph."""
+        conn = self._get_conn()
+        return conn.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
+
+    def number_of_edges(self) -> int:
+        """Return number of edges in the graph."""
+        conn = self._get_conn()
+        return conn.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+
+    # ══════════════════════════════════════════════════════════
+    # DEV STATE (same as brain.py)
+    # ══════════════════════════════════════════════════════════
+
+    def update_dev_state(self, email: str, focus: str = None,
+                         last_session: str = None, name: str = None) -> str:
+        """Update developer state on Person node."""
+        person_id = self._ensure_person_node(email)
+        node = self.get_node(person_id)
+        if node is None:
+            return person_id
+
+        props = node.get("props", {})
+        memory = node.get("memory", {})
+        now = datetime.now().isoformat()
+
+        if focus is not None:
+            props["focus"] = focus
+            props["focus_updated_at"] = now
+        if last_session is not None:
+            props["last_session"] = last_session
+            props["last_session_at"] = now
+        if name is not None:
+            props["name"] = name
+
+        # Derive expertise from AUTHORED_BY edges
+        conn = self._get_conn()
+        authored_rows = conn.execute(
+            "SELECT from_id FROM edges WHERE to_id = ? AND type = 'AUTHORED_BY'",
+            (person_id,)
+        ).fetchall()
+
+        from collections import Counter
+        label_counts = Counter()
+        for r in authored_rows:
+            n = self.get_node(r["from_id"])
+            if n:
+                for label in n.get("labels", []):
+                    if label.endswith("Domain"):
+                        label_counts[label.replace("Domain", "")] += 1
+        if label_counts:
+            props["expertise"] = [area for area, _ in label_counts.most_common(10) if area]
+
+        props["sessions_count"] = props.get("sessions_count", 0) + (1 if last_session else 0)
+
+        # Rebuild properties: merge props + memory
+        properties = {**props, **memory}
+        properties["last_accessed"] = now
+
+        conn.execute(
+            "UPDATE nodes SET properties = ? WHERE id = ?",
+            (json.dumps(properties, default=str), person_id)
+        )
+        conn.commit()
+
+        return person_id
+
+    def get_dev_state(self, email: str) -> Optional[Dict]:
+        """Return current developer state."""
+        person_id = f"person-{email}"
+        node = self.get_node(person_id)
+        if node is None:
+            return None
+        props = node.get("props", {})
+        return {
+            "email": props.get("email", email),
+            "name": props.get("name", ""),
+            "focus": props.get("focus", ""),
+            "last_session": props.get("last_session", ""),
+            "last_session_at": props.get("last_session_at", ""),
+            "expertise": props.get("expertise", []),
+            "sessions_count": props.get("sessions_count", 0),
+            "aliases": props.get("aliases", []),
+        }
+
+    # ══════════════════════════════════════════════════════════
+    # EXPORT (for git diffs and rollback)
+    # ══════════════════════════════════════════════════════════
+
+    def export_json(self, output_path: Path = None) -> Path:
+        """Export brain.db -> graph.json for git diffs and rollback."""
+        if output_path is None:
+            output_path = self.base_path / "graph.json"
+
+        conn = self._get_conn()
+
+        # Export nodes
+        nodes_data = {}
+        rows = conn.execute("SELECT * FROM nodes").fetchall()
+        for row in rows:
+            all_props = json.loads(row["properties"])
+            memory_keys = {"strength", "access_count", "last_accessed", "created_at", "decay_rate"}
+            node_props = {k: v for k, v in all_props.items() if k not in memory_keys}
+            memory = {k: all_props.get(k, None) for k in memory_keys}
+            memory.setdefault("strength", 1.0)
+            memory.setdefault("access_count", 0)
+            memory.setdefault("decay_rate", 0.02)
+
+            nodes_data[row["id"]] = {
+                "labels": self._get_labels(row["id"]),
+                "props": node_props,
+                "memory": memory
+            }
+
+        # Export edges
+        edges_data = []
+        edge_rows = conn.execute("SELECT * FROM edges").fetchall()
+        for row in edge_rows:
+            edges_data.append({
+                "src": row["from_id"],
+                "tgt": row["to_id"],
+                "type": row["type"],
+                "weight": row["weight"],
+                "props": json.loads(row["properties"]),
+                "created_at": row["created_at"]
+            })
+
+        data = {
+            "version": "1.0",
+            "meta": {
+                "saved_at": datetime.now().isoformat(),
+                "node_count": len(nodes_data),
+                "edge_count": len(edges_data),
+                "backend": "sqlite_v2"
+            },
+            "nodes": nodes_data,
+            "edges": edges_data
+        }
+
+        output_path.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False, default=str),
+            encoding='utf-8'
+        )
+        print(f"Exported: {output_path}")
+        return output_path
+
+    # ══════════════════════════════════════════════════════════
+    # GRAPH COMPATIBILITY SHIM
+    # ══════════════════════════════════════════════════════════
+
+    @property
+    def graph(self):
+        """Return self as a graph-like interface for backward compat."""
+        return self
+
+    def successors(self, node_id: str) -> List[str]:
+        """Graph compat: return successor node IDs."""
+        return self.get_neighbors(node_id)
+
+    def predecessors(self, node_id: str) -> List[str]:
+        """Graph compat: return predecessor node IDs."""
+        return self.get_predecessors(node_id)
+
+    def degree(self) -> List[Tuple[str, int]]:
+        """Graph compat: return (node_id, degree) for all nodes."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT n.id,
+                  (SELECT COUNT(*) FROM edges WHERE from_id = n.id) +
+                  (SELECT COUNT(*) FROM edges WHERE to_id = n.id) AS deg
+               FROM nodes n"""
+        ).fetchall()
+        return [(r["id"], r["deg"]) for r in rows]
+
+    @property
+    def nodes(self):
+        """Graph compat: return a NodeView-like object."""
+        return _NodeView(self)
+
+    @property
+    def edges(self):
+        """Graph compat: return an EdgeView-like object."""
+        return _EdgeView(self)
+
+
+class _NodeView:
+    """Minimal shim for brain.graph.nodes access patterns used by consumers."""
+
+    def __init__(self, brain: BrainSQLite):
+        self._brain = brain
+
+    def __contains__(self, node_id: str) -> bool:
+        return self._brain._node_exists(node_id)
+
+    def __iter__(self):
+        conn = self._brain._get_conn()
+        rows = conn.execute("SELECT id FROM nodes").fetchall()
+        return iter(r["id"] for r in rows)
+
+    def __len__(self):
+        return self._brain.number_of_nodes()
+
+    def __getitem__(self, node_id: str) -> Dict:
+        node = self._brain.get_node(node_id)
+        if node is None:
+            raise KeyError(node_id)
+        return node
+
+    def get(self, node_id: str, default=None):
+        node = self._brain.get_node(node_id)
+        return node if node is not None else default
+
+
+class _EdgeView:
+    """Minimal shim for brain.graph.edges access patterns used by consumers."""
+
+    def __init__(self, brain: BrainSQLite):
+        self._brain = brain
+
+    def __iter__(self):
+        conn = self._brain._get_conn()
+        rows = conn.execute("SELECT from_id, to_id FROM edges").fetchall()
+        return iter((r["from_id"], r["to_id"]) for r in rows)
+
+    def __len__(self):
+        return self._brain.number_of_edges()
+
+    def __getitem__(self, key):
+        if isinstance(key, tuple) and len(key) == 2:
+            src, tgt = key
+            edge = self._brain.get_edge(src, tgt)
+            if edge is None:
+                raise KeyError(key)
+            return edge
+        raise KeyError(key)
+
+    def __call__(self, *args, data=False, **kwargs):
+        """Support brain.graph.edges(data=True) iteration."""
+        conn = self._brain._get_conn()
+        rows = conn.execute(
+            "SELECT from_id, to_id, type, weight, properties, created_at FROM edges"
+        ).fetchall()
+        if data:
+            return [
+                (r["from_id"], r["to_id"], {
+                    "type": r["type"], "weight": r["weight"],
+                    "props": json.loads(r["properties"]), "created_at": r["created_at"]
+                })
+                for r in rows
+            ]
+        return [(r["from_id"], r["to_id"]) for r in rows]
+
+
+# ══════════════════════════════════════════════════════════
+# CLI (same as brain.py)
+# ══════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    import sys
+
+    # Reuse get_current_developer from brain.py
+    sys.path.insert(0, str(Path(__file__).parent))
+    from brain import get_current_developer
+
+    brain = BrainSQLite()
+
+    if len(sys.argv) < 2:
+        print("Usage: brain_sqlite.py <command> [args]")
+        print("Commands: load, save, stats, search, consolidate, decay, export")
+        sys.exit(1)
+
+    cmd = sys.argv[1]
+
+    if cmd == "load":
+        brain.load()
+        print(json.dumps(brain.get_stats(), indent=2))
+
+    elif cmd == "stats":
+        brain.load()
+        print(json.dumps(brain.get_stats(), indent=2))
+
+    elif cmd == "search":
+        if len(sys.argv) < 3:
+            print("Usage: brain_sqlite.py search <query>")
+            sys.exit(1)
+        brain.load()
+        query = " ".join(sys.argv[2:])
+        results = brain.retrieve(query=query, top_k=10)
+        for r in results:
+            print(f"{r['score']:.2f} | {r.get('props', {}).get('title', 'N/A')} | {r['id']}")
+
+    elif cmd == "consolidate":
+        brain.load()
+        stats = brain.consolidate()
+        print(json.dumps(stats, indent=2))
+
+    elif cmd == "decay":
+        brain.load()
+        stats = brain.apply_decay()
+        print(json.dumps(stats, indent=2))
+
+    elif cmd == "export":
+        brain.load()
+        brain.export_json()
+
+    elif cmd == "add":
+        if len(sys.argv) < 4:
+            print("Usage: brain_sqlite.py add <title> <content>")
+            sys.exit(1)
+        brain.load()
+        dev = get_current_developer()
+        title = sys.argv[2]
+        content = " ".join(sys.argv[3:])
+        node_id = brain.add_memory(
+            title=title, content=content, labels=["Episode"], author=dev["author"]
+        )
+        print(f"Created: {node_id}")
+
+    else:
+        print(f"Unknown command: {cmd}")
+        sys.exit(1)

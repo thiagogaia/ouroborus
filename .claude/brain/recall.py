@@ -11,6 +11,7 @@ Uso:
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -19,7 +20,15 @@ BRAIN_PATH = Path(__file__).parent
 sys.path.insert(0, str(BRAIN_PATH))
 
 try:
-    from brain import Brain
+    # Use SQLite backend by default; fall back to JSON if unavailable
+    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
+    if _backend == "json":
+        from brain import Brain
+    else:
+        try:
+            from brain_sqlite import BrainSQLite as Brain
+        except ImportError:
+            from brain import Brain
     HAS_DEPS = True
 except ImportError as e:
     HAS_DEPS = False
@@ -137,7 +146,7 @@ def search_brain(
         node_id = item.get("id", "")
 
         try:
-            for neighbor in brain.graph.successors(node_id):
+            for neighbor in brain.get_neighbors(node_id):
                 edge = brain.get_edge(node_id, neighbor)
                 if edge and edge.get("type") in semantic_types:
                     nb_node = brain.get_node(neighbor)
@@ -148,7 +157,7 @@ def search_brain(
                         "type": edge.get("type"),
                         "weight": round(edge.get("weight", 0.5), 2)
                     })
-            for neighbor in brain.graph.predecessors(node_id):
+            for neighbor in brain.get_predecessors(node_id):
                 edge = brain.get_edge(neighbor, node_id)
                 if edge and edge.get("type") in semantic_types:
                     nb_node = brain.get_node(neighbor)

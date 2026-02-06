@@ -24,6 +24,11 @@ CLAUDE.md.bak
 .DS_Store
 Thumbs.db
 
+# Brain SQLite (binary; graph.json is the git-friendly export)
+.claude/brain/brain.db
+.claude/brain/brain.db-wal
+.claude/brain/brain.db-shm
+
 # Environment
 .env
 .env.local

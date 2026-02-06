@@ -22,7 +22,16 @@ from pathlib import Path
 
 # Importa o cerebro
 sys.path.insert(0, str(Path(__file__).parent))
-from brain import Brain
+
+import os as _os
+_backend = _os.environ.get("BRAIN_BACKEND", "sqlite")
+if _backend == "json":
+    from brain import Brain
+else:
+    try:
+        from brain_sqlite import BrainSQLite as Brain
+    except ImportError:
+        from brain import Brain
 
 
 def consolidate(brain: Brain) -> dict:
@@ -69,12 +78,9 @@ def archive(brain: Brain, threshold: float = 0.1) -> dict:
     Tudo in-graph — sem gravacao em disco separada (ADR-009).
     """
     archived = []
+    all_nodes = brain.get_all_nodes()
 
-    for node_id in list(brain.graph.nodes):
-        node = brain.get_node(node_id)
-        if node is None:
-            continue
-
+    for node_id, node in all_nodes.items():
         memory = node.get("memory", {})
         strength = memory.get("strength", 1.0)
         labels = node.get("labels", [])
@@ -88,7 +94,20 @@ def archive(brain: Brain, threshold: float = 0.1) -> dict:
             continue
 
         if strength < threshold:
-            brain.graph.nodes[node_id]["labels"] = labels + ["Archived"]
+            new_labels = labels + ["Archived"]
+            # Update via backend-appropriate method
+            if hasattr(brain, '_add_labels'):
+                # SQLite v2 — normalized node_labels table
+                brain._add_labels(node_id, ["Archived"])
+                brain._get_conn().commit()
+            elif hasattr(brain, '_get_conn'):
+                # SQLite v1 (legacy)
+                conn = brain._get_conn()
+                conn.execute("UPDATE nodes SET labels = ? WHERE node_id = ?",
+                             (json.dumps(new_labels), node_id))
+                conn.commit()
+            else:
+                brain.graph.nodes[node_id]["labels"] = new_labels
             archived.append(node_id)
 
     return {
