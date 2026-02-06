@@ -20,15 +20,7 @@ BRAIN_PATH = Path(__file__).parent
 sys.path.insert(0, str(BRAIN_PATH))
 
 try:
-    # Use SQLite backend by default; fall back to JSON if unavailable
-    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
-    if _backend == "json":
-        from brain import Brain
-    else:
-        try:
-            from brain_sqlite import BrainSQLite as Brain
-        except ImportError:
-            from brain import Brain
+    from brain_sqlite import BrainSQLite as Brain
     HAS_DEPS = True
 except ImportError as e:
     HAS_DEPS = False

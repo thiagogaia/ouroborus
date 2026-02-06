@@ -1354,16 +1354,8 @@ def get_current_developer() -> Dict[str, str]:
 if __name__ == "__main__":
     import sys
 
-    # Feature flag: BRAIN_BACKEND=sqlite (default) or json
-    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
-    if _backend == "sqlite":
-        try:
-            from brain_sqlite import BrainSQLite
-            brain = BrainSQLite()
-        except ImportError:
-            brain = Brain()
-    else:
-        brain = Brain()
+    from brain_sqlite import BrainSQLite
+    brain = BrainSQLite()
 
     if len(sys.argv) < 2:
         print("Usage: brain.py <command> [args]")

@@ -1,11 +1,12 @@
 # Estado Atual do Projeto
-> Ultima atualizacao: 2026-02-06 (/learn sessao 8 - do_update rewrite)
+> Ultima atualizacao: 2026-02-06 (/learn sessao 9 - SQLite schema v2)
 
 ## Status Geral
 - **Fase**: v3.0.0 — Engram com Cérebro Organizacional (brain-primary, .md sincronizados)
-- **Saúde**: 🟢 Healthy (Health Score 0.95, Doctor 96%)
-- **Cérebro**: 214 nós, 506+ arestas, 202 embeddings — **fonte primária**
-- **Próximo Marco**: Testes unitários + observar loop de auto-alimentação em ação
+- **Saúde**: 🟢 Healthy (Health Score 0.97, Doctor 96%)
+- **Cérebro**: 221 nós, 537+ arestas, 212 embeddings — **fonte primária** (SQLite schema v2)
+- **Testes**: 195/195 passando (0.12s)
+- **Próximo Marco**: Observar loop de auto-alimentação em ação
 
 ## Identidade
 **Engram v3** — Sistema metacircular de memória persistente para Claude Code.
@@ -120,6 +121,7 @@ genesis → evolui componentes → ciclo recomeça
 /init-engram, /status, /plan, /commit, /review, /priorities, /learn, /create, /spawn, /doctor, /curriculum, /export, /import, /recall, **/domain**
 
 ## O Que Mudou Recentemente
+- [2026-02-06] **SQLite Schema v2 (commit 25cd4ed)**: Hybrid property graph com generated columns, node_labels normalizado, multi-edge UNIQUE(from_id,to_id,type), json_set() para reinforce. 4 defeitos estruturais corrigidos. 212 nós migrados, 195/195 testes. [[ADR-017]], [[PAT-041]], [[PAT-042]], [[EXP-026]] | Impacto: CRÍTICO
 - [2026-02-06] **do_update() reescrito (commit 313c4dd)**: 8 gaps corrigidos — brain scripts, backup timestampado, comparação de versão (VERSION source vs local), manifest update, seed warnings, --force, --regenerate. batch-setup.sh usa --force em vez de pipe hack. [[ADR-016]], [[PAT-039]], [[PAT-040]], [[EXP-025]] | Impacto: ALTO
 - [2026-02-06] **CHANGELOG.md + /commit auto-update (commit 9d7b5e3)**: Changelog gerado e atualizado automaticamente em cada /commit | Impacto: MÉDIO
 - [2026-02-06] **VERSION como fonte da verdade (commit 3d7905a)**: .engram-version lê de VERSION, não hardcoded | Impacto: MÉDIO
@@ -185,7 +187,7 @@ genesis → evolui componentes → ciclo recomeça
 ## Dívidas Técnicas
 | Item | Severidade | Descrição |
 |------|------------|-----------|
-| DT-001 | 🟡 Baixa | Falta coverage de testes nos scripts Python |
+| DT-001 | ✅ Resolvido | 195 testes unitários cobrindo 6 brain scripts (commit ebc4db0) |
 | DT-002 | 🟡 Baixa | Templates de stack incompletos (só 7 frameworks) |
 | DT-003 | 🟢 Info | Documentação poderia ter mais exemplos |
 
@@ -221,13 +223,16 @@ Arquitetura: [[ADR-011]] (original) + [[ADR-015]] (brain-only). Fonte única de 
 ```
 .claude/
 ├── brain/                    ← FONTE ÚNICA DE VERDADE
-│   ├── brain.py             ← Núcleo (NetworkX + content in-graph)
+│   ├── brain_sqlite.py      ← Backend SQLite v2 (hybrid property graph)
+│   ├── brain.py             ← Backend JSON fallback (NetworkX/FallbackGraph)
+│   ├── migrate_to_sqlite.py ← Migration graph.json → brain.db v2
 │   ├── recall.py            ← Busca + persistência de reforço
 │   ├── sleep.py             ← Consolidação semântica (in-memory)
 │   ├── embeddings.py        ← Vetores com content[:1000]
 │   ├── populate.py          ← Commits (refresh) + migrate (one-time)
 │   ├── cognitive.py         ← Health, consolidate, decay
-│   └── graph.json           ← Grafo com conteúdo completo
+│   ├── brain.db             ← SQLite DB (schema v2, gitignored)
+│   └── graph.json           ← Export para git diffs e rollback
 │
 ├── knowledge/context/        ← BOOT FILES (apenas 2)
 │   └── CURRENT_STATE.md     ← Contexto rápido para iniciar sessão
@@ -251,6 +256,7 @@ Arquitetura: [[ADR-011]] (original) + [[ADR-015]] (brain-only). Fonte única de 
 - ✅ **8 tipos de aresta semântica**: REFERENCES, INFORMED_BY, APPLIES, RELATED_TO, SAME_SCOPE, MODIFIES_SAME, BELONGS_TO_THEME, CLUSTERED_IN
 - ✅ **Brain-Only Architecture**: Conteúdo in-graph, recall persiste reforço, sleep zero disk I/O
 - ✅ **Self-Feeding Loop**: recall→reinforce→save | add_memory→sleep→embeddings
+- ✅ **SQLite Schema v2**: Hybrid property graph — generated columns, normalized labels, multi-edge, json_set reinforce
 
 **Uso:**
 ```bash

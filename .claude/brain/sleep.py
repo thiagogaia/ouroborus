@@ -30,15 +30,7 @@ from typing import Dict, List, Set, Tuple, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-import os as _os
-_backend = _os.environ.get("BRAIN_BACKEND", "sqlite")
-if _backend == "json":
-    from brain import Brain, HAS_NUMPY
-else:
-    try:
-        from brain_sqlite import BrainSQLite as Brain, HAS_NUMPY
-    except ImportError:
-        from brain import Brain, HAS_NUMPY
+from brain_sqlite import BrainSQLite as Brain, HAS_NUMPY
 
 if HAS_NUMPY:
     import numpy as np
@@ -50,15 +42,8 @@ def _update_node_labels(brain, node_id: str, labels: list):
         # SQLite v2 backend — normalized node_labels table
         brain._set_labels(node_id, labels)
         brain._get_conn().commit()
-    elif hasattr(brain, '_get_conn'):
-        # SQLite v1 backend (legacy)
-        import json as _json
-        conn = brain._get_conn()
-        conn.execute("UPDATE nodes SET labels = ? WHERE node_id = ?",
-                     (_json.dumps(labels), node_id))
-        conn.commit()
     else:
-        # JSON backend — direct graph mutation
+        # JSON backend — direct graph mutation (used in tests)
         try:
             node = brain.graph.nodes[node_id]
         except (KeyError, TypeError):
@@ -635,70 +620,35 @@ def phase_calibrate(brain: Brain) -> Dict:
     structural_types = {"AUTHORED_BY", "BELONGS_TO"}
 
     if hasattr(brain, '_get_conn'):
-        # SQLite backend — batch UPDATE via SQL
+        # SQLite v2 backend — batch UPDATE via SQL
         conn = brain._get_conn()
+        rows = conn.execute(
+            """SELECT e.id, e.type, e.weight,
+                      n1.access_count AS src_access, n2.access_count AS tgt_access
+               FROM edges e
+               JOIN nodes n1 ON e.from_id = n1.id
+               JOIN nodes n2 ON e.to_id = n2.id"""
+        ).fetchall()
 
-        # Detect v2 schema (edges have from_id/to_id) vs v1 (src/tgt)
-        edge_cols = conn.execute("PRAGMA table_info(edges)").fetchall()
-        col_names = {r["name"] for r in edge_cols}
-        is_v2 = "from_id" in col_names
+        for row in rows:
+            etype = row["type"]
+            current_weight = row["weight"]
+            combined_access = row["src_access"] + row["tgt_access"]
+            is_semantic = etype not in structural_types
 
-        if is_v2:
-            rows = conn.execute(
-                """SELECT e.id, e.type, e.weight,
-                          n1.access_count AS src_access, n2.access_count AS tgt_access
-                   FROM edges e
-                   JOIN nodes n1 ON e.from_id = n1.id
-                   JOIN nodes n2 ON e.to_id = n2.id"""
-            ).fetchall()
+            new_weight = current_weight
+            if combined_access > 5 and is_semantic:
+                new_weight = min(1.0, current_weight * 1.15)
+                stats["boosted"] += 1
+            elif combined_access == 0 and current_weight > 0.2:
+                new_weight = max(0.1, current_weight * 0.95)
+                stats["decayed"] += 1
 
-            for row in rows:
-                etype = row["type"]
-                current_weight = row["weight"]
-                combined_access = row["src_access"] + row["tgt_access"]
-                is_semantic = etype not in structural_types
-
-                new_weight = current_weight
-                if combined_access > 5 and is_semantic:
-                    new_weight = min(1.0, current_weight * 1.15)
-                    stats["boosted"] += 1
-                elif combined_access == 0 and current_weight > 0.2:
-                    new_weight = max(0.1, current_weight * 0.95)
-                    stats["decayed"] += 1
-
-                if new_weight != current_weight:
-                    conn.execute(
-                        "UPDATE edges SET weight = ? WHERE id = ?",
-                        (new_weight, row["id"])
-                    )
-        else:
-            rows = conn.execute(
-                """SELECT e.src, e.tgt, e.type, e.weight,
-                          n1.access_count AS src_access, n2.access_count AS tgt_access
-                   FROM edges e
-                   JOIN nodes n1 ON e.src = n1.node_id
-                   JOIN nodes n2 ON e.tgt = n2.node_id"""
-            ).fetchall()
-
-            for row in rows:
-                etype = row["type"]
-                current_weight = row["weight"]
-                combined_access = row["src_access"] + row["tgt_access"]
-                is_semantic = etype not in structural_types
-
-                new_weight = current_weight
-                if combined_access > 5 and is_semantic:
-                    new_weight = min(1.0, current_weight * 1.15)
-                    stats["boosted"] += 1
-                elif combined_access == 0 and current_weight > 0.2:
-                    new_weight = max(0.1, current_weight * 0.95)
-                    stats["decayed"] += 1
-
-                if new_weight != current_weight:
-                    conn.execute(
-                        "UPDATE edges SET weight = ? WHERE src = ? AND tgt = ?",
-                        (new_weight, row["src"], row["tgt"])
-                    )
+            if new_weight != current_weight:
+                conn.execute(
+                    "UPDATE edges SET weight = ? WHERE id = ?",
+                    (new_weight, row["id"])
+                )
 
         conn.commit()
     else:

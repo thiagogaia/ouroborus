@@ -94,30 +94,16 @@ def get_embedding(text: str) -> np.ndarray:
 
 
 def _load_all_nodes(brain_path: Path) -> dict:
-    """Load all nodes from the brain using the appropriate backend.
+    """Load all nodes from the brain via SQLite backend.
 
-    Returns {node_id: node_data} dict. Tries SQLite first, then JSON fallback.
+    Returns {node_id: node_data} dict.
     """
     sys.path.insert(0, str(Path(__file__).parent))
-    _backend = os.environ.get("BRAIN_BACKEND", "sqlite")
 
-    if _backend != "json":
-        try:
-            from brain_sqlite import BrainSQLite
-            brain = BrainSQLite(base_path=brain_path)
-            if brain.db_path.exists():
-                brain.load()
-                return brain.get_all_nodes()
-        except Exception:
-            pass
-
-    # Fallback: read graph.json directly (original behavior, works in tests)
-    graph_file = brain_path / "graph.json"
-    if graph_file.exists():
-        data = json.loads(graph_file.read_text(encoding="utf-8"))
-        return data.get("nodes", {})
-
-    return {}
+    from brain_sqlite import BrainSQLite
+    brain = BrainSQLite(base_path=brain_path)
+    brain.load()
+    return brain.get_all_nodes()
 
 
 def build_embeddings(brain_path: Path = Path(".claude/brain")):

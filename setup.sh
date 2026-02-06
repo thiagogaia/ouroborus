@@ -381,7 +381,7 @@ MANIFEST_EOF
         cp "$SCRIPT_DIR/.claude/brain/"*.py "$CLAUDE_DIR/brain/" 2>/dev/null || true
         cp "$SCRIPT_DIR/.claude/brain/"*.sh "$CLAUDE_DIR/brain/" 2>/dev/null || true
         cp "$SCRIPT_DIR/.claude/brain/"*.md "$CLAUDE_DIR/brain/" 2>/dev/null || true
-        cp "$SCRIPT_DIR/.claude/brain/"*.json "$CLAUDE_DIR/brain/" 2>/dev/null || true
+        # NOT copying *.json — each project starts with an empty brain (brain.db created on first load)
         chmod +x "$CLAUDE_DIR/brain/"*.py "$CLAUDE_DIR/brain/"*.sh 2>/dev/null || true
         print_done "Brain instalado (cérebro organizacional)"
     fi

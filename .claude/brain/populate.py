@@ -27,16 +27,8 @@ from typing import List, Dict, Any, Optional
 # Adiciona diretório atual ao path
 sys.path.insert(0, str(Path(__file__).parent))
 
-import os as _os
-_backend = _os.environ.get("BRAIN_BACKEND", "sqlite")
-if _backend == "json":
-    from brain import Brain, get_current_developer
-else:
-    try:
-        from brain_sqlite import BrainSQLite as Brain
-        from brain import get_current_developer
-    except ImportError:
-        from brain import Brain, get_current_developer
+from brain_sqlite import BrainSQLite as Brain
+from brain import get_current_developer
 
 
 def parse_adr_log(content: str) -> List[Dict]:

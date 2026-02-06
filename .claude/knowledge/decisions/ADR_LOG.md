@@ -719,3 +719,16 @@ Auto-ativação do venv via `site.addsitedir()` no brain.py para que numpy/netwo
 - ✅ VERSION como fonte da verdade (source vs local)
 - ✅ batch-setup.sh usa --force em vez de pipe hack
 - ✅ --regenerate para recriar configs com backup
+
+## ADR-017: SQLite Schema v2 — Hybrid Property Graph with Generated Columns
+**Data**: 2026-02-06
+**Status**: ✅ Aceito
+**Contexto**: Schema v1 do brain.db tinha 4 defeitos: PRIMARY KEY(src,tgt) impedia multi-edge, labels como JSON array sem índice, duas fontes de verdade (props_json + colunas), 16 json.loads() em Python.
+**Decisão**: Redesenhar como hybrid property graph: `properties JSON` como fonte única com `GENERATED ALWAYS AS (json_extract(...)) STORED` columns, `node_labels` table normalizada, `UNIQUE(from_id, to_id, type)` para multi-edge, `json_set()` para reinforce atômico.
+**Consequências**:
+- ✅ Multi-edge funciona: 5 novas MODIFIES_SAME entre pares com SAME_SCOPE existente
+- ✅ Labels indexadas: O(1) lookup via idx_labels_label
+- ✅ Uma fonte de verdade: impossível inconsistência props vs colunas
+- ✅ 195/195 testes passam sem mudança (testam JSON backend)
+- ✅ Health 0.97, 212 nós, 524+ arestas migradas sem perda
+- ✅ Rollback: BRAIN_BACKEND=json + graph.json exportado

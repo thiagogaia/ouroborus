@@ -11,20 +11,16 @@ class TestBuildEmbeddings:
     """embeddings.build_embeddings() — fully mocked."""
 
     def test_build_creates_npz(self, tmp_path):
-        # Create a minimal graph.json
-        graph_data = {
-            "version": "1.0",
-            "nodes": {
-                "n1": {
-                    "labels": ["Concept"],
-                    "props": {"title": "Test Node", "content": "Some content", "summary": "short"},
-                    "memory": {"strength": 1.0},
-                }
-            },
-            "edges": [],
-        }
-        graph_file = tmp_path / "graph.json"
-        graph_file.write_text(json.dumps(graph_data))
+        # Create a brain.db with one node via BrainSQLite
+        from brain_sqlite import BrainSQLite
+        brain = BrainSQLite(base_path=tmp_path)
+        brain.load()
+        brain.add_node_raw(
+            "n1",
+            labels=["Concept"],
+            props={"title": "Test Node", "content": "Some content", "summary": "short"},
+            memory={"strength": 1.0},
+        )
 
         # Mock get_embedding to return a fake vector
         fake_vector = [0.1, 0.2, 0.3]
@@ -47,19 +43,16 @@ class TestSearchEmbeddings:
         import sys
         np_mock = sys.modules["numpy"]
 
-        # Create graph.json
-        graph_data = {
-            "version": "1.0",
-            "nodes": {
-                "n1": {
-                    "labels": ["Concept"],
-                    "props": {"title": "Auth System", "summary": "Authentication"},
-                    "memory": {"strength": 1.0},
-                }
-            },
-            "edges": [],
-        }
-        (tmp_path / "graph.json").write_text(json.dumps(graph_data))
+        # Create a brain.db with one node via BrainSQLite
+        from brain_sqlite import BrainSQLite
+        brain = BrainSQLite(base_path=tmp_path)
+        brain.load()
+        brain.add_node_raw(
+            "n1",
+            labels=["Concept"],
+            props={"title": "Auth System", "summary": "Authentication"},
+            memory={"strength": 1.0},
+        )
 
         # Create fake embeddings.npz
         fake_npz = MagicMock()

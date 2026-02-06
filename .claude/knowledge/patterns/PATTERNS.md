@@ -493,3 +493,16 @@
 - **Solução**: aceitar --force para pular confirmações; consumidores passam a flag
 - **Anti-padrão**: `echo "y" | script.sh` — quebra com múltiplos prompts
 - **Descoberto em**: 2026-02-06 (batch-setup.sh simplificado)
+
+### PAT-041: Hybrid Property Graph — Generated Columns over JSON
+- **Contexto**: SQLite schema onde se quer flexibilidade JSON mas com campos indexáveis
+- **Solução**: Uma coluna `properties JSON` como fonte única de verdade, com `GENERATED ALWAYS AS (json_extract(...)) STORED` para campos indexáveis e FTS5
+- **Benefícios**: Zero dual-write bugs, zero json.loads() em hot paths, generated columns são indexáveis
+- **Caveat**: Generated columns não podem ser assigned diretamente (UPDATE deve usar json_set no source JSON)
+- **Descoberto em**: 2026-02-06 (schema v2 do brain.db)
+
+### PAT-042: Multi-Edge via UNIQUE(from_id, to_id, type)
+- **Contexto**: Property graphs onde o mesmo par de nós pode ter múltiplos tipos de aresta
+- **Solução**: `UNIQUE(from_id, to_id, type)` em vez de `PRIMARY KEY(from_id, to_id)`. Upsert com `ON CONFLICT(...) DO UPDATE SET weight = MAX(weight, excluded.weight)`
+- **Benefícios**: sleep.py criou 5 novas MODIFIES_SAME entre pares que já tinham SAME_SCOPE (antes silenciosamente descartadas)
+- **Descoberto em**: 2026-02-06 (schema v2 do brain.db)

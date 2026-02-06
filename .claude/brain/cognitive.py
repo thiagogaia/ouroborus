@@ -23,15 +23,7 @@ from pathlib import Path
 # Importa o cerebro
 sys.path.insert(0, str(Path(__file__).parent))
 
-import os as _os
-_backend = _os.environ.get("BRAIN_BACKEND", "sqlite")
-if _backend == "json":
-    from brain import Brain
-else:
-    try:
-        from brain_sqlite import BrainSQLite as Brain
-    except ImportError:
-        from brain import Brain
+from brain_sqlite import BrainSQLite as Brain
 
 
 def consolidate(brain: Brain) -> dict:
@@ -100,12 +92,6 @@ def archive(brain: Brain, threshold: float = 0.1) -> dict:
                 # SQLite v2 — normalized node_labels table
                 brain._add_labels(node_id, ["Archived"])
                 brain._get_conn().commit()
-            elif hasattr(brain, '_get_conn'):
-                # SQLite v1 (legacy)
-                conn = brain._get_conn()
-                conn.execute("UPDATE nodes SET labels = ? WHERE node_id = ?",
-                             (json.dumps(new_labels), node_id))
-                conn.commit()
             else:
                 brain.graph.nodes[node_id]["labels"] = new_labels
             archived.append(node_id)

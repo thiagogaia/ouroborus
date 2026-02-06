@@ -182,160 +182,19 @@ class BrainSQLite:
         )
         conn.commit()
 
-    def _get_schema_version(self) -> Optional[str]:
-        """Get the current schema version from the database."""
-        conn = self._get_conn()
-        try:
-            row = conn.execute(
-                "SELECT value FROM meta WHERE key = 'schema_version'"
-            ).fetchone()
-            return row[0] if row else None
-        except sqlite3.OperationalError:
-            return None
-
-    def _needs_migration(self) -> bool:
-        """Check if in-place migration from v1 to v2 is needed."""
-        conn = self._get_conn()
-        try:
-            # Check if v1 schema is present (nodes table with node_id column)
-            row = conn.execute(
-                "SELECT sql FROM sqlite_master WHERE type='table' AND name='nodes'"
-            ).fetchone()
-            if row is None:
-                return False
-            schema_sql = row[0]
-            # v1 has node_id column; v2 has id column
-            if 'node_id' in schema_sql and 'properties' not in schema_sql:
-                return True
-            return False
-        except sqlite3.OperationalError:
-            return False
-
-    def _migrate_v1_to_v2(self):
-        """In-place migration from schema v1 to v2."""
-        print("Migrating brain.db from schema v1 to v2...")
-        conn = self._get_conn()
-
-        # 1. Read all data from v1 tables
-        nodes_v1 = conn.execute("SELECT * FROM nodes").fetchall()
-        edges_v1 = conn.execute("SELECT * FROM edges").fetchall()
-
-        # 2. Drop old tables (including FTS and triggers)
-        conn.executescript("""\
-            DROP TRIGGER IF EXISTS nodes_ai;
-            DROP TRIGGER IF EXISTS nodes_ad;
-            DROP TRIGGER IF EXISTS nodes_au;
-            DROP TABLE IF EXISTS nodes_fts;
-            DROP TABLE IF EXISTS edges;
-            DROP TABLE IF EXISTS node_labels;
-            DROP TABLE IF EXISTS nodes;
-        """)
-        conn.commit()
-
-        # 3. Create v2 schema
-        conn.executescript(SCHEMA_SQL)
-        try:
-            conn.executescript(FTS_SCHEMA_SQL)
-        except sqlite3.OperationalError:
-            pass
-
-        # 4. Migrate nodes
-        node_count = 0
-        for row in nodes_v1:
-            node_id = row["node_id"]
-            labels = json.loads(row["labels"])
-            extra_props = json.loads(row["props_json"])
-
-            # Build unified properties blob
-            properties = {
-                "title": row["title"],
-                "author": row["author"],
-                "content": row["content"],
-                "summary": row["summary"],
-                "strength": row["strength"],
-                "access_count": row["access_count"],
-                "last_accessed": row["last_accessed"],
-                "created_at": row["created_at"],
-                "decay_rate": row["decay_rate"],
-                **extra_props
-            }
-
-            conn.execute(
-                "INSERT INTO nodes (id, properties) VALUES (?, ?)",
-                (node_id, json.dumps(properties, default=str))
-            )
-
-            # Insert labels
-            for label in labels:
-                conn.execute(
-                    "INSERT OR IGNORE INTO node_labels (node_id, label) VALUES (?, ?)",
-                    (node_id, label)
-                )
-
-            node_count += 1
-
-        # 5. Migrate edges (with multi-edge support)
-        edge_count = 0
-        for row in edges_v1:
-            try:
-                conn.execute(
-                    """INSERT INTO edges (from_id, to_id, type, weight, properties, created_at)
-                       VALUES (?, ?, ?, ?, ?, ?)
-                       ON CONFLICT(from_id, to_id, type) DO UPDATE SET
-                           weight = MAX(weight, excluded.weight)""",
-                    (row["src"], row["tgt"], row["type"], row["weight"],
-                     row["props_json"], row["created_at"])
-                )
-                edge_count += 1
-            except sqlite3.IntegrityError:
-                pass
-
-        # 6. Update schema version
-        conn.execute(
-            "INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)",
-            (SCHEMA_VERSION,)
-        )
-        conn.commit()
-
-        # 7. Rebuild FTS
-        try:
-            conn.execute("INSERT INTO nodes_fts(nodes_fts) VALUES('rebuild')")
-            conn.commit()
-        except sqlite3.OperationalError:
-            pass
-
-        print(f"Migration complete: {node_count} nodes, {edge_count} edges")
-
     # ══════════════════════════════════════════════════════════
     # PERSISTENCE
     # ══════════════════════════════════════════════════════════
 
     def load(self) -> bool:
-        """Open brain.db (or create it). Load embeddings lazily."""
+        """Open brain.db (or create it with empty schema v2)."""
         if not self.db_path.exists():
-            graph_file = self.base_path / "graph.json"
-            if graph_file.exists():
-                print(f"Info: brain.db not found but graph.json exists. Auto-migrating...")
-                self._init_schema()
-                try:
-                    from migrate_to_sqlite import migrate
-                    migrate(self.base_path, verify=False)
-                    return self._finish_load()
-                except Exception as e:
-                    print(f"Auto-migration failed: {e}. Creating empty DB.")
-                    self._init_schema()
-                    return True
-            else:
-                print(f"Info: No brain data found at {self.base_path}")
-                self._init_schema()
-                return True
-
-        # DB exists — check if migration needed
-        if self._needs_migration():
-            self._migrate_v1_to_v2()
-        else:
             self._init_schema()
+            if self.db_path.exists():
+                return self._finish_load()
+            return True
 
+        self._init_schema()
         return self._finish_load()
 
     def _finish_load(self) -> bool:
