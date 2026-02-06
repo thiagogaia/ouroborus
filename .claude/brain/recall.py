@@ -98,27 +98,17 @@ def search_brain(
         except Exception as e:
             sys.stderr.write(f"Aviso: Usando busca textual (embedding falhou: {e})\n")
 
-    # Executar busca
-    if query_embedding is not None:
-        results = brain.retrieve(
-            query_embedding=query_embedding,
-            labels=labels,
-            author=filter_author,
-            top_k=top_k,
-            spread_depth=depth,
-            since=since,
-            sort_by=sort_by
-        )
-    else:
-        results = brain.retrieve(
-            query=query,
-            labels=labels,
-            author=filter_author,
-            top_k=top_k,
-            spread_depth=depth,
-            since=since,
-            sort_by=sort_by
-        )
+    # Executar busca — hybrid: pass both text query AND embedding for fusion
+    results = brain.retrieve(
+        query=query,
+        query_embedding=query_embedding,
+        labels=labels,
+        author=filter_author,
+        top_k=top_k,
+        spread_depth=depth,
+        since=since,
+        sort_by=sort_by
+    )
 
     # Persist reinforcement — closes the self-feeding loop
     # Every recall strengthens accessed memories AND saves to disk

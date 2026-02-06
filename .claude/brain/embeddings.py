@@ -170,6 +170,8 @@ def build_embeddings(brain_path: Path = Path(__file__).parent):
     batch_embeddings = []
     batch_size = 100
 
+    batch_metadatas = []
+
     for node_id, node_data in nodes.items():
         text = _node_to_text(node_id, node_data)
         if not text.strip():
@@ -182,14 +184,27 @@ def build_embeddings(brain_path: Path = Path(__file__).parent):
                 emb_list = emb.tolist() if hasattr(emb, 'tolist') else list(emb)
                 batch_ids.append(node_id)
                 batch_embeddings.append(emb_list)
+                # Store metadata for native ChromaDB filtering
+                props = node_data.get("props", {})
+                meta = {
+                    "labels": ",".join(node_data.get("labels", [])),
+                    "author": props.get("author", "") or "",
+                    "created_at": node_data.get("memory", {}).get("created_at", "") or "",
+                    "title": (props.get("title", "") or "")[:200],
+                }
+                # ChromaDB rejects None values
+                meta = {k: v for k, v in meta.items() if v is not None}
+                batch_metadatas.append(meta)
 
                 if len(batch_ids) >= batch_size:
                     brain._chroma_collection.upsert(
                         ids=batch_ids,
-                        embeddings=batch_embeddings
+                        embeddings=batch_embeddings,
+                        metadatas=batch_metadatas
                     )
                     batch_ids = []
                     batch_embeddings = []
+                    batch_metadatas = []
             else:
                 embeddings[node_id] = emb
 
@@ -203,7 +218,8 @@ def build_embeddings(brain_path: Path = Path(__file__).parent):
     if use_chroma and batch_ids:
         brain._chroma_collection.upsert(
             ids=batch_ids,
-            embeddings=batch_embeddings
+            embeddings=batch_embeddings,
+            metadatas=batch_metadatas
         )
         print(f"Done. Stored {count} embeddings in ChromaDB")
     else:
@@ -211,6 +227,24 @@ def build_embeddings(brain_path: Path = Path(__file__).parent):
         emb_file = brain_path / "embeddings.npz"
         np.savez_compressed(emb_file, **embeddings)
         print(f"Done. Saved {count} embeddings to {emb_file}")
+
+    # Track embedding model info in meta table
+    model_name = "all-MiniLM-L6-v2" if PROVIDER == "local" else "text-embedding-ada-002"
+    model_dim = 384 if PROVIDER == "local" else 1536
+    try:
+        conn = brain._get_conn()
+        conn.execute(
+            "INSERT OR REPLACE INTO meta (key, value) VALUES ('embedding_model', ?)",
+            (model_name,)
+        )
+        conn.execute(
+            "INSERT OR REPLACE INTO meta (key, value) VALUES ('embedding_dim', ?)",
+            (str(model_dim),)
+        )
+        conn.commit()
+        print(f"Tracked: model={model_name}, dim={model_dim}")
+    except Exception as e:
+        print(f"Warning: Could not track model info: {e}")
 
 
 def search_embeddings(

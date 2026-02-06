@@ -123,6 +123,7 @@ CREATE INDEX IF NOT EXISTS idx_nodes_last_accessed ON nodes(last_accessed);
 CREATE INDEX IF NOT EXISTS idx_edges_from ON edges(from_id);
 CREATE INDEX IF NOT EXISTS idx_edges_to ON edges(to_id);
 CREATE INDEX IF NOT EXISTS idx_edges_type ON edges(type);
+CREATE INDEX IF NOT EXISTS idx_nodes_created_at ON nodes(created_at);
 """
 
 FTS_SCHEMA_SQL = """\
@@ -295,18 +296,57 @@ class BrainSQLite:
             return None
         if not hasattr(self, '_embedding_model'):
             self._embedding_model = None
+            self._embedding_model_name = None
             try:
                 from sentence_transformers import SentenceTransformer
-                self._embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+                model_name = 'all-MiniLM-L6-v2'
+                self._embedding_model = SentenceTransformer(model_name)
+                self._embedding_model_name = model_name
             except Exception:
                 pass
         if self._embedding_model is None:
             return None
         try:
             text = f"{title} {(content or '')[:1000]} {' '.join(labels)}"
-            return self._embedding_model.encode(text)
+            emb = self._embedding_model.encode(text)
+            # Track model info on first successful generation
+            if not hasattr(self, '_model_tracked'):
+                self._track_embedding_model(self._embedding_model_name, len(emb))
+                self._model_tracked = True
+            return emb
         except Exception:
             return None
+
+    def _track_embedding_model(self, model_name: str, dim: int):
+        """Store embedding model info in meta table for compatibility checks."""
+        conn = self._get_conn()
+        existing_model = conn.execute(
+            "SELECT value FROM meta WHERE key = 'embedding_model'"
+        ).fetchone()
+        existing_dim = conn.execute(
+            "SELECT value FROM meta WHERE key = 'embedding_dim'"
+        ).fetchone()
+
+        if existing_model and existing_model["value"] != model_name:
+            sys.stderr.write(
+                f"WARNING: Embedding model changed from '{existing_model['value']}' "
+                f"to '{model_name}'. Run 'python3 embeddings.py build' to re-embed.\n"
+            )
+        if existing_dim and int(existing_dim["value"]) != dim:
+            sys.stderr.write(
+                f"WARNING: Embedding dimension changed from {existing_dim['value']} "
+                f"to {dim}. Existing embeddings are incompatible!\n"
+            )
+
+        conn.execute(
+            "INSERT OR REPLACE INTO meta (key, value) VALUES ('embedding_model', ?)",
+            (model_name,)
+        )
+        conn.execute(
+            "INSERT OR REPLACE INTO meta (key, value) VALUES ('embedding_dim', ?)",
+            (str(dim),)
+        )
+        conn.commit()
 
     def _remove_embedding(self, node_id: str):
         """Remove an embedding from the active vector store."""
@@ -487,7 +527,13 @@ class BrainSQLite:
         if embedding is None:
             embedding = self._generate_embedding(title, content, labels)
         if embedding is not None:
-            self._store_embedding(node_id, embedding)
+            emb_metadata = {
+                "labels": ",".join(labels),
+                "author": author or "",
+                "created_at": now,
+                "title": title[:200] if title else "",
+            }
+            self._store_embedding(node_id, embedding, metadata=emb_metadata)
 
         # Author edge
         author_node = self._ensure_person_node(author)
@@ -558,7 +604,13 @@ class BrainSQLite:
         if embedding is None:
             embedding = self._generate_embedding(title, content, labels)
         if embedding is not None:
-            self._store_embedding(node_id, embedding)
+            emb_metadata = {
+                "labels": ",".join(list(existing_labels)),
+                "author": author or "",
+                "created_at": existing_props.get("created_at", ""),
+                "title": title[:200] if title else "",
+            }
+            self._store_embedding(node_id, embedding, metadata=emb_metadata)
 
         # New references
         if references:
@@ -905,67 +957,71 @@ class BrainSQLite:
         max_depth: int = 3,
         decay: float = 0.5
     ) -> Dict[str, float]:
-        """Spreading activation from seed nodes."""
-        activation = {node: 1.0 for node in seed_nodes if self._node_exists(node)}
-        frontier = set(seed_nodes)
+        """Spreading activation from seed nodes (batched SQL — no N+1)."""
+        activation = {}
         conn = self._get_conn()
 
+        # Validate seeds exist in batch
+        if not seed_nodes:
+            return activation
+        placeholders = ",".join("?" for _ in seed_nodes)
+        existing = conn.execute(
+            f"SELECT id FROM nodes WHERE id IN ({placeholders})", seed_nodes
+        ).fetchall()
+        existing_ids = {r["id"] for r in existing}
+        activation = {node: 1.0 for node in seed_nodes if node in existing_ids}
+        frontier = set(activation.keys())
+
         for depth in range(max_depth):
-            next_frontier = set()
-
-            for node in frontier:
-                if not self._node_exists(node):
-                    continue
-
-                current_activation = activation.get(node, 0)
-                row = conn.execute(
-                    "SELECT strength FROM nodes WHERE id = ?", (node,)
-                ).fetchone()
-                node_strength = row["strength"] if row else 1.0
-
-                # Out-edges (successors)
-                out_edges = conn.execute(
-                    "SELECT to_id, weight FROM edges WHERE from_id = ?", (node,)
-                ).fetchall()
-                for edge_row in out_edges:
-                    neighbor = edge_row["to_id"]
-                    edge_weight = edge_row["weight"]
-                    nb_row = conn.execute(
-                        "SELECT strength FROM nodes WHERE id = ?", (neighbor,)
-                    ).fetchone()
-                    neighbor_strength = nb_row["strength"] if nb_row else 1.0
-
-                    new_activation = current_activation * edge_weight * decay * neighbor_strength
-
-                    if neighbor in activation:
-                        activation[neighbor] = max(activation[neighbor], new_activation)
-                    else:
-                        activation[neighbor] = new_activation
-                        next_frontier.add(neighbor)
-
-                # In-edges (predecessors)
-                in_edges = conn.execute(
-                    "SELECT from_id, weight FROM edges WHERE to_id = ?", (node,)
-                ).fetchall()
-                for edge_row in in_edges:
-                    neighbor = edge_row["from_id"]
-                    edge_weight = edge_row["weight"]
-                    nb_row = conn.execute(
-                        "SELECT strength FROM nodes WHERE id = ?", (neighbor,)
-                    ).fetchone()
-                    neighbor_strength = nb_row["strength"] if nb_row else 1.0
-
-                    new_activation = current_activation * edge_weight * decay * 0.5 * neighbor_strength
-
-                    if neighbor in activation:
-                        activation[neighbor] = max(activation[neighbor], new_activation)
-                    else:
-                        activation[neighbor] = new_activation
-                        next_frontier.add(neighbor)
-
-            frontier = next_frontier
             if not frontier:
                 break
+            next_frontier = set()
+            frontier_list = list(frontier)
+            ph = ",".join("?" for _ in frontier_list)
+
+            # Batch: out-edges with neighbor strength (single JOIN query)
+            out_rows = conn.execute(
+                f"""SELECT e.from_id, e.to_id, e.weight, n.strength AS nb_strength
+                    FROM edges e
+                    JOIN nodes n ON n.id = e.to_id
+                    WHERE e.from_id IN ({ph})""",
+                frontier_list
+            ).fetchall()
+
+            for row in out_rows:
+                node = row["from_id"]
+                neighbor = row["to_id"]
+                current_act = activation.get(node, 0)
+                new_act = current_act * row["weight"] * decay * (row["nb_strength"] or 1.0)
+
+                if neighbor in activation:
+                    activation[neighbor] = max(activation[neighbor], new_act)
+                else:
+                    activation[neighbor] = new_act
+                    next_frontier.add(neighbor)
+
+            # Batch: in-edges with neighbor strength (backward, half weight)
+            in_rows = conn.execute(
+                f"""SELECT e.from_id, e.to_id, e.weight, n.strength AS nb_strength
+                    FROM edges e
+                    JOIN nodes n ON n.id = e.from_id
+                    WHERE e.to_id IN ({ph})""",
+                frontier_list
+            ).fetchall()
+
+            for row in in_rows:
+                node = row["to_id"]
+                neighbor = row["from_id"]
+                current_act = activation.get(node, 0)
+                new_act = current_act * row["weight"] * decay * 0.5 * (row["nb_strength"] or 1.0)
+
+                if neighbor in activation:
+                    activation[neighbor] = max(activation[neighbor], new_act)
+                else:
+                    activation[neighbor] = new_act
+                    next_frontier.add(neighbor)
+
+            frontier = next_frontier
 
         return activation
 
@@ -978,14 +1034,21 @@ class BrainSQLite:
         top_k: int = 20,
         spread_depth: int = 2,
         since: str = None,
-        sort_by: str = "score"
+        sort_by: str = "score",
+        reinforce: bool = True
     ) -> List[Dict]:
-        """Full search: embedding + spreading activation + FTS5 + filters.
+        """Full hybrid search: embedding + spreading activation + FTS5 fusion + filters.
 
         Args:
+            query: Text query for FTS5 keyword search.
+            query_embedding: Vector for semantic similarity search.
+            labels: Filter by node labels.
+            author: Filter by author.
+            top_k: Max results to return.
+            spread_depth: Spreading activation depth.
             since: ISO date or relative (e.g. "7d", "30d", "2026-02-01").
-                   Filters to nodes created after this date.
-            sort_by: "score" (default, semantic relevance) or "date" (newest first).
+            sort_by: "score" (default) or "date" (newest first).
+            reinforce: If True, reinforce accessed memories (set False for read-only).
         """
         results = {}
 
@@ -1004,8 +1067,9 @@ class BrainSQLite:
             for row in rows:
                 results[row["id"]] = 1.0
 
-        # 2. Embedding search (query + embedding vector)
+        # 2. Hybrid search (embedding + FTS5 fusion)
         elif query_embedding is not None and HAS_NUMPY:
+            # 2a. Semantic: embedding → seeds → spreading activation
             self._ensure_vector_store()
             seeds = self.search_by_embedding(query_embedding, top_k=5)
             seed_nodes = [node_id for node_id, _ in seeds]
@@ -1021,29 +1085,61 @@ class BrainSQLite:
                 else:
                     results[node_id] = act_score
 
-        # 3. Text search (FTS5 or fallback)
+            # 2b. FTS5 fusion: if text query available, merge keyword results
+            if query:
+                fts_results = self._text_search(query)
+                if fts_results:
+                    # Normalize FTS5 scores to 0-1 range
+                    max_fts = max(fts_results.values()) if fts_results else 1.0
+                    if max_fts > 0:
+                        for nid, fts_score in fts_results.items():
+                            normalized_fts = fts_score / max_fts
+                            if nid in results:
+                                # Boost: node found by BOTH semantic + keyword
+                                results[nid] += normalized_fts * 0.5
+                            else:
+                                # New: node found only by keyword (exact match)
+                                results[nid] = normalized_fts * 0.5
+
+        # 3. Text-only search (FTS5 or fallback, when no embedding)
         elif query:
             results = self._text_search(query)
 
-        # 4. Apply filters
-        if since_dt and (query or query_embedding is not None):
+        # 4. Apply filters (batch SQL — no per-node queries)
+        if results:
+            result_ids = list(results.keys())
             conn = self._get_conn()
-            results = {
-                nid: score for nid, score in results.items()
-                if self._created_after(nid, since_dt, conn)
-            }
+            ph = ",".join("?" for _ in result_ids)
 
-        if labels:
-            results = {
-                nid: score for nid, score in results.items()
-                if self._has_labels(nid, labels)
-            }
+            if since_dt and (query or query_embedding is not None):
+                rows = conn.execute(
+                    f"SELECT id FROM nodes WHERE id IN ({ph}) AND created_at >= ?",
+                    result_ids + [since_dt]
+                ).fetchall()
+                valid = {r["id"] for r in rows}
+                results = {nid: s for nid, s in results.items() if nid in valid}
+                result_ids = list(results.keys())
+                ph = ",".join("?" for _ in result_ids)
 
-        if author:
-            results = {
-                nid: score for nid, score in results.items()
-                if self._has_author(nid, author)
-            }
+            if labels and result_ids:
+                label_ph = ",".join("?" for _ in labels)
+                rows = conn.execute(
+                    f"""SELECT DISTINCT node_id FROM node_labels
+                        WHERE node_id IN ({ph}) AND label IN ({label_ph})""",
+                    result_ids + labels
+                ).fetchall()
+                valid = {r["node_id"] for r in rows}
+                results = {nid: s for nid, s in results.items() if nid in valid}
+                result_ids = list(results.keys())
+                ph = ",".join("?" for _ in result_ids)
+
+            if author and result_ids:
+                rows = conn.execute(
+                    f"SELECT id FROM nodes WHERE id IN ({ph}) AND LOWER(author) LIKE ?",
+                    result_ids + [f"%{author.lower()}%"]
+                ).fetchall()
+                valid = {r["id"] for r in rows}
+                results = {nid: s for nid, s in results.items() if nid in valid}
 
         # 5. Sort
         if sort_by == "date":
@@ -1051,9 +1147,10 @@ class BrainSQLite:
         else:
             sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
 
-        # 6. Reinforce accessed memories
-        for node_id, _ in sorted_results[:10]:
-            self._reinforce(node_id)
+        # 6. Reinforce accessed memories (optional — skip for read-only)
+        if reinforce:
+            for node_id, _ in sorted_results[:10]:
+                self._reinforce(node_id)
 
         # 7. Format output
         output = []
@@ -1086,25 +1183,19 @@ class BrainSQLite:
         # Absolute ISO date
         return since
 
-    def _created_after(self, node_id: str, since_dt: str, conn: sqlite3.Connection) -> bool:
-        """Check if node was created after the given ISO datetime."""
-        row = conn.execute(
-            "SELECT created_at FROM nodes WHERE id = ?", (node_id,)
-        ).fetchone()
-        if not row or not row["created_at"]:
-            return False
-        return row["created_at"] >= since_dt
-
     def _sort_by_date(self, results: Dict[str, float]) -> List[tuple]:
-        """Sort results by created_at descending (newest first)."""
+        """Sort results by created_at descending (newest first) — single batch query."""
+        if not results:
+            return []
         conn = self._get_conn()
-        dated = []
-        for nid, score in results.items():
-            row = conn.execute(
-                "SELECT created_at FROM nodes WHERE id = ?", (nid,)
-            ).fetchone()
-            created = row["created_at"] if row and row["created_at"] else ""
-            dated.append((nid, score, created))
+        result_ids = list(results.keys())
+        ph = ",".join("?" for _ in result_ids)
+        rows = conn.execute(
+            f"SELECT id, created_at FROM nodes WHERE id IN ({ph})",
+            result_ids
+        ).fetchall()
+        date_map = {r["id"]: r["created_at"] or "" for r in rows}
+        dated = [(nid, score, date_map.get(nid, "")) for nid, score in results.items()]
         dated.sort(key=lambda x: x[2], reverse=True)
         return [(nid, score) for nid, score, _ in dated]
 
@@ -1118,7 +1209,7 @@ class BrainSQLite:
             fts_query = self._sanitize_fts_query(query)
             if fts_query:
                 rows = conn.execute(
-                    """SELECT n.id, bm25(nodes_fts) AS rank
+                    """SELECT n.id, bm25(nodes_fts, 10.0, 1.0, 5.0) AS rank
                        FROM nodes_fts
                        JOIN nodes n ON n.rowid = nodes_fts.rowid
                        WHERE nodes_fts MATCH ?
@@ -1152,11 +1243,32 @@ class BrainSQLite:
         return results
 
     def _sanitize_fts_query(self, query: str) -> str:
-        """Sanitize a user query for FTS5 MATCH syntax."""
-        words = re.findall(r'[\w]+', query, re.UNICODE)
-        if not words:
+        """Sanitize a user query for FTS5 MATCH syntax.
+
+        Supports:
+        - Quoted phrases preserved as-is: "token refresh" → exact phrase
+        - Unquoted words joined with AND (all terms required)
+        - Prefix search with trailing *: auth* → prefix match
+        """
+        # Extract quoted phrases first
+        phrases = re.findall(r'"([^"]+)"', query)
+        remaining = re.sub(r'"[^"]*"', '', query)
+
+        # Extract individual words from remaining text
+        words = re.findall(r'[\w*]+', remaining, re.UNICODE)
+
+        parts = []
+        for phrase in phrases:
+            parts.append(f'"{phrase}"')
+        for word in words:
+            if word.endswith('*'):
+                parts.append(word)  # prefix search: auth*
+            else:
+                parts.append(f'"{word}"')
+
+        if not parts:
             return ""
-        return " OR ".join(f'"{w}"' for w in words)
+        return " AND ".join(parts)
 
     def _row_to_legacy_dict(self, row: sqlite3.Row, score: float = 0.0) -> Dict:
         """Convert a SQLite row to the legacy dict format expected by consumers."""
