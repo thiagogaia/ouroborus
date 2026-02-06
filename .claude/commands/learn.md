@@ -15,7 +15,7 @@ Reflita sobre a sessão:
 - Que conhecimento de domínio foi adquirido?
 - Alguma experiência vale preservar para reutilização?
 
-## Fase 3: Encode no Cérebro (fonte única de verdade)
+## Fase 3: Encode no Cérebro (fonte primária)
 
 O cérebro em `.claude/brain/` é a **fonte primária de conhecimento**. Todo aprendizado vai direto para o grafo.
 
@@ -85,12 +85,21 @@ brain.add_memory(
 brain.save()
 ```
 
-### 3.3 Atualizar Apenas Arquivos de Boot
+### 3.3 Atualizar Knowledge Files
 
-Somente dois arquivos .md são mantidos (pequenos, dão orientação rápida ao iniciar sessão):
+Os .md são o espelho legível do cérebro — mantidos em sincronia para fallback, git diffs e leitura humana.
 
+**Boot files (sempre atualizados):**
 - **CURRENT_STATE.md** — atualizar status geral, fase, saúde, mudanças recentes
 - **PRIORITY_MATRIX.md** — desprioritizar tarefas completadas, adicionar novas
+
+**Knowledge files (atualizados quando houver conteúdo novo):**
+- **PATTERNS.md** — patterns novos ou refinados
+- **ADR_LOG.md** — decisões arquiteturais registradas
+- **DOMAIN.md** — regras de negócio e glossário
+- **EXPERIENCE_LIBRARY.md** — experiências reutilizáveis
+
+O cérebro já contém tudo via `add_memory()` (passo 3.2). O sono enriquece com conexões semânticas. Os .md garantem que o conhecimento permanece acessível sem rodar Python.
 
 ## Fase 4: Consolidar
 

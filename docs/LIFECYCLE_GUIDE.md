@@ -48,7 +48,7 @@ PRIORITY_MATRIX.md → prioridades atuais
 ```
 Esses dois .md vem de `templates/knowledge/` (instalados pelo setup.sh). Sao pequenos por design — reescritos a cada /learn.
 
-### Passo 2: Consulta o Cerebro (fonte unica)
+### Passo 2: Consulta o Cerebro (fonte primaria)
 ```
 /recall "tema da tarefa"
 ```
@@ -58,7 +58,13 @@ Retorna nos relevantes COM conexoes semanticas e conteudo completo:
 - Regras de negocio aplicaveis
 - Patterns aprovados
 
-### Passo 3: Entende o contexto completo antes de codificar
+### Passo 3: Fallback para .md (se necessario)
+Se o recall nao cobrir, os `.md` de knowledge continuam disponiveis:
+```
+PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md
+```
+
+### Passo 4: Entende o contexto completo antes de codificar
 
 ---
 
@@ -108,14 +114,27 @@ git log --oneline -10
 ### Fase 2: Introspeccao
 Claude reflete: patterns, decisoes, problemas, conhecimento de dominio.
 
-### Fase 3: Encode no Cerebro
+### Fase 3: Encode no Cerebro + Atualizar .md
+
+#### 3a. Cerebro recebe primeiro
 Todo conhecimento vai direto para o grafo via `brain.add_memory()`:
 ```python
 brain.add_memory(title="ADR-015: ...", labels=["ADR", "Decision"], content="...")
 brain.add_memory(title="PAT-037: ...", labels=["Pattern", "ApprovedPattern"], content="...")
 brain.add_memory(title="Bug: ...", labels=["Episode", "BugFix"], content="...")
 ```
-Os boot files (CURRENT_STATE.md, PRIORITY_MATRIX.md) sao atualizados separadamente — sao os unicos .md mantidos pequenos para leitura rapida.
+O sono (sleep.py) enriquece com conexoes semanticas automaticamente.
+
+#### 3b. Knowledge files refletem o cerebro
+Os .md sao o espelho legivel — mantidos em sincronia para fallback, git diffs e leitura humana:
+- **CURRENT_STATE.md** → status atualizado (boot file)
+- **PRIORITY_MATRIX.md** → tarefas atualizadas (boot file)
+- **PATTERNS.md** → patterns novos ou refinados
+- **ADR_LOG.md** → decisoes registradas
+- **DOMAIN.md** → regras de negocio e glossario
+- **EXPERIENCE_LIBRARY.md** → experiencias reutilizaveis
+
+O cerebro contem tudo. Os .md garantem que o conhecimento permanece acessivel sem rodar Python.
 
 ### Fase 4: Alimentar o Cerebro
 
@@ -195,12 +214,12 @@ O Claude consulta o cerebro e **sabe tudo** da sessao anterior:
 
 ---
 
-## Arquitetura Brain-Only
+## Arquitetura: Cerebro Primario, .md Sincronizados
 
 ```
-cerebro (graph.json)  = FONTE UNICA DE VERDADE (conteudo em props.content)
+cerebro (graph.json)  = FONTE PRIMARIA (busca, conexoes, conteudo em props.content)
 boot files (.md)      = CURRENT_STATE.md + PRIORITY_MATRIX.md (leitura rapida)
-knowledge files (.md) = legado — conteudo ja migrado para o grafo
+knowledge files (.md) = espelho legivel do cerebro (fallback, git diffs, leitura humana)
 ```
 
 ### Fluxo de Dados
@@ -261,9 +280,9 @@ Os boot files (.md) nunca crescem — sao reescritos a cada /learn.
 
 ### Regra de Ouro
 
-> O cerebro e a fonte unica de verdade. Conteudo vive em `props.content`.
-> Se apagar o cerebro: `populate.py migrate` recria a partir dos .md legados.
-> Se apagar os .md legados: o cerebro continua funcionando normalmente.
+> O cerebro e a fonte primaria. Conteudo vive em `props.content` + `.md` sincronizados.
+> Se apagar o cerebro: `populate.py migrate` recria a partir dos .md.
+> Se apagar os .md: `populate.py` + sleep reconstroem, mas perde-se a camada legivel.
 
 ---
 

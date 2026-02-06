@@ -15,48 +15,19 @@ Reflita sobre a sessão:
 - Que conhecimento de domínio foi adquirido?
 - Alguma experiência vale preservar para reutilização?
 
-## Fase 3: Atualizar Knowledge
+## Fase 3: Encode no Cérebro (fonte primária)
 
-Para cada tipo de conhecimento descoberto:
+O cérebro em `.claude/brain/` é a **fonte primária de conhecimento**. Todo aprendizado vai direto para o grafo.
 
-### CURRENT_STATE.md
-- Atualizar status geral, fase, saúde
-- Registrar mudanças recentes com data e impacto
-- Atualizar bloqueios e contexto para próxima sessão
+### 3.1 Processar Novos Commits
 
-### PATTERNS.md
-- Registrar padrões novos descobertos
-- Marcar anti-padrões encontrados e corrigidos
-
-### ADR_LOG.md
-- Registrar decisões arquiteturais tomadas (se houver)
-
-### PRIORITY_MATRIX.md
-- Desprioritizar tarefas completadas (mover para cemitério)
-- Adicionar tarefas novas identificadas
-- Recalcular ICE Scores se contexto mudou
-
-### DOMAIN.md
-- Adicionar termos novos ao glossário
-- Registrar regras de negócio descobertas
-
-### EXPERIENCE_LIBRARY.md
-- Se alguma interação desta sessão foi particularmente bem-sucedida,
-  registrar como experiência reutilizável (max 10 linhas por entry)
-
-## Fase 4: Criar Memórias no Cérebro ← NOVO
-
-O cérebro organizacional em `.claude/brain/` deve ser atualizado com o conhecimento desta sessão.
-
-### 4.1 Processar Novos Commits
 ```bash
-# Busca commits desde o último /learn (ou últimos 20 se primeiro run)
-python3 .claude/brain/populate.py commits 20
+python3 .claude/brain/populate.py refresh 20
 ```
 
-### 4.2 Criar Memórias Episódicas
+### 3.2 Registrar Conhecimento Direto no Grafo
 
-Para cada problema resolvido nesta sessão, criar memória via Python:
+Para cada tipo de conhecimento descoberto, use `brain.add_memory()` diretamente:
 
 ```python
 import sys
@@ -65,54 +36,96 @@ from brain import Brain, get_current_developer
 
 brain = Brain()
 brain.load()
+dev = get_current_developer()
 
-# Exemplo: registrar bug fix
+# ADR (decisão arquitetural)
 brain.add_memory(
-    title="Bug: [descrição curta]",
-    content="[O que aconteceu, como foi resolvido, arquivos afetados]",
-    labels=["Episode", "BugFix"],
-    author=get_current_developer(),
-    references=["[[arquivo_relacionado]]"]  # opcional
+    title="ADR-NNN: [Título da Decisão]",
+    content="## Contexto\n[...]\n\n## Decisão\n[...]\n\n## Consequências\n[...]",
+    labels=["Decision", "ADR"],
+    author=dev["username"],
+    props={"adr_id": "ADR-NNN", "status": "Aceito", "date": "YYYY-MM-DD"}
 )
 
-brain.save()
-```
+# Pattern (padrão aprovado)
+brain.add_memory(
+    title="PAT-NNN: [Nome do Padrão]",
+    content="[Descrição, quando usar, exemplo]",
+    labels=["Pattern", "ApprovedPattern"],
+    author=dev["username"],
+    props={"pat_id": "PAT-NNN"}
+)
 
-### 4.3 Criar Memórias Conceituais
+# Experience (experiência reutilizável)
+brain.add_memory(
+    title="EXP-NNN: [Título]",
+    content="[Contexto, abordagem, resultado, aprendizado]",
+    labels=["Episode", "Experience"],
+    author=dev["username"],
+    props={"exp_id": "EXP-NNN"}
+)
 
-Se novos termos ou conceitos foram aprendidos:
-
-```python
+# Concept (termo de domínio)
 brain.add_memory(
     title="[Nome do Conceito]",
     content="[Definição e contexto]",
     labels=["Concept", "Glossary"],
     author="@engram"
 )
+
+# Bug fix episódico
+brain.add_memory(
+    title="Bug: [descrição curta]",
+    content="[O que aconteceu, como foi resolvido, arquivos afetados]",
+    labels=["Episode", "BugFix"],
+    author=dev["username"],
+    references=["[[ADR-001]]", "[[PAT-005]]"]  # opcional
+)
+
+brain.save()
 ```
 
-### 4.4 Rodar Consolidação Leve
+### 3.3 Atualizar Knowledge Files
 
-Fortalecer conexões acessadas nesta sessão:
+Os .md são o espelho legível do cérebro — mantidos em sincronia para fallback, git diffs e leitura humana.
+
+**Boot files (sempre atualizados):**
+- **CURRENT_STATE.md** — atualizar status geral, fase, saúde, mudanças recentes
+- **PRIORITY_MATRIX.md** — desprioritizar tarefas completadas, adicionar novas
+
+**Knowledge files (atualizados quando houver conteúdo novo):**
+- **PATTERNS.md** — patterns novos ou refinados
+- **ADR_LOG.md** — decisões arquiteturais registradas
+- **DOMAIN.md** — regras de negócio e glossário
+- **EXPERIENCE_LIBRARY.md** — experiências reutilizáveis
+
+O cérebro já contém tudo via `add_memory()` (passo 3.2). O sono enriquece com conexões semânticas. Os .md garantem que o conhecimento permanece acessível sem rodar Python.
+
+## Fase 4: Consolidar
+
+### 4.1 Ciclo de Sono (Consolidação Semântica)
+
 ```bash
-python3 .claude/brain/cognitive.py consolidate
+python3 .claude/brain/sleep.py
 ```
 
-### 4.5 Verificar Saúde do Cérebro
+Roda 5 fases in-memory (zero disk I/O): dedup, connect, relate, themes, calibrate.
+
+### 4.2 Verificar Saúde do Cérebro
+
 ```bash
 python3 .claude/brain/cognitive.py health
 ```
 
 Se `health_score < 0.8`, seguir recomendações exibidas.
 
-### 4.6 Atualizar Embeddings
+### 4.3 Atualizar Embeddings
 
-Regenerar embeddings para habilitar busca semântica com novos nós:
 ```bash
 python3 .claude/brain/embeddings.py build 2>/dev/null || echo "⚠️ Embeddings: instale sentence-transformers para busca semântica"
 ```
 
-Isso garante que novos conceitos, padrões e episódios sejam encontráveis via `/recall`.
+Embeddings agora usam conteúdo completo (até 1000 chars) para vetores mais ricos.
 
 ---
 
@@ -161,7 +174,7 @@ python3 .claude/skills/engram-evolution/scripts/co_activation.py --project-dir .
 ## Fase 6: Resumo
 
 Apresentar:
-- O que foi registrado em cada knowledge file
+- O que foi registrado no cérebro (quantos nós criados, tipos)
 - Sugestões evolutivas (novos skills, archives, composições)
 - Próxima ação recomendada
 

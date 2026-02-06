@@ -15,17 +15,18 @@ O sistema evolui a si mesmo: gera skills sob demanda, versiona mudanças, aposen
 2. **Consulte o cérebro PRIMEIRO**: rode `python3 .claude/brain/recall.py "<tema da tarefa>" --top 10 --format json` para encontrar ADRs, patterns, experiências e conexões relevantes
 3. Só leia os `.md` completos se o recall não cobrir — os arquivos vão crescer e não caberão no contexto
 
-O cérebro é a **fonte única de verdade**. O recall já retorna o conteúdo completo (campo `content`). Não precisa ler .md.
+O cérebro é a **fonte primária**. O recall já retorna o conteúdo completo (campo `content`). Os `.md` de knowledge são mantidos em sincronia como fallback, para git diffs e leitura humana.
 
 ### Ao Codificar
 - Validação de input em todas as APIs
 - Error handling em todas as rotas
 
 ### Depois de Codificar
-1. Atualize `CURRENT_STATE.md` (boot file — sempre pequeno)
+1. Atualize `CURRENT_STATE.md` (boot file)
 2. Registre padrões, decisões, experiências e domínio **direto no cérebro** via `brain.add_memory()`
-3. Reavalie `PRIORITY_MATRIX.md` (boot file)
-4. Execute `/learn` para consolidar
+3. Atualize os `.md` de knowledge quando houver conteúdo novo (PATTERNS.md, ADR_LOG.md, DOMAIN.md, EXPERIENCE_LIBRARY.md)
+4. Reavalie `PRIORITY_MATRIX.md` (boot file)
+5. Execute `/learn` para consolidar
 
 ## Stack
 
@@ -63,7 +64,7 @@ Regras: anunciar antes de criar, máximo 2 por sessão, nunca duplicar, source=r
 
 ## Cérebro Organizacional
 
-O cérebro em `.claude/brain/` é a **fonte única de verdade** — um grafo de conhecimento auto-alimentado.
+O cérebro em `.claude/brain/` é a **fonte primária de conhecimento** — um grafo de conhecimento auto-alimentado.
 Todo conteúdo é armazenado in-graph (props.content). Não depende de .md files para conteúdo.
 - **Conexões entre nós**: quais commits mexeram nos mesmos arquivos, quais patterns se complementam, quais ADRs motivaram quais patterns
 - **Busca semântica**: encontra conhecimento por significado, não só por texto
@@ -151,4 +152,4 @@ O loop de auto-alimentação funciona assim:
 - Pergunte antes de mudar arquitetura
 - Registre TUDO que pode ser útil no futuro
 - Se não existe skill para algo repetitivo: crie com `/create`
-- **Cérebro é a fonte única** — rode recall e use o campo `content` direto, sem ler .md
+- **Cérebro é a fonte primária** — rode recall primeiro, .md como fallback e espelho legível
