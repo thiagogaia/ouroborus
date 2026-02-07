@@ -3,7 +3,7 @@ name: priority-engine
 description: Framework de priorização com ICE Score. Use quando precisar
   decidir o que fazer a seguir, avaliar prioridades, adicionar ou
   desprioritizar tarefas, ou quando executar /priorities. Mantém
-  PRIORITY_MATRIX.md organizado e atualizado.
+  `.claude/knowledge/priorities/PRIORITY_MATRIX.md` organizado e atualizado.
 ---
 
 # Priority Engine
@@ -32,13 +32,13 @@ ICE = (Impacto × Confiança) / Esforço
    - **Confiança**: "Quão certo estamos de que a solução funciona?"
    - **Esforço**: "Quanto tempo/trabalho exige?" (inverter: pouco esforço = score alto)
 2. Calcular ICE
-3. Inserir na posição correta em PRIORITY_MATRIX.md
+3. Inserir na posição correta em `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ### Desprioritizar
 Tão importante quanto priorizar:
 - Tarefa completada → mover para Cemitério com data e resultado
 - Tarefa irrelevante → mover para Cemitério com justificativa
-- Tarefa bloqueada → marcar status e registrar bloqueio em PRIORITY_MATRIX.md
+- Tarefa bloqueada → marcar status e registrar bloqueio em `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ### Reavaliação
 Ao final de cada sessão (via /learn):
@@ -46,7 +46,7 @@ Ao final de cada sessão (via /learn):
 - Alguma tarefa nova deveria ser HIGH priority?
 - Alguma tarefa no topo está bloqueada? (se sim, próxima da fila sobe)
 
-## Formato do PRIORITY_MATRIX.md
+## Formato do `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ```markdown
 ## Ativas

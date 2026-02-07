@@ -85,7 +85,7 @@ brain.add_memory(
 brain.save()
 ```
 
-### 3.3 Atualizar PRIORITY_MATRIX.md
+### 3.3 Atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 Único knowledge file ativamente atualizado — desprioritizar tarefas completadas, adicionar novas.
 

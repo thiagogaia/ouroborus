@@ -14,7 +14,7 @@ Gerencia o ciclo de retroalimentação — o coração do Engram.
 
 | Arquivo | Propósito | Quando Atualizar |
 |---------|-----------|------------------|
-| `PRIORITY_MATRIX.md` | Tarefas com ICE Score | Ao completar/criar tarefas |
+| `.claude/knowledge/priorities/PRIORITY_MATRIX.md` | Tarefas com ICE Score | Ao completar/criar tarefas |
 | `PATTERNS.md` | Padrões e anti-padrões | Genesis-only (cérebro: `--type Pattern`) |
 | `ADR_LOG.md` | Decisões arquiteturais | Genesis-only (cérebro: `--type ADR`) |
 | `DOMAIN.md` | Glossário + regras de negócio | Genesis-only (cérebro: `--type Concept`) |
@@ -27,7 +27,7 @@ Classifique o que foi aprendido/decidido/feito:
 - **Estado** → cérebro via `brain.add_memory()` (labels: ["State"]) — embeddings gerados inline
 - **Padrão** → cérebro via `brain.add_memory(labels=["Pattern", "ApprovedPattern"])` — embeddings gerados inline
 - **Decisão** → cérebro via `brain.add_memory(labels=["Decision", "ADR"])` — embeddings gerados inline
-- **Prioridade** → PRIORITY_MATRIX.md (incluir: ICE Score) — único .md ativo
+- **Prioridade** → `.claude/knowledge/priorities/PRIORITY_MATRIX.md` (incluir: ICE Score) — único .md ativo
 - **Domínio** → cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
 - **Experiência** → cérebro via `brain.add_memory(labels=["Episode", "Experience"])`
 
@@ -39,11 +39,11 @@ Classifique o que foi aprendido/decidido/feito:
 ### 3. Cross-Reference
 Se o registro impacta outros files, atualize-os também:
 - ADR que cria padrão → registrar ambos no cérebro com `references=`
-- Padrão que resolve prioridade → atualizar PRIORITY_MATRIX.md
-- Estado que revela bloqueio → atualizar PRIORITY_MATRIX.md
+- Padrão que resolve prioridade → atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
+- Estado que revela bloqueio → atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ### 4. Limpar Obsoletos
-- Mover tarefas completas para "Cemitério" no PRIORITY_MATRIX.md
+- Mover tarefas completas para "Cemitério" no `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 - Marcar padrões depreciados (nunca deletar — marcar com ~~strikethrough~~)
 - Atualizar status de ADRs (aceita → depreciada quando substituída)
 

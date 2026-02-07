@@ -17,6 +17,6 @@ Reavaliar prioridades do projeto usando ICE Score.
    - Identificar bloqueios
    - Reordenar por ICE atualizado
 
-6. Apresentar a matrix atualizada e salvar em PRIORITY_MATRIX.md
+6. Apresentar a matrix atualizada e salvar em `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 7. Destacar a próxima ação recomendada.
