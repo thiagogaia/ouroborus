@@ -757,12 +757,12 @@ def phase_insights(brain: Brain) -> Dict:
 
     BFS through RELATED_TO/SAME_SCOPE/MODIFIES_SAME edges.
     Clusters of 3+ nodes without an associated Theme/PatternCluster
-    are reported as insight suggestions.
+    are persisted as Insight nodes in the graph and reported as suggestions.
     """
-    stats = {"clusters_found": 0, "suggestions": []}
+    stats = {"clusters_found": 0, "insights_created": 0, "insight_edges_created": 0, "suggestions": []}
     all_nodes = brain.get_all_nodes()
     insight_edge_types = {"RELATED_TO", "SAME_SCOPE", "MODIFIES_SAME"}
-    skip_labels = {"Person", "Domain", "Theme", "PatternCluster"}
+    skip_labels = {"Person", "Domain", "Theme", "PatternCluster", "Insight", "GapSuggestion"}
 
     # Build adjacency list for insight-relevant edges
     adj: Dict[str, Set[str]] = defaultdict(set)
@@ -812,31 +812,86 @@ def phase_insights(brain: Brain) -> Dict:
         if len(cluster) < 3:
             continue
 
-        # Check if cluster already has a Theme or PatternCluster
+        # Check if cluster already has a Theme, PatternCluster, or Insight
         has_grouping = False
         for nid in cluster:
             for neighbor in brain.get_neighbors(nid):
                 neighbor_node = brain.get_node(neighbor)
                 if neighbor_node:
                     n_labels = set(neighbor_node.get("labels", []))
-                    if n_labels & {"Theme", "PatternCluster"}:
+                    if n_labels & {"Theme", "PatternCluster", "Insight"}:
                         has_grouping = True
                         break
             if has_grouping:
                 break
 
         if not has_grouping:
+            sorted_node_ids = sorted(cluster)
             titles = []
             for nid in list(cluster)[:5]:
                 node = brain.get_node(nid)
                 if node:
                     titles.append(node.get("props", {}).get("title", nid))
+
             stats["clusters_found"] += 1
             stats["suggestions"].append({
                 "size": len(cluster),
                 "sample_titles": titles,
                 "node_ids": list(cluster)[:10]
             })
+
+            # Create Insight node in the graph
+            insight_id_source = f"Insight: {'|'.join(sorted_node_ids)}|Insight"
+            insight_id = hashlib.md5(insight_id_source.encode()).hexdigest()[:8]
+
+            if not brain._node_exists(insight_id):
+                summary = f"Cluster of {len(cluster)} related nodes without a theme: {', '.join(titles[:3])}"
+                now = datetime.now().isoformat()
+
+                if hasattr(brain, 'add_node_raw'):
+                    brain.add_node_raw(insight_id,
+                        labels=["Insight"],
+                        props={
+                            "title": f"Insight: {len(cluster)} related nodes",
+                            "summary": summary,
+                            "cluster_size": len(cluster),
+                            "node_ids": json.dumps(sorted_node_ids[:20]),
+                            "sample_titles": json.dumps(titles)
+                        },
+                        memory={
+                            "strength": 0.7,
+                            "access_count": 0,
+                            "last_accessed": now,
+                            "created_at": now,
+                            "decay_rate": 0.005
+                        })
+                else:
+                    node_data = {
+                        "labels": ["Insight"],
+                        "props": {
+                            "title": f"Insight: {len(cluster)} related nodes",
+                            "summary": summary,
+                            "cluster_size": len(cluster),
+                            "node_ids": json.dumps(sorted_node_ids[:20]),
+                            "sample_titles": json.dumps(titles)
+                        },
+                        "memory": {
+                            "strength": 0.7,
+                            "access_count": 0,
+                            "last_accessed": now,
+                            "created_at": now,
+                            "decay_rate": 0.005
+                        }
+                    }
+                    brain.graph.add_node(insight_id, **node_data)
+
+                stats["insights_created"] += 1
+
+            # Create INSIGHT_FROM edges from Insight to cluster members
+            for member_id in sorted_node_ids:
+                if brain._node_exists(member_id) and not brain.has_edge(insight_id, member_id):
+                    brain.add_edge(insight_id, member_id, "INSIGHT_FROM", 0.6)
+                    stats["insight_edges_created"] += 1
 
     return stats
 
@@ -848,14 +903,17 @@ def phase_insights(brain: Brain) -> Dict:
 def phase_gaps(brain: Brain) -> Dict:
     """Find knowledge gaps: isolated nodes and domains without patterns.
 
-    Detects:
-    - Nodes with 0 semantic connections (ignoring AUTHORED_BY/BELONGS_TO)
-    - Domain nodes without any associated Pattern nodes
+    Detects and persists:
+    - GapSuggestion nodes for groups of isolated nodes (grouped by label)
+    - GapSuggestion nodes for domains without any associated Pattern nodes
     """
-    stats = {"isolated_nodes": [], "domains_without_patterns": []}
+    stats = {
+        "isolated_nodes": [], "domains_without_patterns": [],
+        "gaps_created": 0, "gap_edges_created": 0
+    }
     all_nodes = brain.get_all_nodes()
     structural_types = {"AUTHORED_BY", "BELONGS_TO"}
-    skip_labels = {"Person", "Domain"}
+    skip_labels = {"Person", "Domain", "Insight", "GapSuggestion"}
 
     # Find isolated nodes (0 semantic connections)
     for nid, ndata in all_nodes.items():
@@ -878,7 +936,62 @@ def phase_gaps(brain: Brain) -> Dict:
 
         if not has_semantic:
             title = ndata.get("props", {}).get("title", nid)
-            stats["isolated_nodes"].append({"id": nid, "title": title})
+            node_label = ndata.get("labels", ["Unknown"])[0] if ndata.get("labels") else "Unknown"
+            stats["isolated_nodes"].append({"id": nid, "title": title, "label": node_label})
+
+    # Create GapSuggestion nodes for isolated nodes grouped by label
+    isolated_by_label: Dict[str, List[dict]] = defaultdict(list)
+    for iso in stats["isolated_nodes"]:
+        isolated_by_label[iso["label"]].append(iso)
+
+    for label, isolated_group in isolated_by_label.items():
+        gap_id_source = f"Gap: isolated {label} ({len(isolated_group)})|GapSuggestion"
+        gap_id = hashlib.md5(gap_id_source.encode()).hexdigest()[:8]
+
+        if not brain._node_exists(gap_id):
+            sample_titles = [iso["title"] for iso in isolated_group[:5]]
+            now = datetime.now().isoformat()
+
+            if hasattr(brain, 'add_node_raw'):
+                brain.add_node_raw(gap_id,
+                    labels=["GapSuggestion"],
+                    props={
+                        "title": f"Gap: {len(isolated_group)} isolated {label} node(s)",
+                        "gap_type": "isolated_nodes",
+                        "node_label": label,
+                        "isolated_count": len(isolated_group),
+                        "suggestion": f"Consider adding semantic connections to {len(isolated_group)} isolated {label} node(s): {', '.join(sample_titles[:3])}",
+                        "sample_titles": json.dumps(sample_titles)
+                    },
+                    memory={
+                        "strength": 0.6,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.008
+                    })
+            else:
+                node_data = {
+                    "labels": ["GapSuggestion"],
+                    "props": {
+                        "title": f"Gap: {len(isolated_group)} isolated {label} node(s)",
+                        "gap_type": "isolated_nodes",
+                        "node_label": label,
+                        "isolated_count": len(isolated_group),
+                        "suggestion": f"Consider adding semantic connections to {len(isolated_group)} isolated {label} node(s): {', '.join(sample_titles[:3])}",
+                        "sample_titles": json.dumps(sample_titles)
+                    },
+                    "memory": {
+                        "strength": 0.6,
+                        "access_count": 0,
+                        "last_accessed": now,
+                        "created_at": now,
+                        "decay_rate": 0.008
+                    }
+                }
+                brain.graph.add_node(gap_id, **node_data)
+
+            stats["gaps_created"] += 1
 
     # Find domains without patterns
     for nid, ndata in all_nodes.items():
@@ -897,6 +1010,55 @@ def phase_gaps(brain: Brain) -> Dict:
             stats["domains_without_patterns"].append({
                 "id": nid, "name": domain_name
             })
+
+            # Create GapSuggestion node for domain without patterns
+            gap_id_source = f"Gap: {domain_name}|GapSuggestion"
+            gap_id = hashlib.md5(gap_id_source.encode()).hexdigest()[:8]
+
+            if not brain._node_exists(gap_id):
+                now = datetime.now().isoformat()
+
+                if hasattr(brain, 'add_node_raw'):
+                    brain.add_node_raw(gap_id,
+                        labels=["GapSuggestion"],
+                        props={
+                            "title": f"Gap: domain '{domain_name}' has 0 patterns",
+                            "gap_type": "domain_without_patterns",
+                            "domain": domain_name,
+                            "suggestion": f"Domain '{domain_name}' has no associated patterns. Consider documenting patterns for this domain.",
+                        },
+                        memory={
+                            "strength": 0.6,
+                            "access_count": 0,
+                            "last_accessed": now,
+                            "created_at": now,
+                            "decay_rate": 0.008
+                        })
+                else:
+                    node_data = {
+                        "labels": ["GapSuggestion"],
+                        "props": {
+                            "title": f"Gap: domain '{domain_name}' has 0 patterns",
+                            "gap_type": "domain_without_patterns",
+                            "domain": domain_name,
+                            "suggestion": f"Domain '{domain_name}' has no associated patterns. Consider documenting patterns for this domain.",
+                        },
+                        "memory": {
+                            "strength": 0.6,
+                            "access_count": 0,
+                            "last_accessed": now,
+                            "created_at": now,
+                            "decay_rate": 0.008
+                        }
+                    }
+                    brain.graph.add_node(gap_id, **node_data)
+
+                stats["gaps_created"] += 1
+
+                # Create GAP_IN edge from GapSuggestion to Domain node
+                if brain._node_exists(nid) and not brain.has_edge(gap_id, nid):
+                    brain.add_edge(gap_id, nid, "GAP_IN", 0.5)
+                    stats["gap_edges_created"] += 1
 
     stats["isolated_count"] = len(stats["isolated_nodes"])
     stats["gap_domains_count"] = len(stats["domains_without_patterns"])
@@ -986,11 +1148,15 @@ def run_sleep(brain: Brain, phases: List[str] = None) -> Dict:
     insights_stats = results["phases"].get("insights", {})
     if insights_stats.get("clusters_found", 0) > 0:
         actionable.append(f"{insights_stats['clusters_found']} unthemed clusters detected")
+    if insights_stats.get("insights_created", 0) > 0:
+        actionable.append(f"{insights_stats['insights_created']} Insight nodes created")
     gaps_stats = results["phases"].get("gaps", {})
     if gaps_stats.get("isolated_count", 0) > 0:
         actionable.append(f"{gaps_stats['isolated_count']} isolated nodes found")
     if gaps_stats.get("gap_domains_count", 0) > 0:
         actionable.append(f"{gaps_stats['gap_domains_count']} domains without patterns")
+    if gaps_stats.get("gaps_created", 0) > 0:
+        actionable.append(f"{gaps_stats['gaps_created']} GapSuggestion nodes created")
     decay_stats = results["phases"].get("decay", {})
     if decay_stats.get("weak_count", 0) > 0:
         actionable.append(f"{decay_stats['weak_count']} weak memories marked")
