@@ -12,8 +12,6 @@
 
 | # | Tarefa | I | C | E | ICE | Notas |
 |---|--------|---|---|---|-----|-------|
-| 6 | Adicionar template Laravel | 5 | 7 | 3 | 11.7 | Demanda moderada |
-| 7 | Template Angular | 4 | 6 | 3 | 8.0 | Menos urgente |
 | 8 | Template Ruby on Rails | 4 | 6 | 4 | 6.0 | Baixa demanda |
 | 9 | CI/CD para validar schemas | 5 | 7 | 6 | 5.8 | Nice to have |
 | 10 | Métricas de uso agregadas | 4 | 5 | 7 | 2.9 | Futuro |
@@ -63,6 +61,8 @@
 | Fix 5+1 parser bugs populate.py | ✅ Concluído — 227→331 nós, 0 dados perdidos | 2026-02-06 |
 | Migrar vector store para ChromaDB | ✅ Concluído — HNSW O(log n), fallback npz, 227 tests | 2026-02-06 |
 | Bump Engram v3→v4 | ✅ Concluído — 11 arquivos, ADR-023, Milestone v4.0.0 | 2026-02-07 |
+| Adicionar template Laravel | ✅ Já existia — laravel-patterns.skill.tmpl criado em 2026-02-04 | 2026-02-07 |
+| Template Angular | ✅ Concluído — angular-patterns.skill.tmpl | 2026-02-07 |
 
 ## Como Priorizar
 

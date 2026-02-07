@@ -1,0 +1,69 @@
+---
+name: angular-patterns
+description: Padrões e boas práticas para Angular. Use quando criar components,
+  services, directives, pipes, guards, interceptors, ou configurar routing
+  e state management. Também para troubleshooting de change detection,
+  dependency injection e RxJS patterns.
+---
+
+# Angular Patterns
+
+## Arquitetura
+- Standalone components por padrão (Angular 17+)
+- Feature modules com lazy loading para áreas grandes
+- Smart (container) vs Presentational (dumb) components
+- Barrel exports (`index.ts`) por feature
+
+## Components
+- Signals para state reativo local (Angular 16+)
+- `input()` / `output()` signal-based (Angular 17+)
+- OnPush change detection por padrão em todos os components
+- Components pequenos (< 200 linhas) — extrair services para lógica
+
+```typescript
+@Component({
+  selector: 'app-user-card',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AsyncPipe],
+  template: `<div>{{ name() }}</div>`,
+})
+export class UserCardComponent {
+  name = input.required<string>()
+  selected = output<string>()
+}
+```
+
+## Services e DI
+- `providedIn: 'root'` para singletons
+- `inject()` function (Angular 14+) — preferir sobre constructor injection
+- Services para lógica de negócio, components para UI
+- Environment injector para instâncias dinâmicas
+
+## RxJS
+- Prefer Signals para state síncrono simples
+- RxJS para streams assíncronas (HTTP, WebSocket, events complexos)
+- Unsubscribe via `takeUntilDestroyed()` (Angular 16+)
+- Async pipe no template quando possível — evita subscribe manual
+- Operadores `switchMap` para requests canceláveis, `exhaustMap` para submissions
+
+## HTTP e Interceptors
+- `HttpClient` com typed responses — nunca `any`
+- Functional interceptors com `withInterceptors()` (Angular 15+)
+- Error handling centralizado via interceptor
+- Retry e cache em interceptors, não nos services
+
+## Routing
+- Lazy loading com `loadComponent` / `loadChildren`
+- Guards funcionais com `CanActivateFn` (Angular 15+)
+- Resolvers para pre-fetch de dados críticos
+- Title strategy para SEO automático
+
+## Regras
+- NUNCA manipule DOM diretamente — use template bindings ou Renderer2
+- SEMPRE use OnPush change detection
+- SEMPRE use Signals para state local (Angular 16+)
+- NUNCA subscribe sem cleanup — use `takeUntilDestroyed()` ou async pipe
+- SEMPRE use standalone components (Angular 17+)
+- SEMPRE type HTTP responses — nunca `HttpClient.get<any>()`
+- Prefer functional guards/interceptors sobre class-based
