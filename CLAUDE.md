@@ -18,7 +18,7 @@ O sistema evolui a si mesmo: gera skills sob demanda, versiona mudanças, aposen
 
 O cérebro é a **fonte primária e única**. O recall retorna conteúdo completo (campo `content`) e suporta **busca temporal** (`--recent Nd`, `--since YYYY-MM-DD`, `--sort date`). Os `.md` de knowledge são mantidos em sincronia como fallback, para git diffs e leitura humana.
 
-> **Nota**: Os knowledge files (CURRENT_STATE.md, ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md) são genesis-only — criados no setup e populados no /init-engram. Após o cérebro ser populado, não são mais atualizados. O recall os substitui. Único .md ativo: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`.
+> **Nota**: Todo conhecimento novo (decisões, padrões, experiências, conceitos) vai via `brain.add_memory()` — o cérebro é a única entrada. O recall é a forma de consultar. Único .md editável: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`.
 
 ### Ao Codificar
 - Validação de input em todas as APIs

@@ -245,7 +245,7 @@ rm -rf .claude/templates/
      1. Ler o conteúdo de `.claude/skills/engram-genesis/references/claude_cerebro_section.md`
      2. Inserir essa seção **após** `## Orquestração Inteligente` e **antes** de `## Regras de Ouro`
      3. Atualizar o bloco "Antes de Codificar" para incluir item 3 "Saúde do cérebro" e a frase "O cérebro é a **fonte primária e única**. O recall retorna conteúdo completo (campo `content`) e suporta **busca temporal** (`--recent Nd`, `--since YYYY-MM-DD`, `--sort date`). Os `.md` de knowledge são mantidos em sincronia como fallback."
-     4. Atualizar a Nota para: "Os knowledge files (CURRENT_STATE.md, ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md) são genesis-only — criados no setup e populados no /init-engram. Após o cérebro ser populado, não são mais atualizados. O recall os substitui. Único .md ativo: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`."
+     4. Atualizar a Nota para: "Todo conhecimento novo (decisões, padrões, experiências, conceitos) vai via `brain.add_memory()` — o cérebro é a única entrada. O recall é a forma de consultar. Único .md editável: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`."
 
 4. Apresentar resumo do que foi:
    - Gerado (novos componentes)

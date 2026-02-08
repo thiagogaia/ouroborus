@@ -64,10 +64,11 @@ O campo `connections` nos resultados do recall mostra relações que os .md não
 - `BELONGS_TO_THEME`: commits agrupados por tema — mostra áreas de atividade
 - `REFERENCES`: referências cruzadas explícitas entre ADRs, patterns e experiências
 
-### Quando Alimentar o Cérebro
+### Como Alimentar o Cérebro
 
-O cérebro é alimentado automaticamente via `/learn`. Execute ao final de cada sessão.
-O `/learn` roda: brain.add_memory() (direto, com embeddings inline) → refresh (commits) → sleep (8 fases de inteligência) → health check.
+Todo conhecimento novo — decisões, padrões, experiências, conceitos — é registrado via `brain.add_memory()`. Não há outra entrada: o cérebro é o destino único para conhecimento persistente.
+
+O `/learn` consolida ao final de cada sessão: brain.add_memory() (com embeddings inline) → refresh (commits) → sleep (8 fases) → health check.
 
 O loop de auto-alimentação funciona assim:
 1. `/recall` busca → reforça memórias acessadas → **persiste** (brain.save())

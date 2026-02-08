@@ -10,15 +10,14 @@ description: Motor de retroalimentação do Engram. Gerencia o ciclo de registro
 
 Gerencia o ciclo de retroalimentação — o coração do Engram.
 
-## Knowledge Files
+**Todo conhecimento novo** (decisões, padrões, experiências, conceitos) vai via `brain.add_memory()`. O cérebro é a única entrada. O recall é a forma de consultar.
 
-| Arquivo | Propósito | Quando Atualizar |
-|---------|-----------|------------------|
-| `.claude/knowledge/priorities/PRIORITY_MATRIX.md` | Tarefas com ICE Score | Ao completar/criar tarefas |
-| `PATTERNS.md` | Padrões e anti-padrões | Genesis-only (cérebro: `--type Pattern`) |
-| `ADR_LOG.md` | Decisões arquiteturais | Genesis-only (cérebro: `--type ADR`) |
-| `DOMAIN.md` | Glossário + regras de negócio | Genesis-only (cérebro: `--type Concept`) |
-| `EXPERIENCE_LIBRARY.md` | Soluções reutilizáveis | Genesis-only (cérebro: `--type Experience`) |
+## Onde Registrar
+
+| Tipo | Como |
+|------|------|
+| Decisão, Padrão, Experiência, Conceito, Estado | `brain.add_memory()` — cérebro é a única entrada |
+| Prioridades (tarefas, ICE Score) | `PRIORITY_MATRIX.md` — único .md editável |
 
 ## Workflow de Registro
 
@@ -31,10 +30,9 @@ Classifique o que foi aprendido/decidido/feito:
 - **Domínio** → cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
 - **Experiência** → cérebro via `brain.add_memory(labels=["Episode", "Experience"])`
 
-### 2. Registrar no Arquivo Correto
-- Ler o arquivo atual para evitar duplicação
-- Adicionar entrada com data
-- Manter formato consistente (ver schema em `.claude/dna/knowledge.schema.md`)
+### 2. Registrar no Lugar Correto
+- **Cérebro**: `brain.add_memory()` — evitar duplicação conferindo via recall antes
+- **PRIORITY_MATRIX.md**: tarefas, ICE Score (ver schema em `.claude/dna/knowledge.schema.md`)
 
 ### 3. Cross-Reference
 Se o registro impacta outros files, atualize-os também:
@@ -44,8 +42,7 @@ Se o registro impacta outros files, atualize-os também:
 
 ### 4. Limpar Obsoletos
 - Mover tarefas completas para "Cemitério" no `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
-- Marcar padrões depreciados (nunca deletar — marcar com ~~strikethrough~~)
-- Atualizar status de ADRs (aceita → depreciada quando substituída)
+- Padrões/ADRs depreciados: registrar no cérebro com `props={"status": "Depreciado"}` ou novo nó que referencia o antigo
 
 ## ICE Score (para PRIORITY_MATRIX)
 

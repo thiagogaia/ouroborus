@@ -55,6 +55,7 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 
 ### Changed
 - `/commit` executes directly without confirmation prompt (`9dc6698`)
+- Instructions reframed: emphasize `brain.add_memory()` as single entry point for knowledge, reduce genesis-only file mentions (`86748d2`)
 
 ### Fixed
 - init-engram Phase 5 uses `.claude/brain/.venv/bin/python3` for populate, embeddings, cognitive — fixes dep resolution in fresh installs (`1d016fb`)

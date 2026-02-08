@@ -89,7 +89,7 @@ brain.save()
 
 Único knowledge file ativamente atualizado — desprioritizar tarefas completadas, adicionar novas.
 
-> **Nota**: Os demais knowledge files (CURRENT_STATE.md, ADR_LOG.md, PATTERNS.md, DOMAIN.md, EXPERIENCE_LIBRARY.md) são genesis-only. Todo conhecimento vai direto para o cérebro via `brain.add_memory()` no passo 3.2. O cérebro já contém tudo. O sono enriquece com conexões semânticas.
+> **Nota**: Todo conhecimento novo vai via `brain.add_memory()` no passo 3.2 — o cérebro é a única entrada. Decisões, padrões, experiências, conceitos: todos pelo cérebro. O recall é a forma de consultar. O sono enriquece com conexões semânticas.
 
 ## Fase 4: Consolidar
 

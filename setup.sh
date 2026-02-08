@@ -576,7 +576,7 @@ O sistema evolui a si mesmo: gera skills sob demanda, versiona mudanças, aposen
 3. **Prioridades**: consulte \`PRIORITY_MATRIX.md\` (único .md ativamente atualizado)
 4. Só leia os \`.md\` de knowledge se o recall não cobrir
 
-> **Nota**: Os knowledge files (.md) são genesis-only — criados no setup e populados no /init-engram. Após o cérebro ser populado, não são mais atualizados. O recall os substitui.
+> **Nota**: Todo conhecimento novo vai via \`brain.add_memory()\` — o cérebro é a única entrada. O recall é a forma de consultar. Único .md editável: PRIORITY_MATRIX.md.
 
 ### Ao Codificar
 ${RULES}
