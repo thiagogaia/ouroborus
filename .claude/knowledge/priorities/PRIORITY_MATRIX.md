@@ -79,6 +79,7 @@
 | CI/CD para validar schemas | ✅ Concluído — .github/workflows/validate.yml | 2026-02-07 |
 | AST Ingestion + Diff Summary | ✅ Concluído — ast_parser.py, diff_parser.py, 451 Code nodes, 97% diffs enriched, integrado em /init-engram e /learn | 2026-02-07 |
 | Domain command promovido para core | ✅ Concluído — core/commands/domain.md, manifest source=core, setup 16 commands, gap ANALISE #4 resolvido | 2026-02-07 |
+| Documentação MANIFEST_JSON.md | ✅ Concluído — docs/MANIFEST_JSON.md criado com estrutura, ciclo de vida, consumidores, fluxo | 2026-02-07 |
 
 ## Como Priorizar
 
