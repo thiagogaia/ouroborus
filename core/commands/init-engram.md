@@ -175,7 +175,7 @@ fi
 
 Processar ADRs, conceitos de domínio, patterns e commits:
 ```bash
-python3 .claude/brain/populate.py all
+.claude/brain/.venv/bin/python3 .claude/brain/populate.py all
 ```
 
 Isso irá:
@@ -183,18 +183,23 @@ Isso irá:
 - Extrair conceitos do DOMAIN.md (glossário, regras, entidades)
 - Extrair patterns do PATTERNS.md
 - Processar últimos 7000 commits do git (memória episódica)
+- **Ingerir estrutura do código via AST** (módulos, classes, funções)
+- **Enriquecer commits com diff** (símbolos modificados)
 
 ### 5.3 Gerar Embeddings para Busca Semântica
 ```bash
-python3 .claude/brain/embeddings.py build
+.claude/brain/.venv/bin/python3 .claude/brain/embeddings.py build
 ```
+
+Usa ChromaDB HNSW como vector store (instalado pelo setup.sh). Modelo local: `all-MiniLM-L6-v2` (384 dims).
 
 ### 5.4 Verificar Saúde do Cérebro
 ```bash
-python3 .claude/brain/cognitive.py health
+.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health
 ```
 
 Se `status: healthy`, continuar. Se não, seguir recomendações.
+Se `vector_backend: npz`, reinstalar deps: `source .claude/brain/.venv/bin/activate && pip install chromadb pydantic-settings`
 
 ### 5.5 Reportar ao Dev
 ```
@@ -210,6 +215,7 @@ Memórias criadas:
 Total: [N] nós, [M] arestas
 Grau médio: [G] (conectividade)
 Embeddings: [E] vetores gerados
+Vector store: [chromadb | npz]
 
 Status: 🟢 Saudável
 ```

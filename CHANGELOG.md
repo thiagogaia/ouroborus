@@ -56,6 +56,9 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 ### Changed
 - `/commit` executes directly without confirmation prompt (`9dc6698`)
 
+### Fixed
+- init-engram Phase 5 uses `.claude/brain/.venv/bin/python3` for populate, embeddings, cognitive — fixes dep resolution in fresh installs (`1d016fb`)
+
 ## [3.0.0] - 2026-02-03
 
 ### Added
