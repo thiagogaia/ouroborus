@@ -183,19 +183,15 @@ Isso irá:
 - Extrair conceitos do DOMAIN.md (glossário, regras, entidades)
 - Extrair patterns do PATTERNS.md
 - Processar últimos 7000 commits do git (memória episódica)
-- **Ingerir estrutura do código via AST** (módulos, classes, funções, interfaces)
-- **Enriquecer commits com análise de diff** (símbolos adicionados/modificados, change shape)
+- **Ingerir estrutura do código via AST** (módulos, classes, funções)
+- **Enriquecer commits com diff** (símbolos modificados)
 
 ### 5.3 Gerar Embeddings para Busca Semântica
 ```bash
 .claude/brain/.venv/bin/python3 .claude/brain/embeddings.py build
 ```
 
-Isso irá:
-- Usar ChromaDB HNSW como vector store primário (instalado pelo setup.sh)
-- Auto-migrar embeddings.npz existentes se ChromaDB estiver vazio
-- Fallback para npz se ChromaDB não estiver disponível
-- Modelo local: `all-MiniLM-L6-v2` (384 dims, offline, gratuito)
+Usa ChromaDB HNSW como vector store (instalado pelo setup.sh). Modelo local: `all-MiniLM-L6-v2` (384 dims).
 
 ### 5.4 Verificar Saúde do Cérebro
 ```bash
@@ -203,11 +199,7 @@ Isso irá:
 ```
 
 Se `status: healthy`, continuar. Se não, seguir recomendações.
-Verificar que `vector_backend: chromadb` — se mostrar `npz`, reinstalar deps:
-```bash
-source .claude/brain/.venv/bin/activate && pip install chromadb pydantic-settings
-.claude/brain/.venv/bin/python3 .claude/brain/patch_chromadb.py
-```
+Se `vector_backend: npz`, reinstalar deps: `source .claude/brain/.venv/bin/activate && pip install chromadb pydantic-settings`
 
 ### 5.5 Reportar ao Dev
 ```
@@ -246,13 +238,23 @@ python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . 
 rm -rf .claude/templates/
 ```
 
-3. Apresentar resumo do que foi:
+3. **Atualizar CLAUDE.md com seção Cérebro Organizacional** (após o cérebro estar populado):
+
+   - Verificar se `CLAUDE.md` já contém `## Cérebro Organizacional`. Se sim, pular.
+   - Se não contiver:
+     1. Ler o conteúdo de `.claude/skills/engram-genesis/references/claude_cerebro_section.md`
+     2. Inserir essa seção **após** `## Orquestração Inteligente` e **antes** de `## Regras de Ouro`
+     3. Atualizar o bloco "Antes de Codificar" para incluir item 3 "Saúde do cérebro" e a frase "O cérebro é a **fonte primária e única**. O recall retorna conteúdo completo (campo `content`) e suporta **busca temporal** (`--recent Nd`, `--since YYYY-MM-DD`, `--sort date`). Os `.md` de knowledge são mantidos em sincronia como fallback."
+     4. Atualizar a Nota para: "Todo conhecimento novo (decisões, padrões, experiências, conceitos) vai via `brain.add_memory()` — o cérebro é a única entrada. O recall é a forma de consultar. Único .md editável: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`."
+
+4. Apresentar resumo do que foi:
    - Gerado (novos componentes)
    - Migrado (do backup)
    - Populado (knowledge files)
    - Validado (health check)
+   - CLAUDE.md atualizado com seção Cérebro (se aplicável)
 
-3. Sugerir próximos passos concretos baseado nas prioridades detectadas.
+5. Sugerir próximos passos concretos baseado nas prioridades detectadas.
 
 ```
 🐍 Engram Init — Concluído!
@@ -262,6 +264,7 @@ rm -rf .claude/templates/
 ✅ Migrados do backup: Z items
 ✅ Knowledge populado: 6 arquivos
 ✅ Cérebro populado: N nós, M arestas, E embeddings
+✅ CLAUDE.md atualizado com seção Cérebro Organizacional (cérebro como fonte da verdade)
 ✅ Health check: PASSED
 
 🗑️  Backups removidos (migração concluída)
