@@ -25,7 +25,7 @@ brain/
 
 ```bash
 # Instalacao completa (recomendado — setup.sh faz isso automaticamente)
-pip install networkx numpy sentence-transformers chromadb pydantic-settings
+pip install numpy sentence-transformers chromadb pydantic-settings
 
 # Python 3.14+: rodar patch apos instalar chromadb
 python3 .claude/brain/patch_chromadb.py

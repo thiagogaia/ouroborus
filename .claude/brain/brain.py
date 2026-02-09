@@ -34,7 +34,7 @@ from typing import Optional, List, Dict, Any, Tuple
 from uuid import uuid4
 
 # ── Auto-activate brain venv (PAT-012) ──
-# The brain's dependencies (numpy, networkx) live in .claude/brain/.venv/
+# The brain's dependencies (numpy, etc.) live in .claude/brain/.venv/
 # This block activates it transparently so all scripts just work.
 _venv_dir = Path(__file__).parent / ".venv"
 if _venv_dir.exists() and "brain/.venv" not in os.environ.get("VIRTUAL_ENV", ""):

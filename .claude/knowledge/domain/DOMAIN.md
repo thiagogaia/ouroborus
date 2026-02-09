@@ -297,7 +297,7 @@ Instalação (setup.sh)
     │
     ├── install_core → schemas + genesis + evolution + seeds + commands
     │
-    ├── install_brain_deps → cria venv + pip install networkx numpy sentence-transformers
+    ├── install_brain_deps → cria venv + pip install numpy sentence-transformers
     │
     ├── generate_claude_md → CLAUDE.md customizado pela stack
     │

@@ -144,7 +144,7 @@
 5. O desenvolvedor confirma
 6. O sistema cria a estrutura `.claude/` com DNA, seeds, agents, commands e knowledge templates
 7. O sistema cria o ambiente virtual Python (`.claude/brain/.venv/`)
-8. O sistema instala dependencias (sentence-transformers, chromadb, networkx, etc.)
+8. O sistema instala dependencias (sentence-transformers, chromadb, numpy, etc.)
 9. O sistema inicializa o banco SQLite do cerebro (`brain.db`)
 10. O sistema gera/atualiza o `CLAUDE.md` com instrucoes do projeto
 11. O sistema exibe resumo da instalacao com proximos passos

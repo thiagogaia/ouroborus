@@ -419,7 +419,7 @@ install_brain_deps() {
     if ! command -v python3 &>/dev/null; then
         print_warn "Python3 não encontrado. Dependências do Brain não instaladas."
         print_warn "Instale Python3 e execute novamente, ou instale manualmente:"
-        print_warn "  pip install networkx numpy sentence-transformers"
+        print_warn "  pip install numpy sentence-transformers"
         return
     fi
 
@@ -488,7 +488,7 @@ install_brain_deps() {
                 print_warn "Não foi possível criar venv."
                 print_warn "Instale o pacote venv do seu sistema e execute novamente."
                 print_warn "Ou instale as dependências globalmente:"
-                print_warn "  pip install networkx numpy sentence-transformers chromadb pydantic-settings"
+                print_warn "  pip install numpy sentence-transformers chromadb pydantic-settings"
                 return
             fi
         fi
@@ -500,7 +500,7 @@ install_brain_deps() {
     (
         source "$VENV_DIR/bin/activate" 2>/dev/null || . "$VENV_DIR/bin/activate"
         pip install --quiet --upgrade pip 2>/dev/null || true
-        pip install --quiet networkx numpy 2>/dev/null && print_done "networkx + numpy instalados"
+        pip install --quiet numpy 2>/dev/null && print_done "numpy instalado"
         pip install --quiet sentence-transformers 2>/dev/null && print_done "sentence-transformers instalado"
         pip install --quiet chromadb pydantic-settings 2>/dev/null && print_done "chromadb + pydantic-settings instalados"
 
@@ -512,7 +512,7 @@ install_brain_deps() {
         fi
     ) || {
         print_warn "Algumas dependências podem não ter sido instaladas."
-        print_warn "Execute: source .claude/brain/.venv/bin/activate && pip install networkx numpy sentence-transformers chromadb pydantic-settings"
+        print_warn "Execute: source .claude/brain/.venv/bin/activate && pip install numpy sentence-transformers chromadb pydantic-settings"
     }
 }
 

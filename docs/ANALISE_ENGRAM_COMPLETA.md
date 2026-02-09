@@ -104,7 +104,7 @@ setup.sh [diretório]
     ├── Instala 15 commands (/learn, /recall, /create, etc.)
     ├── Cria templates de conhecimento (6 .md vazios)
     ├── Copia brain scripts (7 Python modules)
-    ├── Cria .venv isolado + instala numpy, networkx, sentence-transformers
+    ├── Cria .venv isolado + instala numpy, sentence-transformers
     ├── Gera CLAUDE.md (stack-aware, com workflow obrigatório)
     ├── Gera settings.json (permissões de segurança)
     └── Inicializa manifest.json (registro de componentes)

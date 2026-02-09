@@ -472,7 +472,7 @@
 - **Descoberto em**: 2026-02-05 (commit c5b8efa)
 
 ### PAT-036: Auto-Ativação de Venv via site.addsitedir
-- **Contexto**: scripts Python precisam de deps (numpy, networkx) que vivem em .venv, mas são chamados via `python3` do sistema
+- **Contexto**: scripts Python precisam de deps (numpy, etc.) que vivem em .venv, mas são chamados via `python3` do sistema
 - **Solução**: no módulo base (brain.py), detectar e ativar o venv automaticamente:
   ```python
   import site
