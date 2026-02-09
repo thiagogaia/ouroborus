@@ -387,6 +387,13 @@ MANIFEST_EOF
         chmod +x "$CLAUDE_DIR/brain/"*.py "$CLAUDE_DIR/brain/"*.sh 2>/dev/null || true
         print_done "Brain instalado (cérebro organizacional)"
     fi
+
+    # 11. Extras (agents e skills opcionais) — reutiliza install_extras.sh
+    if [[ -d "$SCRIPT_DIR/extras" ]] && [[ -f "$SCRIPT_DIR/install_extras.sh" ]]; then
+        print_step "Instalando extras (agents e skills opcionais)..."
+        "$SCRIPT_DIR/install_extras.sh" "$TARGET_DIR" 2>/dev/null || true
+        print_done "Extras instalados"
+    fi
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -707,14 +714,12 @@ STATE_EOF
 
 backup_for_update() {
     local CLAUDE_DIR="$TARGET_DIR/.claude"
-    local TIMESTAMP
-    TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-    local BACKUP_DIR="$TARGET_DIR/.claude.update-backup.${TIMESTAMP}"
+    local BACKUP_DIR="$TARGET_DIR/.claude.bak"
 
     if ! $FORCE; then
         echo ""
         echo -e "  ${YELLOW}Um backup será criado antes de atualizar.${NC}"
-        echo -e "  ${YELLOW}Backup em: ${BOLD}${BACKUP_DIR}/${NC}"
+        echo -e "  ${YELLOW}Backup em: ${BOLD}.claude.bak/${NC} e ${BOLD}CLAUDE.md.bak${NC}"
         echo ""
         read -p "  Continuar? (S/n): " -n 1 -r
         echo ""
@@ -722,7 +727,13 @@ backup_for_update() {
     fi
 
     cp -r "$CLAUDE_DIR" "$BACKUP_DIR"
-    print_done "Backup criado: $(basename "$BACKUP_DIR")/"
+    print_done "Backup criado: .claude.bak/"
+
+    if [[ -f "$TARGET_DIR/CLAUDE.md" ]]; then
+        cp "$TARGET_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md.bak"
+        print_done "Backup criado: CLAUDE.md.bak"
+    fi
+
     UPDATE_BACKUP_DIR="$BACKUP_DIR"
 }
 
@@ -845,45 +856,61 @@ do_update() {
     chmod +x "$CLAUDE_DIR/skills/engram-evolution/scripts/"*.py 2>/dev/null || true
     print_done "Evolution atualizado"
 
-    # ── 5. Update seeds with customization warning (gap 6) ──
+    # ── 5. Update seeds (aditivo: só adiciona novos, preserva existentes) ──
     if [[ -d "$SCRIPT_DIR/core/seeds" ]]; then
-        local SEED_WARNINGS=()
+        local SEEDS_ADDED=0
+        local SEEDS_PRESERVED=0
         for seed in "$SCRIPT_DIR/core/seeds"/*/; do
             [[ ! -d "$seed" ]] && continue
             local SEED_NAME
             SEED_NAME=$(basename "$seed")
             local DEST_SEED="$CLAUDE_DIR/skills/$SEED_NAME"
 
-            # Detect local-only files that would be overwritten
-            if [[ -d "$DEST_SEED" ]]; then
-                local LOCAL_EXTRAS=()
-                while IFS= read -r local_file; do
-                    local REL="${local_file#$DEST_SEED/}"
-                    if [[ ! -f "$seed/$REL" ]]; then
-                        LOCAL_EXTRAS+=("$REL")
-                    fi
-                done < <(find "$DEST_SEED" -type f 2>/dev/null)
-                if [[ ${#LOCAL_EXTRAS[@]} -gt 0 ]]; then
-                    SEED_WARNINGS+=("$SEED_NAME: ${#LOCAL_EXTRAS[@]} arquivo(s) local(is) preservado(s)")
-                fi
+            if [[ ! -d "$DEST_SEED" ]]; then
+                cp -r "${seed%/}" "$DEST_SEED"
+                ((SEEDS_ADDED++)) || true
+            else
+                ((SEEDS_PRESERVED++)) || true
             fi
-
-            cp -r "${seed%/}" "$CLAUDE_DIR/skills/$SEED_NAME"
         done
-        print_done "Seeds atualizados"
-        for warn in "${SEED_WARNINGS[@]:-}"; do
-            [[ -n "$warn" ]] && print_warn "$warn"
-        done
+        if [[ $SEEDS_ADDED -gt 0 ]]; then
+            print_done "Seeds adicionados: $SEEDS_ADDED novo(s)"
+        fi
+        [[ $SEEDS_PRESERVED -gt 0 ]] && print_done "Seeds existentes preservados: $SEEDS_PRESERVED"
     fi
 
-    # ── 6. Update agents, commands, skill templates ──
+    # ── 6. Update agents (aditivo: só adiciona novos, preserva existentes) ──
     if [[ -d "$SCRIPT_DIR/core/agents" ]]; then
-        cp "$SCRIPT_DIR/core/agents/"*.md "$CLAUDE_DIR/agents/" 2>/dev/null || true
-        print_done "Agents atualizados"
+        local AGENTS_ADDED=0
+        local AGENTS_PRESERVED=0
+        for agent in "$SCRIPT_DIR/core/agents/"*.md; do
+            [[ ! -f "$agent" ]] && continue
+            local AGENT_NAME
+            AGENT_NAME=$(basename "$agent")
+            local DEST_AGENT="$CLAUDE_DIR/agents/$AGENT_NAME"
+
+            if [[ ! -f "$DEST_AGENT" ]]; then
+                cp "$agent" "$DEST_AGENT"
+                ((AGENTS_ADDED++)) || true
+            else
+                ((AGENTS_PRESERVED++)) || true
+            fi
+        done
+        if [[ $AGENTS_ADDED -gt 0 ]]; then
+            print_done "Agents adicionados: $AGENTS_ADDED novo(s)"
+        fi
+        [[ $AGENTS_PRESERVED -gt 0 ]] && print_done "Agents existentes preservados: $AGENTS_PRESERVED"
     fi
 
     cp "$SCRIPT_DIR/core/commands/"*.md "$CLAUDE_DIR/commands/" 2>/dev/null || true
     print_done "Commands atualizados"
+
+    # ── 6b. Extras (adiciona novos; preserva existentes) — reutiliza install_extras.sh
+    if [[ -d "$SCRIPT_DIR/extras" ]] && [[ -f "$SCRIPT_DIR/install_extras.sh" ]]; then
+        print_step "Atualizando extras (novos agents/skills se houver)..."
+        "$SCRIPT_DIR/install_extras.sh" "$TARGET_DIR" 2>/dev/null || true
+        print_done "Extras atualizados"
+    fi
 
     if [[ -d "$SCRIPT_DIR/templates/skills" ]]; then
         mkdir -p "$CLAUDE_DIR/templates/skills"
@@ -954,7 +981,7 @@ do_update() {
     echo -e "  ${GREEN}✓${NC} Brain scripts (dados preservados)"
     echo -e "  ${GREEN}✓${NC} Agents, commands, templates"
     echo -e "  ${GREEN}✓${NC} manifest.json (versão e seeds)"
-    [[ -n "${UPDATE_BACKUP_DIR:-}" ]] && echo -e "  ${GREEN}✓${NC} Backup em: $(basename "$UPDATE_BACKUP_DIR")/"
+    [[ -n "${UPDATE_BACKUP_DIR:-}" ]] && echo -e "  ${GREEN}✓${NC} Backup em: .claude.bak/ e CLAUDE.md.bak"
     $REGENERATE && echo -e "  ${GREEN}✓${NC} CLAUDE.md e settings.json regenerados"
     ! $REGENERATE && echo -e "  ${YELLOW}—${NC} CLAUDE.md e settings.json preservados"
     echo ""
@@ -990,7 +1017,7 @@ verify_installation() {
     echo -e "  ${GREEN}│   └── knowledge/${NC}                   (6 knowledge files)"
     echo ""
 
-    $HAS_PREVIOUS_CONFIG && echo -e "  ${YELLOW}📋 Backup em .claude.bak/ — /init-engram vai mergear${NC}" && echo ""
+    $HAS_PREVIOUS_CONFIG && echo -e "  ${YELLOW}📋 Backup em .claude.bak/ — rode /init-engram para merge e cleanup${NC}" && echo ""
 
     echo -e "  ${BOLD}${YELLOW}Próximo passo:${NC}"
     echo ""

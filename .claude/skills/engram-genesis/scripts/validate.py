@@ -16,6 +16,7 @@ import os
 import re
 import sys
 import stat
+from typing import Optional, Tuple, List
 
 
 class ValidationError:
@@ -28,7 +29,7 @@ class ValidationError:
         return f"  {icon} {self.message}"
 
 
-def parse_frontmatter(content: str) -> tuple[dict | None, str]:
+def parse_frontmatter(content: str) -> Tuple[Optional[dict], str]:
     """Extract YAML frontmatter from markdown content."""
     if not content.startswith("---"):
         return None, content
@@ -64,9 +65,9 @@ def parse_frontmatter(content: str) -> tuple[dict | None, str]:
     return fm, body
 
 
-def validate_skill(path: str) -> list[ValidationError]:
+def validate_skill(path: str) -> List[ValidationError]:
     """Validate a skill directory against skill.schema.md rules."""
-    errors = []
+    errors: List[ValidationError] = []
     path = path.rstrip("/")
     skill_name = os.path.basename(path)
 
@@ -140,9 +141,9 @@ def validate_skill(path: str) -> list[ValidationError]:
     return errors
 
 
-def validate_agent(path: str) -> list[ValidationError]:
+def validate_agent(path: str) -> List[ValidationError]:
     """Validate an agent .md file against agent.schema.md rules."""
-    errors = []
+    errors: List[ValidationError] = []
 
     if not os.path.isfile(path):
         errors.append(ValidationError("error", f"Agent file not found: {path}"))
@@ -191,9 +192,9 @@ def validate_agent(path: str) -> list[ValidationError]:
     return errors
 
 
-def validate_command(path: str) -> list[ValidationError]:
+def validate_command(path: str) -> List[ValidationError]:
     """Validate a command .md file against command.schema.md rules."""
-    errors = []
+    errors: List[ValidationError] = []
 
     if not os.path.isfile(path):
         errors.append(ValidationError("error", f"Command file not found: {path}"))
@@ -217,9 +218,9 @@ def validate_command(path: str) -> list[ValidationError]:
     return errors
 
 
-def validate_manifest(path: str) -> list[ValidationError]:
+def validate_manifest(path: str) -> List[ValidationError]:
     """Validate manifest.json structure."""
-    errors = []
+    errors: List[ValidationError] = []
 
     if not os.path.isfile(path):
         errors.append(ValidationError("error", f"Manifest not found: {path}"))
