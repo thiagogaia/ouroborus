@@ -141,6 +141,16 @@ python3 .claude/brain/recall.py "autenticação" --compact --top 20
 python3 .claude/brain/recall.py --expand ADR-001,PAT-012 --format json
 ```
 
+### Quando usar compact + expand
+
+Use **compact** primeiro e **--expand** só nos IDs relevantes quando:
+- Query ampla (ex: "arquitetura", "patterns") — muitos resultados, poucos relevantes
+- Economia de tokens prioritária — evita trazer 10 full contents quando só 2–3 importam
+
+Use **full** (padrão, sem --compact) quando:
+- Query específica — maioria dos top 10 é relevante
+- Simplicidade — uma chamada basta
+
 ## Integração com Workflow
 
 ```
