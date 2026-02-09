@@ -61,6 +61,7 @@ MODE="install"
 FORCE=false
 REGENERATE=false
 TARGET_DIR=""
+EXTRAS_MODE="auto"
 
 for arg in "$@"; do
     case "$arg" in
@@ -70,6 +71,7 @@ for arg in "$@"; do
         --uninstall) MODE="uninstall" ;;
         --force) FORCE=true ;;
         --regenerate) REGENERATE=true ;;
+        --extras) shift; EXTRAS_MODE="${1:-auto}" ;;
         *) TARGET_DIR="$arg" ;;
     esac
 done
@@ -391,7 +393,10 @@ MANIFEST_EOF
     # 11. Extras (agents e skills opcionais) — reutiliza install_extras.sh
     if [[ -d "$SCRIPT_DIR/extras" ]] && [[ -f "$SCRIPT_DIR/install_extras.sh" ]]; then
         print_step "Instalando extras (agents e skills opcionais)..."
-        "$SCRIPT_DIR/install_extras.sh" "$TARGET_DIR" 2>/dev/null || true
+        local INSTALL_CMD=("$SCRIPT_DIR/install_extras.sh" "--mode" "$EXTRAS_MODE")
+        $FORCE && INSTALL_CMD+=("--force")
+        INSTALL_CMD+=("$TARGET_DIR")
+        "${INSTALL_CMD[@]}" 2>/dev/null || true
         print_done "Extras instalados"
     fi
 }
@@ -1012,7 +1017,7 @@ verify_installation() {
     echo -e "  ${GREEN}│   ├── manifest.json${NC}                (registro de componentes)"
     echo -e "  ${GREEN}│   ├── settings.json${NC}                (permissões)"
     echo -e "  ${GREEN}│   ├── skills/${NC}                      (9 skills: genesis + evolution + 7 seeds)"
-    echo -e "  ${GREEN}│   ├── agents/${NC}                      (3 agents: architect, domain-analyst, db-expert)"
+    echo -e "  ${GREEN}│   ├── agents/${NC}                      (core + extras: architect, domain-analyst, db-expert, etc.)"
     echo -e "  ${GREEN}│   ├── commands/${NC}                    (16 commands)"
     echo -e "  ${GREEN}│   └── knowledge/${NC}                   (6 knowledge files)"
     echo ""

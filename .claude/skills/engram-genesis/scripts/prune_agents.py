@@ -136,7 +136,8 @@ Examples:
     existing = set(list_existing_agents(project_dir))
 
     if args.remove:
-        to_remove = parse_list_arg(args.remove) & existing
+        # Full list: remove even agents not on disk (unregister cleans manifest)
+        to_remove = parse_list_arg(args.remove)
     else:
         needed = parse_list_arg(args.needed)
         to_remove = existing - needed
