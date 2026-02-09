@@ -77,13 +77,13 @@ Ouroborus transforms Claude Code into an agent that **learns from each session**
 ### 1. Clone
 
 ```bash
-git clone https://github.com/your-user/engram.git ~/engram
+git clone git@github.com:thiagogaia/ouroborus.git ~/ouroborus
 ```
 
 ### 2. Install
 
 ```bash
-cd ~/engram
+cd ~/ouroborus
 ./setup.sh /path/to/your/project
 ```
 
@@ -345,6 +345,15 @@ During `/learn`, the evolution skill:
 ./batch-setup.sh -y ~/proj1 ~/proj2     # Batch mode (no prompts, for CI/CD)
 ./batch-setup.sh --update proj1 proj2   # Update core in multiple projects
 ./batch-setup.sh --uninstall proj1 proj2  # Remove from multiple projects
+```
+
+### install_extras.sh (optional extras)
+
+```bash
+./install_extras.sh --mode auto    # Detect infra/auth signals and install matching extras
+./install_extras.sh --mode all     # Install all extras
+./install_extras.sh --mode none    # Skip extras (default)
+./install_extras.sh --force        # Override safeguards
 ```
 
 ## Brain Maintenance

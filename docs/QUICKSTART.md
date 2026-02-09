@@ -7,8 +7,8 @@
 ## 1. Install (terminal)
 
 ```bash
-git clone https://github.com/your-org/engram.git ~/engram
-cd ~/engram
+git clone git@github.com:thiagogaia/ouroborus.git ~/ouroborus
+cd ~/ouroborus
 ./setup.sh /path/to/your/project
 ```
 
@@ -18,6 +18,12 @@ For multiple projects at once:
 
 ```bash
 ./batch-setup.sh ~/proj1 ~/proj2 ~/proj3
+```
+
+Optional extras (niche agents/skills):
+
+```bash
+./install_extras.sh --mode auto   # installs matching extras if infra/auth signals detected
 ```
 
 ## 2. Initialize (inside Claude Code)

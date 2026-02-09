@@ -361,29 +361,85 @@ def suggest_components(stack: dict) -> dict:
 
     # --- Agents ---
 
-    # DB expert
+    orm = stack.get("orm")
+    fw = stack.get("framework")
+    auth = stack.get("auth")
+    infra = stack.get("infra", [])
+
+    # DB expert (with customization by ORM)
     if stack.get("orm") or stack.get("database"):
         db_name = stack.get("database", "SQL")
-        orm_name = stack.get("orm", "")
+        orm_name = orm or ""
+        cust = {"variant": "generic", "skills": [], "focus": []}
+        if orm == "prisma":
+            cust = {"variant": "prisma", "orm": "prisma", "skills": ["prisma-workflow"],
+                    "focus": ["schema.prisma", "migrations", "prisma studio"],
+                    "remove_sections": ["Drizzle", "SQLAlchemy"]}
+        elif orm == "drizzle":
+            cust = {"variant": "drizzle", "orm": "drizzle", "skills": ["drizzle-workflow"],
+                    "focus": ["schema", "drizzle-kit", "drizzle studio"]}
+        elif orm in ("typeorm", "sequelize") or "sqlalchemy" in str(orm):
+            cust = {"variant": "sqlalchemy", "orm": orm, "focus": ["migrations", "queries"]}
         suggestions["agents"].append({
             "name": "db-expert",
             "reason": f"Database ({db_name}) + ORM ({orm_name}) detected — needs DB specialist",
             "priority": "high",
+            "customization": cust,
         })
 
-    # Architect (always)
+    # Architect (with customization by framework)
+    arch_cust = {"variant": "generic", "skills": ["project-analyzer"], "focus": []}
+    if fw == "nextjs":
+        arch_cust = {"variant": "nextjs", "skills": ["project-analyzer", "nextjs-patterns"],
+                     "focus": ["App Router", "Server Components", "Server Actions"]}
+    elif fw == "django":
+        arch_cust = {"variant": "django", "skills": ["project-analyzer", "django-patterns"],
+                     "focus": ["apps", "manage.py", "settings"]}
+    elif fw == "fastapi":
+        arch_cust = {"variant": "fastapi", "skills": ["project-analyzer", "fastapi-patterns"]}
     suggestions["agents"].append({
         "name": "architect",
         "reason": "Universal — every project benefits from architectural guidance",
         "priority": "high",
+        "customization": arch_cust,
     })
 
-    # Domain analyst (always)
+    # Domain analyst (generic customization)
     suggestions["agents"].append({
         "name": "domain-analyst",
         "reason": "Universal — discovers and documents business rules",
         "priority": "medium",
+        "customization": {"variant": "generic", "focus": [stack.get("src_dir", "src/") or "src/"]},
     })
+
+    # Auth expert (when auth detected) — source: extras
+    if auth:
+        auth_cust = {"variant": "generic", "skills": ["auth-patterns"], "focus": []}
+        if auth == "nextauth":
+            auth_cust = {"variant": "nextauth", "skills": ["auth-patterns"],
+                        "focus": ["NextAuth", "providers", "session", "middleware"]}
+        elif auth == "clerk":
+            auth_cust = {"variant": "clerk", "skills": ["auth-patterns"],
+                        "focus": ["Clerk", "webhooks", "organizations"]}
+        suggestions["agents"].append({
+            "name": "auth-expert",
+            "reason": f"Auth ({auth}) detected — authentication, sessions, providers",
+            "priority": "high",
+            "customization": auth_cust,
+            "source": "extras",
+        })
+
+    # Infra expert (when infra beyond docker)
+    infra_signals = [i for i in infra if i in (
+        "kubernetes", "kustomize", "argocd", "terraform", "gitlab-ci", "github-actions")]
+    if infra_signals:
+        suggestions["agents"].append({
+            "name": "infra-expert",
+            "reason": f"Infra detected ({', '.join(infra_signals)}) — K8s, CI/CD, GitOps",
+            "priority": "medium",
+            "customization": {"variant": "devops", "skills": ["devops-patterns"], "focus": infra_signals},
+            "source": "extras",
+        })
 
     # --- Summary ---
     suggestions["reasoning"].append(

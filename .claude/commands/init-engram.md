@@ -1,52 +1,32 @@
 Inicializar o Engram para este projeto usando o sistema de auto-geração.
 
-## Fase 0: Migração de Backup (se existir)
+**Este comando cria tudo do zero.** Se houver backup, fará merge e cleanup antes de prosseguir.
 
-O setup.sh cria backups quando já existe configuração anterior.
-Esta fase detecta, analisa e migra conteúdo customizado.
+## Fase 0.5: Merge do Backup (quando backup existe)
 
-1. Execute a detecção de backups:
+1. Execute a detecção:
 ```bash
 python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --detect --output json
 ```
 
-2. Se backups forem encontrados (`found: true`), execute análise completa:
+2. Se `found: true`, executar merge em vez de alertar:
+   - **agents, skills, commands, knowledge, settings**: merge conforme análise (migrate_backup)
+   - **brain**: NUNCA tocar — manter o brain do projeto
+
+3. Executar análise e merge:
 ```bash
 python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --analyze --output json
-```
-
-3. Apresente ao dev o que foi encontrado:
-```
-🔄 Backup Detectado — Análise de Migração
-═════════════════════════════════════════
-
-Componentes customizados encontrados:
-  📦 Skills: [listar se houver]
-  📦 Commands: [listar se houver]
-  📦 Agents: [listar se houver]
-
-Knowledge com conteúdo útil:
-  📚 [arquivo]: [X linhas de conteúdo]
-
-Permissões customizadas:
-  ⚙️  [X] permissões adicionais detectadas
-
-Recomendações:
-  🔴 [alta prioridade]
-  🟡 [média prioridade]
-
-Estratégia: SMART (mesclar inteligentemente)
-Continuar com migração? (perguntar ao dev)
-```
-
-4. Se aprovado, execute a migração:
-```bash
 python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --migrate --strategy smart
 ```
 
-5. **NÃO apague os backups ainda** — isso será feito na Fase Final.
+4. Após merge confirmado, cleanup:
+```bash
+python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --cleanup
+```
 
-Se não houver backups, pule para Fase 1.
+5. Prosseguir para Fase 1.
+
+Se `found: false`, prosseguir diretamente para Fase 1.
 
 ## Fase 1: Análise do Projeto
 
@@ -71,8 +51,10 @@ Skills a gerar:
   🔴 [nome] — [razão]
   🟡 [nome] — [razão]
 
-Agents a gerar:
-  🔴 [nome] — [razão]
+Agents:
+  Remover: [to_remove]
+  Manter e customizar: [to_keep]
+  Criar e customizar: [to_create]
 
 Seeds universais (já instalados):
   ✅ project-analyzer
@@ -81,22 +63,30 @@ Seeds universais (já instalados):
   ✅ priority-engine
   ✅ code-reviewer
 
-[Se houve migração na Fase 0:]
+[Se houve merge na Fase 0.5:]
 Migrados do backup:
   ✅ [componentes preservados]
 
 Continuar? (perguntar ao dev)
 ```
 
-## Fase 3: Auto-Geração via Genesis
+## Fase 2.5: Agents — Prune, Create, Customize
 
-Ativar o skill `engram-genesis`. Para cada componente aprovado:
+**Só agents.** A Fase 3 trata skills.
+
+1. Calcular: needed = [a["name"] for a in suggestions["agents"]], existing = agents em `.claude/agents/*.md`, to_remove = existing - needed, to_keep = existing ∩ needed, to_create = needed - existing
+2. **Prune**: `python3 .claude/skills/engram-genesis/scripts/prune_agents.py --project-dir . --needed agent1,agent2,... --output json` (lista = needed comma-separated)
+3. **Create**: Para cada em to_create: `python3 .claude/skills/engram-genesis/scripts/generate_component.py --type agent --name X --project-dir .` (scaffold)
+4. **Customize**: Para cada em (to_keep ∪ to_create), Claude customiza usando `.claude/skills/engram-genesis/references/agent-customization-guide.md` e output do analyze_project (suggestions.agents[i].customization)
+5. **Validar**: `python3 .claude/skills/engram-genesis/scripts/validate.py --type agent --path .claude/agents/{name}.md`
+6. **Registrar**: `python3 .claude/skills/engram-genesis/scripts/register.py --type agent --name {name} --project-dir .`
+
+## Fase 3: Auto-Geração via Genesis — Skills
+
+Ativar o skill `engram-genesis`. Para cada **skill** aprovado:
 
 1. Gerar scaffold via `generate_component.py`
-2. **Customizar o conteúdo** para este projeto específico:
-   - Skills: preencher workflow com padrões reais da stack
-   - Agents: configurar tools e skills relevantes
-   - Commands: adaptar para o package manager e scripts do projeto
+2. **Customizar o conteúdo** para este projeto específico (workflow, padrões da stack)
 3. Validar via `validate.py`
 4. Registrar via `register.py`
 
@@ -142,13 +132,11 @@ brain.save()
 - Inspecionar código existente
 - Detectar padrões recorrentes (naming, estrutura, error handling)
 - Registrar como padrões aprovados
-- **Se houve migração**: verificar se padrões do backup ainda são válidos
 
 ### DOMAIN.md
 - Analisar nomes de entidades, variáveis, tabelas
 - Extrair glossário do domínio
 - Mapear regras de negócio implícitas no código
-- **Se houve migração**: mesclar termos do backup
 
 ### PRIORITY_MATRIX.md
 - Buscar TODOs no código
@@ -156,8 +144,7 @@ brain.save()
 - Priorizar com ICE Score
 
 ### EXPERIENCE_LIBRARY.md
-- **Se houve migração**: manter experiências do backup
-- Caso contrário: criar vazia (será populada pelo /learn)
+- Criar vazia (será populada pelo /learn)
 
 ## Fase 5: Popular Cérebro Organizacional
 
@@ -228,17 +215,12 @@ Executar `/doctor` para validar a instalação completa.
 
 ## Fase 7: Cleanup e Relatório Final
 
-1. **Se houve backup na Fase 0**, execute cleanup:
-```bash
-python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --cleanup
-```
-
-2. Remover staging de templates (se existir):
+1. Remover staging de templates (se existir):
 ```bash
 rm -rf .claude/templates/
 ```
 
-3. **Atualizar CLAUDE.md com seção Cérebro Organizacional** (após o cérebro estar populado):
+2. **Atualizar CLAUDE.md com seção Cérebro Organizacional** (após o cérebro estar populado):
 
    - Verificar se `CLAUDE.md` já contém `## Cérebro Organizacional`. Se sim, pular.
    - Se não contiver:
@@ -247,14 +229,14 @@ rm -rf .claude/templates/
      3. Atualizar o bloco "Antes de Codificar" para incluir item 3 "Saúde do cérebro" e a frase "O cérebro é a **fonte primária e única**. O recall retorna conteúdo completo (campo `content`) e suporta **busca temporal** (`--recent Nd`, `--since YYYY-MM-DD`, `--sort date`). Os `.md` de knowledge são mantidos em sincronia como fallback."
      4. Atualizar a Nota para: "Todo conhecimento novo (decisões, padrões, experiências, conceitos) vai via `brain.add_memory()` — o cérebro é a única entrada. O recall é a forma de consultar. Único .md editável: `.claude/knowledge/priorities/PRIORITY_MATRIX.md`."
 
-4. Apresentar resumo do que foi:
+3. Apresentar resumo do que foi:
    - Gerado (novos componentes)
    - Migrado (do backup)
    - Populado (knowledge files)
    - Validado (health check)
    - CLAUDE.md atualizado com seção Cérebro (se aplicável)
 
-5. Sugerir próximos passos concretos baseado nas prioridades detectadas.
+4. Sugerir próximos passos concretos baseado nas prioridades detectadas.
 
 ```
 🐍 Engram Init — Concluído!

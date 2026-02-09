@@ -6,10 +6,11 @@ set -euo pipefail
 #    Instala agents e skills opcionais (nicho/domínio)
 # ═══════════════════════════════════════════════════════════════
 # Uso:
-#   ./install_extras.sh                → instala no diretório atual
-#   ./install_extras.sh /meu/projeto   → instala no diretório especificado
-#   ./install_extras.sh --list         → mostra extras disponíveis
-#   ./install_extras.sh --help         → mostra ajuda
+#   ./install_extras.sh                               → instala no diretório atual (modo: all)
+#   ./install_extras.sh /meu/projeto                  → instala no diretório especificado
+#   ./install_extras.sh --list                        → mostra extras disponíveis
+#   ./install_extras.sh --mode auto|all|none          → controla instalação de extras
+#   ./install_extras.sh --help                        → mostra ajuda
 #
 # Pré-requisito: Engram já instalado via setup.sh
 # ═══════════════════════════════════════════════════════════════
@@ -48,6 +49,7 @@ show_help() {
     echo "  -h, --help     Show this help"
     echo "  -v, --version  Show version"
     echo "  -l, --list     List available extras without installing"
+    echo "  --mode         Install mode for extras: auto | all | none (default: all)"
     echo "  --force        Overwrite existing extras (default: skip)"
     echo ""
     echo "Examples:"
@@ -98,12 +100,14 @@ list_extras() {
 MODE="install"
 FORCE=false
 TARGET_DIR=""
+EXTRAS_MODE="all"
 
 for arg in "$@"; do
     case "$arg" in
         -h|--help) show_help ;;
         -v|--version) show_version ;;
         -l|--list) list_extras ;;
+        --mode) shift; EXTRAS_MODE="${1:-all}" ;;
         --force) FORCE=true ;;
         *) TARGET_DIR="$arg" ;;
     esac
@@ -135,6 +139,7 @@ echo -e "${BOLD}  🐍 Engram v${VERSION} — Installing Extras${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
 print_step "Projeto: ${BOLD}$TARGET_DIR${NC}"
+echo -e "  ${BOLD}Modo:${NC} ${EXTRAS_MODE}"
 echo ""
 
 agents_installed=0
@@ -142,19 +147,112 @@ agents_skipped=0
 skills_installed=0
 skills_skipped=0
 
+should_install_agent() {
+    local name="$1"
+    case "$EXTRAS_MODE" in
+        none) return 1 ;;
+        all) return 0 ;;
+        auto)
+            # Auto mode: install only if signals detected
+            case "$name" in
+                auth-expert)
+                    [[ "$SIGNAL_AUTH" == "true" ]] && return 0 || return 1
+                    ;;
+                infra-expert)
+                    [[ "$SIGNAL_INFRA" == "true" ]] && return 0 || return 1
+                    ;;
+                prompt-engineer)
+                    # Prompt engineer is generic; install only if explicit 'all'
+                    return 1
+                    ;;
+                *)
+                    return 1
+                    ;;
+            esac
+            ;;
+        *)
+            return 0 ;;
+    esac
+}
+
+should_install_skill() {
+    local name="$1"
+    case "$EXTRAS_MODE" in
+        none) return 1 ;;
+        all) return 0 ;;
+        auto)
+            case "$name" in
+                devops-patterns)
+                    [[ "$SIGNAL_INFRA" == "true" ]] && return 0 || return 1
+                    ;;
+                fintech-domain|n8n-agent-builder|sales-funnel-optimizer)
+                    # Domain/niche skills: install only on 'all'
+                    return 1
+                    ;;
+                *)
+                    return 1
+                    ;;
+            esac
+            ;;
+        *)
+            return 0 ;;
+    esac
+}
+
+# Detect signals (auto mode)
+SIGNAL_INFRA="false"
+SIGNAL_AUTH="false"
+if [[ "$EXTRAS_MODE" == "auto" ]]; then
+    # Try core analyzer first
+    ANALYZER="$SCRIPT_DIR/core/genesis/scripts/analyze_project.py"
+    if [[ -f "$ANALYZER" ]] && command -v python3 &>/dev/null; then
+        ANALYSIS_JSON=$(python3 "$ANALYZER" --project-dir "$TARGET_DIR" --output json 2>/dev/null || echo "")
+        if [[ -n "$ANALYSIS_JSON" ]]; then
+            # Infra signals
+            if echo "$ANALYSIS_JSON" | grep -q '"infra":'; then
+                if echo "$ANALYSIS_JSON" | grep -q '"github-actions"\|"kubernetes"\|"kustomize"\|"argocd"\|"terraform"'; then
+                    SIGNAL_INFRA="true"
+                fi
+            fi
+            # Auth signal
+            if echo "$ANALYSIS_JSON" | grep -q '"auth": *"nextauth"\|"auth": *"clerk"\|"auth": *"better-auth"\|"auth": *"lucia"'; then
+                SIGNAL_AUTH="true"
+            fi
+        fi
+    fi
+    # Fallback heuristics if analyzer not available or empty
+    [[ -d "$TARGET_DIR/.github/workflows" ]] && SIGNAL_INFRA="true"
+    [[ -d "$TARGET_DIR/k8s" || -d "$TARGET_DIR/kubernetes" ]] && SIGNAL_INFRA="true"
+    [[ -f "$TARGET_DIR/terraform/main.tf" || -d "$TARGET_DIR/terraform" ]] && SIGNAL_INFRA="true"
+    if [[ -f "$TARGET_DIR/package.json" ]]; then
+        PKG=$(cat "$TARGET_DIR/package.json")
+        echo "$PKG" | grep -q '"next-auth"\|"@auth/core"\|"@clerk/nextjs"\|"better-auth"\|"lucia"' && SIGNAL_AUTH="true"
+    fi
+    # If no signals detected, switch to 'all' to avoid missing helpful extras
+    if [[ "$SIGNAL_INFRA" == "false" && "$SIGNAL_AUTH" == "false" ]]; then
+        print_warn "Nenhum sinal de infra/auth detectado — instalando TODOS os extras (fallback)"
+        EXTRAS_MODE="all"
+    fi
+fi
+
 # Install extra agents
 if [[ -d "$EXTRAS_DIR/agents" ]]; then
     for agent in "$EXTRAS_DIR/agents/"*.md; do
         [[ -f "$agent" ]] || continue
         local_name=$(basename "$agent")
         dest="$CLAUDE_DIR/agents/$local_name"
+        base="${local_name%.md}"
+
+        if ! should_install_agent "$base"; then
+            continue
+        fi
 
         if [[ -f "$dest" ]] && ! $FORCE; then
             print_warn "Agent já existe, pulando: $local_name (use --force para sobrescrever)"
             ((agents_skipped++)) || true
         else
             cp "$agent" "$dest"
-            print_done "Agent instalado: ${BOLD}${local_name%.md}${NC}"
+            print_done "Agent instalado: ${BOLD}${base}${NC}"
             ((agents_installed++)) || true
         fi
     done
@@ -166,6 +264,10 @@ if [[ -d "$EXTRAS_DIR/skills" ]]; then
         [[ -d "$skill_dir" ]] || continue
         local_name=$(basename "$skill_dir")
         dest="$CLAUDE_DIR/skills/$local_name"
+
+        if ! should_install_skill "$local_name"; then
+            continue
+        fi
 
         if [[ -d "$dest" ]] && ! $FORCE; then
             print_warn "Skill já existe, pulando: $local_name (use --force para sobrescrever)"
