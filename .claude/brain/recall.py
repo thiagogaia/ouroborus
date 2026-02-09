@@ -208,7 +208,7 @@ def search_brain(
             "labels": labels_list,
             "date": node_date,
             "summary": props.get("summary", "")[:200],
-            "content": node_content[:2000] if node_content else None,
+            "content": node_content if node_content else None,
             "score": round(item.get("score", 0) + connection_boost, 3),
             "author": props.get("author"),
             "connections": semantic_connections[:10]

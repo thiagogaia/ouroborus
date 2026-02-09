@@ -50,9 +50,10 @@ O `/recall` ativa o cérebro organizacional em `.claude/brain/` para buscar mem�
 ### Passo 1: Busca no Cérebro
 
 ```bash
-source .claude/brain/.venv/bin/activate 2>/dev/null || true
-python3 .claude/brain/recall.py "<QUERY_DO_USUARIO>"
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "<QUERY_DO_USUARIO>" --format json
 ```
+
+Use `--format json` para obter o `content` completo de cada memória (parseável).
 
 O script retorna JSON com:
 ```json
@@ -64,7 +65,7 @@ O script retorna JSON com:
       "title": "Título da memória",
       "type": "ADR|Concept|Pattern|Episode|...",
       "summary": "Resumo do conteúdo",
-      "content": "Conteúdo completo da memória (até 2000 chars)",
+      "content": "Conteúdo completo da memória",
       "score": 0.95
     }
   ],
@@ -74,8 +75,8 @@ O script retorna JSON com:
 
 ### Passo 2: Usar Conteúdo In-Graph
 
-Os resultados já incluem o campo `content` com o texto completo da memória (até 2000 chars).
-Não precisa ler nenhum arquivo — tudo está no grafo.
+Os resultados já incluem o campo `content` com o texto completo da memória.
+Não precisa ler nenhum arquivo nem chamar `--expand` — tudo vem em uma única chamada com `--format json`.
 
 O recall também persiste o reforço (brain.save()), fechando o loop de auto-alimentação.
 
@@ -134,6 +135,10 @@ python3 .claude/brain/recall.py "autenticação" --author @thiago
 
 # Busca expandida — mais profundidade no grafo
 python3 .claude/brain/recall.py "autenticação" --depth 3
+
+# Token economy: --compact retorna só índice; --expand ID1,ID2 traz content completo sob demanda
+python3 .claude/brain/recall.py "autenticação" --compact --top 20
+python3 .claude/brain/recall.py --expand ADR-001,PAT-012 --format json
 ```
 
 ## Integração com Workflow

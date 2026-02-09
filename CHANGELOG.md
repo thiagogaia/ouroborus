@@ -54,6 +54,7 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - init-engram Phase 7: append Cérebro Organizacional section to CLAUDE.md after brain population (`a4783e9`)
 
 ### Changed
+- Recall returns full content in JSON (no 2000-char truncation); core recall.md updated with --format json, --compact, --expand (`f88991c`)
 - `/commit` executes directly without confirmation prompt (`9dc6698`)
 - Instructions reframed: emphasize `brain.add_memory()` as single entry point for knowledge, reduce genesis-only file mentions (`86748d2`)
 
