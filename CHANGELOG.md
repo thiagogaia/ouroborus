@@ -54,6 +54,7 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - init-engram Phase 7: append Cérebro Organizacional section to CLAUDE.md after brain population (`a4783e9`)
 
 ### Changed
+- `/commit` command: remove hardcoded `core/` path, CHANGELOG step is now conditional on file existence (`ec5e1b4`)
 - Recall recall.md: add guidance on when to use compact+expand vs full mode (token economy) (`c72e033`)
 - Recall returns full content in JSON (no 2000-char truncation); core recall.md updated with --format json, --compact, --expand (`26de1d2`)
 - `/commit` executes directly without confirmation prompt (`9dc6698`)

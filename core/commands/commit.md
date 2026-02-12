@@ -18,8 +18,9 @@ git add -A
 git commit -m "mensagem"
 ```
 
-4. **Atualizar CHANGELOG.md** se algum arquivo em `core/` foi modificado:
-   - Leia o `CHANGELOG.md` da raiz
+4. **Atualizar CHANGELOG.md** (se existir na raiz do projeto):
+   - Verifique se `CHANGELOG.md` existe na raiz — se não existir, pule este passo
+   - Leia o `CHANGELOG.md` e identifique o formato usado
    - Adicione a mudança na seção `[Unreleased]`, na categoria correta:
      - **Added** — funcionalidade nova
      - **Changed** — mudança em funcionalidade existente
@@ -32,7 +33,6 @@ git commit -m "mensagem"
      git add CHANGELOG.md
      git commit --amend --no-edit
      ```
-   - Se nenhum arquivo em `core/` mudou, pular este passo
 
 5. Se a mudança é relevante para o knowledge, sugerir: "Quer rodar /learn para registrar?"
 
@@ -41,4 +41,4 @@ git commit -m "mensagem"
 - Primeira linha: max 72 caracteres
 - Escopo reflete o módulo/área afetada
 - Se múltiplas mudanças não-relacionadas: sugerir commits separados
-- CHANGELOG.md só rastreia mudanças em `core/` (o DNA do Engram)
+- CHANGELOG.md é atualizado apenas se existir na raiz do projeto
