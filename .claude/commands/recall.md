@@ -125,20 +125,20 @@ O recall.py suporta diferentes modos:
 
 ```bash
 # Busca semântica (padrão) — melhor para perguntas naturais
-python3 .claude/brain/recall.py "como funciona X"
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "como funciona X"
 
 # Busca por tipo — filtrar por categoria
-python3 .claude/brain/recall.py "autenticação" --type ADR
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "autenticação" --type ADR
 
 # Busca por autor — quem escreveu sobre isso
-python3 .claude/brain/recall.py "autenticação" --author @thiago
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "autenticação" --author @thiago
 
 # Busca expandida — mais profundidade no grafo
-python3 .claude/brain/recall.py "autenticação" --depth 3
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "autenticação" --depth 3
 
 # Token economy: --compact retorna só índice; --expand ID1,ID2 traz content completo sob demanda
-python3 .claude/brain/recall.py "autenticação" --compact --top 20
-python3 .claude/brain/recall.py --expand ADR-001,PAT-012 --format json
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py "autenticação" --compact --top 20
+.claude/brain/.venv/bin/python3 .claude/brain/recall.py --expand ADR-001,PAT-012 --format json
 ```
 
 ### Quando usar compact + expand

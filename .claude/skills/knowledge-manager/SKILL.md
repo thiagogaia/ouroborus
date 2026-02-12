@@ -23,9 +23,9 @@ Gerencia o ciclo de retroalimentação — o coração do Engram.
 
 ### 1. Identificar Tipo de Conhecimento
 Classifique o que foi aprendido/decidido/feito:
-- **Estado** → cérebro via `brain.add_memory()` (labels: ["State"]) — embeddings gerados inline
-- **Padrão** → cérebro via `brain.add_memory(labels=["Pattern", "ApprovedPattern"])` — embeddings gerados inline
-- **Decisão** → cérebro via `brain.add_memory(labels=["Decision", "ADR"])` — embeddings gerados inline
+- **Estado** → cérebro via `brain.add_memory()` (labels: ["State"])
+- **Padrão** → cérebro via `brain.add_memory(labels=["Pattern", "ApprovedPattern"])`
+- **Decisão** → cérebro via `brain.add_memory(labels=["Decision", "ADR"])`
 - **Prioridade** → `.claude/knowledge/priorities/PRIORITY_MATRIX.md` (incluir: ICE Score) — único .md ativo
 - **Domínio** → cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
 - **Experiência** → cérebro via `brain.add_memory(labels=["Episode", "Experience"])`

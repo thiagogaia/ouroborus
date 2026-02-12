@@ -4,7 +4,7 @@ Reavaliar prioridades do projeto usando ICE Score.
 
 2. Leia `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
-3. Consulte o cérebro para contexto: `python3 .claude/brain/recall.py --recent 7d --top 5`
+3. Consulte o cérebro para contexto: `.claude/brain/.venv/bin/python3 .claude/brain/recall.py --recent 7d --top 5`
 
 4. Se $ARGUMENTS contiver uma tarefa nova:
    - Avaliar com ICE Score

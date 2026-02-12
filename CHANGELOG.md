@@ -52,9 +52,12 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 ### Added
 - `/domain` command promoted to core (was runtime-only) (`8717b83`)
 - init-engram Phase 7: append Cérebro Organizacional section to CLAUDE.md after brain population (`a4783e9`)
+- `update.sh` with three-layer ownership model: drift detection, layer-aware updates, backup (`8dae864`)
+- `core/OWNERSHIP.md` documenting three-layer model (CORE-OWNED, PROJECT-OWNED, RUNTIME) (`e17f3b6`)
 
 ### Changed
 - `/commit` command: remove hardcoded `core/` path, CHANGELOG step is now conditional on file existence (`ec5e1b4`)
+- `setup.sh --update` now delegates to `update.sh` (190 lines replaced by 12-line delegation) (`fcefc59`)
 - Recall recall.md: add guidance on when to use compact+expand vs full mode (token economy) (`c72e033`)
 - Recall returns full content in JSON (no 2000-char truncation); core recall.md updated with --format json, --compact, --expand (`26de1d2`)
 - `/commit` executes directly without confirmation prompt (`9dc6698`)
