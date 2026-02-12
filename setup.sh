@@ -10,7 +10,7 @@ set -euo pipefail
 #   ./setup.sh                  → instala no diretório atual
 #   ./setup.sh /meu/projeto     → instala no diretório especificado
 #   ./setup.sh --help           → mostra ajuda
-#   ./setup.sh --update /proj   → atualiza core sem tocar knowledge
+#   ./setup.sh --update /proj   → delega para update.sh (3-layer model)
 #   ./setup.sh --uninstall /proj → remove Engram
 #
 # O que faz (v4 — brain-only architecture):
@@ -37,7 +37,7 @@ show_help() {
     echo "Options:"
     echo "  -h, --help        Show this help"
     echo "  -v, --version     Show version"
-    echo "  --update          Update core without touching knowledge/customizations"
+    echo "  --update          Update core (delegates to update.sh with 3-layer model)"
     echo "  --force           Skip confirmation prompts (still creates backups)"
     echo "  --regenerate      Regenerate CLAUDE.md and settings.json (use with --update)"
     echo "  --uninstall       Remove Engram from project"
@@ -804,193 +804,20 @@ PYEOF
 # ═══════════════════════════════════════════════════════════════
 
 do_update() {
-    print_header
-    local CLAUDE_DIR="$TARGET_DIR/.claude"
-
-    # ── 1. Pre-flight: verify Engram is installed ──
-    if [[ ! -d "$CLAUDE_DIR" ]]; then
-        echo -e "  ${RED}Erro: Engram não está instalado em $TARGET_DIR${NC}"
-        echo -e "  ${RED}Use ./setup.sh $TARGET_DIR para instalar.${NC}"
+    # Delegate to update.sh (three-layer ownership model)
+    local UPDATE_SCRIPT="$SCRIPT_DIR/update.sh"
+    if [[ ! -f "$UPDATE_SCRIPT" ]]; then
+        echo -e "${RED}Erro: update.sh não encontrado em $SCRIPT_DIR${NC}"
+        echo -e "${RED}O update.sh é necessário para atualizações.${NC}"
         exit 1
     fi
 
-    print_step "Atualizando core do Engram em: ${BOLD}$TARGET_DIR${NC}"
+    local UPDATE_ARGS=()
+    $FORCE && UPDATE_ARGS+=("--force")
+    $REGENERATE && UPDATE_ARGS+=("--regenerate")
+    UPDATE_ARGS+=("$TARGET_DIR")
 
-    # ── 2. Version comparison (gap 8) ──
-    # Compare: $SCRIPT_DIR/VERSION (source of truth) vs $TARGET_DIR/.claude/.engram-version (installed)
-    local INSTALLED_VERSION=""
-    [[ -f "$CLAUDE_DIR/.engram-version" ]] && INSTALLED_VERSION=$(cat "$CLAUDE_DIR/.engram-version")
-
-    echo ""
-    echo -e "  ${BOLD}Engram (source):${NC}  v${VERSION}  ← ${SCRIPT_DIR}/VERSION"
-    if [[ -n "$INSTALLED_VERSION" ]]; then
-        echo -e "  ${BOLD}Projeto (local):${NC}  v${INSTALLED_VERSION}  ← ${TARGET_DIR}/.claude/.engram-version"
-
-        if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
-            echo ""
-            echo -e "  ${YELLOW}Projeto já está na mesma versão do Engram (v${VERSION}).${NC}"
-            if ! $FORCE; then
-                read -p "  Atualizar mesmo assim? (s/N): " -n 1 -r
-                echo ""
-                [[ ! $REPLY =~ ^[Ss]$ ]] && echo -e "  ${GREEN}Nenhuma alteração feita.${NC}" && exit 0
-            else
-                print_step "Forçando atualização (--force)"
-            fi
-        else
-            echo ""
-            echo -e "  ${GREEN}Atualizando projeto: v${INSTALLED_VERSION} → v${VERSION}${NC}"
-        fi
-    else
-        echo -e "  ${BOLD}Projeto (local):${NC}  ${YELLOW}sem versão (.engram-version ausente)${NC}"
-        echo ""
-        echo -e "  ${YELLOW}Gravando versão v${VERSION} no projeto${NC}"
-    fi
-
-    # ── 3. Timestamped backup (gap 7) ──
-    backup_for_update
-
-    # ── 4. Update schemas, genesis, evolution ──
-    cp -r "$SCRIPT_DIR/core/dna/"* "$CLAUDE_DIR/dna/"
-    print_done "Schemas atualizados"
-
-    cp -r "$SCRIPT_DIR/core/genesis" "$CLAUDE_DIR/skills/engram-genesis"
-    chmod +x "$CLAUDE_DIR/skills/engram-genesis/scripts/"*.py 2>/dev/null || true
-    print_done "Genesis atualizado"
-
-    cp -r "$SCRIPT_DIR/core/evolution" "$CLAUDE_DIR/skills/engram-evolution"
-    chmod +x "$CLAUDE_DIR/skills/engram-evolution/scripts/"*.py 2>/dev/null || true
-    print_done "Evolution atualizado"
-
-    # ── 5. Update seeds (aditivo: só adiciona novos, preserva existentes) ──
-    if [[ -d "$SCRIPT_DIR/core/seeds" ]]; then
-        local SEEDS_ADDED=0
-        local SEEDS_PRESERVED=0
-        for seed in "$SCRIPT_DIR/core/seeds"/*/; do
-            [[ ! -d "$seed" ]] && continue
-            local SEED_NAME
-            SEED_NAME=$(basename "$seed")
-            local DEST_SEED="$CLAUDE_DIR/skills/$SEED_NAME"
-
-            if [[ ! -d "$DEST_SEED" ]]; then
-                cp -r "${seed%/}" "$DEST_SEED"
-                ((SEEDS_ADDED++)) || true
-            else
-                ((SEEDS_PRESERVED++)) || true
-            fi
-        done
-        if [[ $SEEDS_ADDED -gt 0 ]]; then
-            print_done "Seeds adicionados: $SEEDS_ADDED novo(s)"
-        fi
-        [[ $SEEDS_PRESERVED -gt 0 ]] && print_done "Seeds existentes preservados: $SEEDS_PRESERVED"
-    fi
-
-    # ── 6. Update agents (aditivo: só adiciona novos, preserva existentes) ──
-    if [[ -d "$SCRIPT_DIR/core/agents" ]]; then
-        local AGENTS_ADDED=0
-        local AGENTS_PRESERVED=0
-        for agent in "$SCRIPT_DIR/core/agents/"*.md; do
-            [[ ! -f "$agent" ]] && continue
-            local AGENT_NAME
-            AGENT_NAME=$(basename "$agent")
-            local DEST_AGENT="$CLAUDE_DIR/agents/$AGENT_NAME"
-
-            if [[ ! -f "$DEST_AGENT" ]]; then
-                cp "$agent" "$DEST_AGENT"
-                ((AGENTS_ADDED++)) || true
-            else
-                ((AGENTS_PRESERVED++)) || true
-            fi
-        done
-        if [[ $AGENTS_ADDED -gt 0 ]]; then
-            print_done "Agents adicionados: $AGENTS_ADDED novo(s)"
-        fi
-        [[ $AGENTS_PRESERVED -gt 0 ]] && print_done "Agents existentes preservados: $AGENTS_PRESERVED"
-    fi
-
-    cp "$SCRIPT_DIR/core/commands/"*.md "$CLAUDE_DIR/commands/" 2>/dev/null || true
-    print_done "Commands atualizados"
-
-    # ── 6b. Extras (adiciona novos; preserva existentes) — reutiliza install_extras.sh
-    if [[ -d "$SCRIPT_DIR/extras" ]] && [[ -f "$SCRIPT_DIR/install_extras.sh" ]]; then
-        print_step "Atualizando extras (novos agents/skills se houver)..."
-        "$SCRIPT_DIR/install_extras.sh" "$TARGET_DIR" 2>/dev/null || true
-        print_done "Extras atualizados"
-    fi
-
-    if [[ -d "$SCRIPT_DIR/templates/skills" ]]; then
-        mkdir -p "$CLAUDE_DIR/templates/skills"
-        cp -r "$SCRIPT_DIR/templates/skills/"* "$CLAUDE_DIR/templates/skills/" 2>/dev/null || true
-        print_done "Skill templates atualizados"
-    fi
-
-    # ── 7. Update brain scripts — code only, never data (gap 1) ──
-    if [[ -d "$SCRIPT_DIR/.claude/brain" ]]; then
-        mkdir -p "$CLAUDE_DIR/brain/state"
-        # Copy code files: .py, .sh, .md
-        cp "$SCRIPT_DIR/.claude/brain/"*.py "$CLAUDE_DIR/brain/" 2>/dev/null || true
-        cp "$SCRIPT_DIR/.claude/brain/"*.sh "$CLAUDE_DIR/brain/" 2>/dev/null || true
-        cp "$SCRIPT_DIR/.claude/brain/"*.md "$CLAUDE_DIR/brain/" 2>/dev/null || true
-        chmod +x "$CLAUDE_DIR/brain/"*.py "$CLAUDE_DIR/brain/"*.sh 2>/dev/null || true
-        # NEVER copy data: graph.json, embeddings.npz, *.jsonl
-        print_done "Brain scripts atualizados (dados preservados)"
-    fi
-
-    # ── 8. Verify/install brain deps (gap 2) ──
-    local VENV_DIR="$CLAUDE_DIR/brain/.venv"
-    if [[ -d "$CLAUDE_DIR/brain" ]]; then
-        if [[ ! -d "$VENV_DIR" ]] || $FORCE; then
-            install_brain_deps
-        else
-            print_done "Brain deps: .venv já existe (use --force para reinstalar)"
-        fi
-    fi
-
-    # ── 9. Update manifest.json (gap 5) ──
-    update_manifest_json
-
-    # ── 10. Advisory about CLAUDE.md / settings.json (gaps 3-4) ──
-    if ! $REGENERATE; then
-        echo ""
-        print_warn "CLAUDE.md e settings.json NÃO foram alterados (customizações preservadas)"
-        print_warn "Use --regenerate para regenerá-los com backup"
-    fi
-
-    # ── 11. Regenerate if --regenerate (gaps 3-4) ──
-    if $REGENERATE; then
-        echo ""
-        print_step "Regenerando CLAUDE.md e settings.json (--regenerate)..."
-
-        # Backup existing files
-        [[ -f "$TARGET_DIR/CLAUDE.md" ]] && cp "$TARGET_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md.pre-update.bak"
-        [[ -f "$CLAUDE_DIR/settings.json" ]] && cp "$CLAUDE_DIR/settings.json" "$CLAUDE_DIR/settings.json.pre-update.bak"
-
-        # Need stack detection for generation
-        detect_stack
-        generate_claude_md
-        customize_settings
-
-        print_warn "Templates regenerados — customizações manuais podem ter sido perdidas"
-        print_warn "Backup em CLAUDE.md.pre-update.bak e settings.json.pre-update.bak"
-    fi
-
-    # ── 12. Save version ──
-    echo "$VERSION" > "$CLAUDE_DIR/.engram-version"
-
-    # ── 13. Summary ──
-    echo ""
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${BOLD}  ✅ Engram atualizado para v${VERSION}${NC}"
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "  ${GREEN}✓${NC} Core (dna, genesis, evolution, seeds)"
-    echo -e "  ${GREEN}✓${NC} Brain scripts (dados preservados)"
-    echo -e "  ${GREEN}✓${NC} Agents, commands, templates"
-    echo -e "  ${GREEN}✓${NC} manifest.json (versão e seeds)"
-    [[ -n "${UPDATE_BACKUP_DIR:-}" ]] && echo -e "  ${GREEN}✓${NC} Backup em: .claude.bak/ e CLAUDE.md.bak"
-    $REGENERATE && echo -e "  ${GREEN}✓${NC} CLAUDE.md e settings.json regenerados"
-    ! $REGENERATE && echo -e "  ${YELLOW}—${NC} CLAUDE.md e settings.json preservados"
-    echo ""
-    exit 0
+    exec bash "$UPDATE_SCRIPT" "${UPDATE_ARGS[@]}"
 }
 
 [[ "$MODE" == "update" ]] && do_update
