@@ -20,7 +20,7 @@ Exemplos de invocação:
 SEMPRE rodar dry-run antes de ingerir:
 
 ```bash
-python3 .claude/skills/base-ingester/scripts/ingest.py \
+.claude/brain/.venv/bin/python3 .claude/skills/base-ingester/scripts/ingest.py \
   --source <PATH> \
   --project-dir . \
   --type <TYPE> \
@@ -38,7 +38,7 @@ Mostrar ao dev:
 Após aprovação do dev, executar sem `--dry-run`:
 
 ```bash
-python3 .claude/skills/base-ingester/scripts/ingest.py \
+.claude/brain/.venv/bin/python3 .claude/skills/base-ingester/scripts/ingest.py \
   --source <PATH> \
   --project-dir . \
   --type <TYPE>
@@ -49,15 +49,15 @@ python3 .claude/skills/base-ingester/scripts/ingest.py \
 Após ingestão, regenerar embeddings:
 
 ```bash
-python3 .claude/brain/embeddings.py build
+.claude/brain/.venv/bin/python3 .claude/brain/embeddings.py build
 ```
 
 ### 5. Verificar
 
-Rodar uma busca para confirmar:
+Rodar health check para confirmar:
 
 ```bash
-python3 .claude/brain/brain.py stats
+.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health
 ```
 
 Informar ao dev o resultado final.

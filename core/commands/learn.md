@@ -1,10 +1,12 @@
 Registrar conhecimento adquirido nesta sessão e evoluir o sistema.
 
+> **Python do brain**: Use `.claude/brain/.venv/bin/python3` para scripts do cérebro (recall, populate, sleep, cognitive, embeddings). Garante ChromaDB e sentence-transformers. Ex: `python3 .claude/brain/recall.py` → `.claude/brain/.venv/bin/python3 .claude/brain/recall.py`
+
 ## Fase 1: Coleta de Mudanças
 
 1. Execute `git diff --stat HEAD~5` (ou desde o último /learn) para ver o que mudou
 2. Execute `git log --oneline -10` para ver commits recentes
-3. Consulte o cérebro: `python3 .claude/brain/recall.py --recent 3d --type Commit --top 10 --format json`
+3. Consulte o cérebro: `.claude/brain/.venv/bin/python3 .claude/brain/recall.py --recent 3d --type Commit --top 10 --format json`
 
 ## Fase 2: Introspecção
 
@@ -19,11 +21,16 @@ Reflita sobre a sessão:
 
 O cérebro em `.claude/brain/` é a **fonte primária de conhecimento**. Todo aprendizado vai direto para o grafo.
 
-### 3.1 Processar Novos Commits
+### 3.1 Processar Novos Commits + Diffs + AST Incremental
 
 ```bash
-python3 .claude/brain/populate.py refresh 20
+.claude/brain/.venv/bin/python3 .claude/brain/populate.py refresh 20
 ```
+
+O refresh agora inclui automaticamente:
+- Novos commits como memoria episodica
+- Enriquecimento de diffs (simbolos adicionados/modificados, change shape)
+- **AST incremental** (apenas arquivos modificados, via body_hash skip) — so roda se AST ja foi inicializado
 
 ### 3.2 Registrar Conhecimento Direto no Grafo
 
@@ -43,7 +50,7 @@ brain.add_memory(
     title="ADR-NNN: [Título da Decisão]",
     content="## Contexto\n[...]\n\n## Decisão\n[...]\n\n## Consequências\n[...]",
     labels=["Decision", "ADR"],
-    author=dev["username"],
+    author=dev["author"],
     props={"adr_id": "ADR-NNN", "status": "Aceito", "date": "YYYY-MM-DD"}
 )
 
@@ -52,7 +59,7 @@ brain.add_memory(
     title="PAT-NNN: [Nome do Padrão]",
     content="[Descrição, quando usar, exemplo]",
     labels=["Pattern", "ApprovedPattern"],
-    author=dev["username"],
+    author=dev["author"],
     props={"pat_id": "PAT-NNN"}
 )
 
@@ -61,7 +68,7 @@ brain.add_memory(
     title="EXP-NNN: [Título]",
     content="[Contexto, abordagem, resultado, aprendizado]",
     labels=["Episode", "Experience"],
-    author=dev["username"],
+    author=dev["author"],
     props={"exp_id": "EXP-NNN"}
 )
 
@@ -78,14 +85,14 @@ brain.add_memory(
     title="Bug: [descrição curta]",
     content="[O que aconteceu, como foi resolvido, arquivos afetados]",
     labels=["Episode", "BugFix"],
-    author=dev["username"],
+    author=dev["author"],
     references=["[[ADR-001]]", "[[PAT-005]]"]  # opcional
 )
 
 brain.save()
 ```
 
-### 3.3 Atualizar PRIORITY_MATRIX.md
+### 3.3 Atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 Único knowledge file ativamente atualizado — desprioritizar tarefas completadas, adicionar novas.
 
@@ -96,26 +103,32 @@ brain.save()
 ### 4.1 Ciclo de Sono (Consolidação Semântica)
 
 ```bash
-python3 .claude/brain/sleep.py
+.claude/brain/.venv/bin/python3 .claude/brain/sleep.py
 ```
 
-Roda 5 fases in-memory (zero disk I/O): dedup, connect, relate, themes, calibrate.
+Roda 8 fases de inteligência: connect, relate, themes, calibrate, promote, insights, gaps, decay.
+- **promote**: promove Episodes muito acessados para Concept
+- **insights**: detecta clusters de nós relacionados sem Theme
+- **gaps**: encontra nós isolados e domínios sem Patterns
+- **decay**: aplica curva de esquecimento de Ebbinghaus
+
+Fase `dedup` disponível sob demanda (`.claude/brain/.venv/bin/python3 .claude/brain/sleep.py dedup`) mas fora do ciclo padrão (IDs determinísticos já previnem duplicatas).
 
 ### 4.2 Verificar Saúde do Cérebro
 
 ```bash
-python3 .claude/brain/cognitive.py health
+.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health
 ```
 
 Se `health_score < 0.8`, seguir recomendações exibidas.
 
-### 4.3 Atualizar Embeddings
+### 4.3 Atualizar Embeddings (opcional)
 
 ```bash
-python3 .claude/brain/embeddings.py build 2>/dev/null || echo "⚠️ Embeddings: instale sentence-transformers para busca semântica"
+.claude/brain/.venv/bin/python3 .claude/brain/embeddings.py build 2>/dev/null || echo "⚠️ Embeddings: instale sentence-transformers chromadb pydantic-settings no venv"
 ```
 
-Embeddings agora usam conteúdo completo (até 1000 chars) para vetores mais ricos.
+**Nota**: embeddings agora são gerados inline no `brain.add_memory()` quando `sentence-transformers` está instalado. O `embeddings.py build` é opcional — útil para rebuild em massa ou migração de npz para ChromaDB.
 
 ---
 
@@ -165,6 +178,7 @@ python3 .claude/skills/engram-evolution/scripts/co_activation.py --project-dir .
 
 Apresentar:
 - O que foi registrado no cérebro (quantos nós criados, tipos)
+- Resultados do sono: promoções, insights (clusters sem tema), gaps (nós isolados, domínios sem patterns), memórias fracas/decay
 - Sugestões evolutivas (novos skills, archives, composições)
 - Próxima ação recomendada
 

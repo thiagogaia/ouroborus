@@ -258,5 +258,5 @@ Próximos passos sugeridos:
 
 Use /status para ver o estado atual.
 Use /learn após cada sessão para retroalimentar.
-Use .claude/brain/maintain.sh health para ver saúde do cérebro.
+Use `.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health` para ver saúde do cérebro.
 ```

@@ -61,6 +61,7 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - Instructions reframed: emphasize `brain.add_memory()` as single entry point for knowledge, reduce genesis-only file mentions (`86748d2`)
 
 ### Fixed
+- All 7 core commands now use `.claude/brain/.venv/bin/python3` consistently; learn.md synced (5→8 sleep phases, dev key fix); ingest.md uses cognitive.py instead of deprecated brain.py; init-engram.md uses cognitive.py instead of maintain.sh (`972f786`)
 - init-engram Phase 5 uses `.claude/brain/.venv/bin/python3` for populate, embeddings, cognitive — fixes dep resolution in fresh installs (`1d016fb`)
 
 ## [3.0.0] - 2026-02-03

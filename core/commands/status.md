@@ -1,7 +1,7 @@
 Mostrar o estado atual do projeto de forma concisa.
 
-1. Consulte o cérebro: `python3 .claude/brain/recall.py --recent 7d --top 10`
-2. Verifique saúde: `python3 .claude/brain/cognitive.py health`
+1. Consulte o cérebro: `.claude/brain/.venv/bin/python3 .claude/brain/recall.py --recent 7d --top 10`
+2. Verifique saúde: `.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health`
 3. Leia `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 4. Verifique `git status` e `git log --oneline -5`
 

@@ -6,7 +6,7 @@ O tópico a planejar é: $ARGUMENTS
 
 1. Consulte o cérebro para contexto:
    ```bash
-   python3 .claude/brain/recall.py "$ARGUMENTS" --top 10 --format json
+   .claude/brain/.venv/bin/python3 .claude/brain/recall.py "$ARGUMENTS" --top 10 --format json
    ```
    O recall retorna ADRs, patterns, experiências e conexões relevantes.
    Só leia os `.md` se o recall não cobrir.
