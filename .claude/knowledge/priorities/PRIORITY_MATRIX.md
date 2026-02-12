@@ -1,5 +1,5 @@
 # Priority Matrix
-> Ultima atualizacao: 2026-02-08 (learn post instruction reframing)
+> Ultima atualizacao: 2026-02-12 (learn post commit.md portability fix)
 > ICE = (Impacto x Confianca) / Esforco - todos 1-10
 
 ## Ativas
@@ -12,6 +12,7 @@
 
 | # | Tarefa | I | C | E | ICE | Notas |
 |---|--------|---|---|---|-----|-------|
+| 25 | Auditar core/commands/*.md por refs hardcoded (core/, templates/) | 7 | 10 | 2 | 35.0 | commit.md corrigido, checar os outros 15 |
 | 11 | Limpar 6 orphans no manifest.json | 8 | 10 | 1 | 80.0 | Componentes fantasma quebram ativação |
 | 13 | requirements.txt / pyproject.toml | 7 | 10 | 1 | 70.0 | Deps só no .venv, CI não reproduz |
 | 17 | Fix Flask no setup.sh (1 linha) | 5 | 10 | 1 | 50.0 | Detecta no Python mas não mostra no setup |
