@@ -36,7 +36,7 @@ Criado pelo genesis como bootstrap inicial do projeto. Após o cérebro ser
 populado, o estado vive no grafo e é consultado via recall temporal.
 Não é mais lido nem atualizado em sessões regulares.
 
-## PRIORITY_MATRIX.md
+## `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 Tarefas priorizadas com ICE Score.
 

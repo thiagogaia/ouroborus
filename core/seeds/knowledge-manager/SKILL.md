@@ -26,7 +26,7 @@ Classifique o que foi aprendido/decidido/feito:
 - **Estado** → cérebro via `brain.add_memory()` (labels: ["State"])
 - **Padrão** → cérebro via `brain.add_memory(labels=["Pattern", "ApprovedPattern"])`
 - **Decisão** → cérebro via `brain.add_memory(labels=["Decision", "ADR"])`
-- **Prioridade** → PRIORITY_MATRIX.md (incluir: ICE Score) — único .md ativo
+- **Prioridade** → `.claude/knowledge/priorities/PRIORITY_MATRIX.md` (incluir: ICE Score) — único .md ativo
 - **Domínio** → cérebro via `brain.add_memory(labels=["Concept", "Glossary"])`
 - **Experiência** → cérebro via `brain.add_memory(labels=["Episode", "Experience"])`
 
@@ -37,11 +37,11 @@ Classifique o que foi aprendido/decidido/feito:
 ### 3. Cross-Reference
 Se o registro impacta outros files, atualize-os também:
 - ADR que cria padrão → registrar ambos no cérebro com `references=`
-- Padrão que resolve prioridade → atualizar PRIORITY_MATRIX.md
-- Estado que revela bloqueio → atualizar PRIORITY_MATRIX.md
+- Padrão que resolve prioridade → atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
+- Estado que revela bloqueio → atualizar `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ### 4. Limpar Obsoletos
-- Mover tarefas completas para "Cemitério" no PRIORITY_MATRIX.md
+- Mover tarefas completas para "Cemitério" no `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 - Padrões/ADRs depreciados: registrar no cérebro com `props={"status": "Depreciado"}` ou novo nó que referencia o antigo
 
 ## ICE Score (para PRIORITY_MATRIX)

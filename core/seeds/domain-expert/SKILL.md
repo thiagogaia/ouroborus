@@ -50,7 +50,7 @@ Cliente → possui → Pedidos → contém → Itens → referencia → Produto
 Quando descobrir regra implícita no código:
 - Apresentar ao dev: "Detectei que [código] implementa [regra]. Está correto?"
 - Se confirmado → registrar no cérebro via `brain.add_memory(labels=["Concept", "BusinessRule"])`
-- Se incorreto → pode ser bug, registrar em PRIORITY_MATRIX.md
+- Se incorreto → pode ser bug, registrar em `.claude/knowledge/priorities/PRIORITY_MATRIX.md`
 
 ## Regras
 - NUNCA invente regras de negócio — só registre o que está no código ou foi confirmado

@@ -9,6 +9,18 @@ python3 .claude/skills/engram-evolution/scripts/doctor.py --project-dir .
 
 Isso valida: estrutura, knowledge freshness, componentes, consistência.
 
+## Saúde do Cérebro
+
+Verificar estado do cérebro organizacional (grafo + vector store):
+```bash
+.claude/brain/.venv/bin/python3 .claude/brain/cognitive.py health
+```
+
+Verificar que:
+- `health_score >= 0.8`
+- `vector_backend: chromadb` (se npz, alertar sobre performance)
+- `embeddings >= nodes * 0.5` (cobertura mínima)
+
 ## Aprofundamento (se necessário)
 
 ### 1. Validar Componentes Individuais
