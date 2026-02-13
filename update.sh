@@ -488,9 +488,12 @@ for node_id, node in brain.get_all_nodes().items():
             break
 
 if existing_id:
-    brain.nodes[existing_id]['props']['version'] = version
-    brain.nodes[existing_id]['props']['last_updated'] = now
-    brain.nodes[existing_id]['props']['update_count'] = brain.nodes[existing_id]['props'].get('update_count', 0) + 1
+    old_props = brain.get_all_nodes()[existing_id].get('props', {})
+    brain.update_node_content(existing_id, extra_props={
+        'version': version,
+        'last_updated': now,
+        'update_count': old_props.get('update_count', 0) + 1
+    })
 else:
     brain.add_memory(
         title=f"Installation: {project_name}",
