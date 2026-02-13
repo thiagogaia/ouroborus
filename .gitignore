@@ -24,10 +24,11 @@ CLAUDE.md.bak
 .DS_Store
 Thumbs.db
 
-# Brain v4 (SQLite + ChromaDB) — fonte primária, binário, não versionado
+# Brain v4 (SQLite + ChromaDB) — runtime data, can be rebuilt
 .claude/brain/brain.db
 .claude/brain/brain.db-wal
 .claude/brain/brain.db-shm
+.claude/brain/embeddings.npz
 
 # ChromaDB persistent storage (auto-generated, can be rebuilt from embeddings)
 .claude/brain/chroma/
