@@ -4,7 +4,7 @@ Diagnosticar a saúde do Engram neste projeto.
 
 Rodar o health check automatizado:
 ```bash
-python3 .claude/skills/engram-evolution/scripts/doctor.py --project-dir .
+.claude/brain/.venv/bin/python3 .claude/skills/engram-evolution/scripts/doctor.py --project-dir .
 ```
 
 Isso valida: estrutura, knowledge freshness, componentes, consistência.
@@ -27,32 +27,32 @@ Verificar que:
 
 Para cada skill em `.claude/skills/`:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/validate.py --type skill --path .claude/skills/[nome]/
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/validate.py --type skill --path .claude/skills/[nome]/
 ```
 
 Para cada agent em `.claude/agents/`:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/validate.py --type agent --path .claude/agents/[nome].md
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/validate.py --type agent --path .claude/agents/[nome].md
 ```
 
 ### 2. Composition Graph
 ```bash
-python3 .claude/skills/engram-genesis/scripts/compose.py --graph --project-dir .
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/compose.py --graph --project-dir .
 ```
 
 ### 3. Usage Health
 ```bash
-python3 .claude/skills/engram-evolution/scripts/track_usage.py --project-dir . --report health
+.claude/brain/.venv/bin/python3 .claude/skills/engram-evolution/scripts/track_usage.py --project-dir . --report health
 ```
 
 ### 4. Co-Activation Patterns
 ```bash
-python3 .claude/skills/engram-evolution/scripts/co_activation.py --project-dir .
+.claude/brain/.venv/bin/python3 .claude/skills/engram-evolution/scripts/co_activation.py --project-dir .
 ```
 
 ### 5. Stale Components
 ```bash
-python3 .claude/skills/engram-evolution/scripts/track_usage.py --project-dir . --report stale
+.claude/brain/.venv/bin/python3 .claude/skills/engram-evolution/scripts/track_usage.py --project-dir . --report stale
 ```
 
 ## Ao Final

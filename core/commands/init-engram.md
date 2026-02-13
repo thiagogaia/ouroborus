@@ -6,7 +6,7 @@ Inicializar o Engram para este projeto usando o sistema de auto-geração.
 
 1. Execute a detecção:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --detect --output json
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --detect --output json
 ```
 
 2. Se `found: true`, executar merge em vez de alertar:
@@ -15,13 +15,13 @@ python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . 
 
 3. Executar análise e merge:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --analyze --output json
-python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --migrate --strategy smart
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --analyze --output json
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --migrate --strategy smart
 ```
 
 4. Após merge confirmado, cleanup:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --cleanup
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/migrate_backup.py --project-dir . --cleanup
 ```
 
 5. Prosseguir para Fase 1.
@@ -32,7 +32,7 @@ Se `found: false`, prosseguir diretamente para Fase 1.
 
 1. Execute o analisador de projeto:
 ```bash
-python3 .claude/skills/engram-genesis/scripts/analyze_project.py --project-dir . --output json
+.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/analyze_project.py --project-dir . --output json
 ```
 
 2. Leia o resultado e entenda a stack detectada e sugestões de componentes.
@@ -75,11 +75,11 @@ Continuar? (perguntar ao dev)
 **Só agents.** A Fase 3 trata skills.
 
 1. Calcular: needed = [a["name"] for a in suggestions["agents"]], existing = agents em `.claude/agents/*.md`, to_remove = existing - needed, to_keep = existing ∩ needed, to_create = needed - existing
-2. **Prune**: `python3 .claude/skills/engram-genesis/scripts/prune_agents.py --project-dir . --needed agent1,agent2,... --output json` (lista = needed comma-separated)
-3. **Create**: Para cada em to_create: `python3 .claude/skills/engram-genesis/scripts/generate_component.py --type agent --name X --project-dir .` (scaffold)
+2. **Prune**: `.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/prune_agents.py --project-dir . --needed agent1,agent2,... --output json` (lista = needed comma-separated)
+3. **Create**: Para cada em to_create: `.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/generate_component.py --type agent --name X --project-dir .` (scaffold)
 4. **Customize**: Para cada em (to_keep ∪ to_create), Claude customiza usando `.claude/skills/engram-genesis/references/agent-customization-guide.md` e output do analyze_project (suggestions.agents[i].customization)
-5. **Validar**: `python3 .claude/skills/engram-genesis/scripts/validate.py --type agent --path .claude/agents/{name}.md`
-6. **Registrar**: `python3 .claude/skills/engram-genesis/scripts/register.py --type agent --name {name} --project-dir .`
+5. **Validar**: `.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/validate.py --type agent --path .claude/agents/{name}.md`
+6. **Registrar**: `.claude/brain/.venv/bin/python3 .claude/skills/engram-genesis/scripts/register.py --type agent --name {name} --project-dir .`
 
 ## Fase 3: Auto-Geração via Genesis — Skills
 

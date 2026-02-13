@@ -67,6 +67,7 @@ Only changes to `core/` are tracked here — the source of truth for all Engram 
 - All 7 core commands now use `.claude/brain/.venv/bin/python3` consistently; learn.md synced (5→8 sleep phases, dev key fix); ingest.md uses cognitive.py instead of deprecated brain.py; init-engram.md uses cognitive.py instead of maintain.sh (`972f786`)
 - Expand bare `PRIORITY_MATRIX.md` refs to full `.claude/knowledge/priorities/PRIORITY_MATRIX.md` path in 7 core files (`af2f1e3`)
 - Add brain health section to `core/commands/doctor.md` — was only in `.claude/` (`af2f1e3`)
+- Standardize all python calls in doctor.md and init-engram.md to use `.claude/brain/.venv/bin/python3` — genesis/evolution scripts now also use venv (`70de963`)
 - init-engram Phase 5 uses `.claude/brain/.venv/bin/python3` for populate, embeddings, cognitive — fixes dep resolution in fresh installs (`1d016fb`)
 
 ## [3.0.0] - 2026-02-03
