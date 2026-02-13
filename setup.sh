@@ -864,6 +864,50 @@ verify_installation() {
 }
 
 # ═══════════════════════════════════════════════════════════════
+# INSTALLATION REGISTRY
+# ═══════════════════════════════════════════════════════════════
+
+register_installation() {
+    local BRAIN_VENV="$SCRIPT_DIR/.claude/brain/.venv/bin/python3"
+    [[ ! -f "$BRAIN_VENV" ]] && return 0
+    [[ ! -f "$SCRIPT_DIR/.claude/brain/brain_sqlite.py" ]] && return 0
+
+    "$BRAIN_VENV" - "$TARGET_DIR" "$VERSION" "$SCRIPT_DIR" << 'PYEOF' 2>/dev/null || true
+import sys, os
+from datetime import datetime
+
+target_path, version, script_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+os.chdir(script_dir)
+sys.path.insert(0, '.claude/brain')
+from brain_sqlite import BrainSQLite as Brain
+
+brain = Brain()
+brain.load()
+
+project_name = os.path.basename(target_path)
+now = datetime.now().astimezone().isoformat()
+
+existing_id = None
+for node_id, node in brain.get_all_nodes().items():
+    if 'Installation' in node.get('labels', []):
+        if node.get('props', {}).get('path') == target_path:
+            existing_id = node_id
+            break
+
+if not existing_id:
+    brain.add_memory(
+        title=f"Installation: {project_name}",
+        content=f"Engram v{version} installed at {target_path}",
+        labels=["Installation", "Registry"],
+        author="@engram",
+        props={"path": target_path, "version": version,
+               "installed_at": now, "last_updated": now, "update_count": 0}
+    )
+    brain.save()
+PYEOF
+}
+
+# ═══════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════
 
@@ -882,6 +926,7 @@ main() {
     generate_claude_md
     customize_settings
     initialize_knowledge
+    register_installation
     verify_installation
 }
 

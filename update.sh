@@ -14,6 +14,9 @@ set -euo pipefail
 #   ./update.sh --check [TARGET_DIR]  # Apenas reportar drift
 #   ./update.sh --force [TARGET_DIR]  # Sem confirmacao
 #   ./update.sh --regenerate [TARGET_DIR]  # Regenerar CLAUDE.md
+#   ./update.sh --list                # Listar instalacoes registradas
+#   ./update.sh --all                 # Atualizar todas as instalacoes
+#   ./update.sh --all --check         # Checar drift em todas
 # ═══════════════════════════════════════════════════════════════
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -38,6 +41,8 @@ show_help() {
     echo "  --check        Only report drift (no changes)"
     echo "  --force        Skip confirmation prompts"
     echo "  --regenerate   Also regenerate CLAUDE.md and settings.json"
+    echo "  --list         List all registered installations"
+    echo "  --all          Update all registered installations"
     echo "  -h, --help     Show this help"
     echo ""
     echo "Layers:"
@@ -49,24 +54,41 @@ show_help() {
 }
 
 # ── Args ──────────────────────────────────────────────────────
-MODE="update"    # update | check
+MODE="update"    # update | check | list | all
 FORCE=false
 REGENERATE=false
+CHECK_ONLY=false
+BATCH_ALL=false
 TARGET_DIR=""
 
 for arg in "$@"; do
     case "$arg" in
-        --check)      MODE="check" ;;
+        --check)      CHECK_ONLY=true ;;
         --force)      FORCE=true ;;
         --regenerate) REGENERATE=true ;;
+        --list)       MODE="list" ;;
+        --all)        BATCH_ALL=true ;;
         -h|--help)    show_help ;;
         *)            TARGET_DIR="$arg" ;;
     esac
 done
 
-TARGET_DIR="${TARGET_DIR:-.}"
-TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || { print_err "Diretorio nao encontrado: $TARGET_DIR"; exit 1; }
-CLAUDE_DIR="$TARGET_DIR/.claude"
+# Resolve MODE from flags
+if $BATCH_ALL; then
+    MODE="all"
+elif [[ "$MODE" == "list" ]]; then
+    : # keep list
+elif $CHECK_ONLY; then
+    MODE="check"
+fi
+
+# --list and --all don't need TARGET_DIR
+CLAUDE_DIR=""
+if [[ "$MODE" != "list" && "$MODE" != "all" ]]; then
+    TARGET_DIR="${TARGET_DIR:-.}"
+    TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || { print_err "Diretorio nao encontrado: $TARGET_DIR"; exit 1; }
+    CLAUDE_DIR="$TARGET_DIR/.claude"
+fi
 
 # ── Pre-flight ────────────────────────────────────────────────
 
@@ -426,10 +448,193 @@ handle_regenerate() {
 }
 
 # ═══════════════════════════════════════════════════════════════
+# INSTALLATION REGISTRY (via brain)
+# ═══════════════════════════════════════════════════════════════
+
+BRAIN_VENV="$SCRIPT_DIR/.claude/brain/.venv/bin/python3"
+
+register_installation() {
+    local target_path="$1"
+    local version="$2"
+
+    # Skip if brain venv not available (fresh clone)
+    [[ ! -f "$BRAIN_VENV" ]] && return 0
+    [[ ! -f "$SCRIPT_DIR/.claude/brain/brain_sqlite.py" ]] && return 0
+
+    "$BRAIN_VENV" - "$target_path" "$version" "$SCRIPT_DIR" << 'PYEOF' 2>/dev/null || true
+import sys, os
+from datetime import datetime
+
+target_path = sys.argv[1]
+version = sys.argv[2]
+script_dir = sys.argv[3]
+
+os.chdir(script_dir)
+sys.path.insert(0, '.claude/brain')
+from brain_sqlite import BrainSQLite as Brain
+
+brain = Brain()
+brain.load()
+
+project_name = os.path.basename(target_path)
+now = datetime.now().astimezone().isoformat()
+
+# Check if installation already registered
+existing_id = None
+for node_id, node in brain.get_all_nodes().items():
+    if 'Installation' in node.get('labels', []):
+        if node.get('props', {}).get('path') == target_path:
+            existing_id = node_id
+            break
+
+if existing_id:
+    brain.nodes[existing_id]['props']['version'] = version
+    brain.nodes[existing_id]['props']['last_updated'] = now
+    brain.nodes[existing_id]['props']['update_count'] = brain.nodes[existing_id]['props'].get('update_count', 0) + 1
+else:
+    brain.add_memory(
+        title=f"Installation: {project_name}",
+        content=f"Engram v{version} installed at {target_path}",
+        labels=["Installation", "Registry"],
+        author="@engram",
+        props={
+            "path": target_path,
+            "version": version,
+            "installed_at": now,
+            "last_updated": now,
+            "update_count": 0
+        }
+    )
+
+brain.save()
+action = "Updated" if existing_id else "Registered"
+print(f"{action}: {project_name} ({target_path})")
+PYEOF
+}
+
+list_installations() {
+    [[ ! -f "$BRAIN_VENV" ]] && { print_err "Brain venv nao encontrado em $SCRIPT_DIR"; exit 1; }
+
+    echo ""
+    echo -e "${BOLD}Engram — Instalacoes Registradas${NC}"
+    echo ""
+
+    "$BRAIN_VENV" - "$SCRIPT_DIR" 2>/dev/null << 'PYEOF'
+import sys, os
+
+script_dir = sys.argv[1]
+os.chdir(script_dir)
+sys.path.insert(0, '.claude/brain')
+from brain_sqlite import BrainSQLite as Brain
+
+brain = Brain()
+brain.load()
+
+installations = []
+for node_id, node in brain.get_all_nodes().items():
+    if 'Installation' in node.get('labels', []):
+        props = node.get('props', {})
+        path = props.get('path', '?')
+        version = props.get('version', '?')
+        last_updated = props.get('last_updated', '?')[:10]
+        updates = props.get('update_count', 0)
+        exists = os.path.isdir(os.path.join(path, '.claude'))
+        installations.append((path, version, last_updated, updates, exists))
+
+if not installations:
+    print("  Nenhuma instalacao registrada no cerebro.")
+    print("  Rode setup.sh ou update.sh para registrar automaticamente.")
+else:
+    print(f"  {'Path':<50} {'Versao':<10} {'Atualizado':<12} {'#Upd':<6} {'Status'}")
+    print(f"  {'─' * 90}")
+    for path, version, updated, updates, exists in sorted(installations):
+        status = '✓ ok' if exists else '✗ nao encontrado'
+        print(f"  {path:<50} v{version:<9} {updated:<12} {updates:<6} {status}")
+    print(f"\n  Total: {len(installations)} instalacao(oes)")
+
+print()
+PYEOF
+}
+
+update_all() {
+    [[ ! -f "$BRAIN_VENV" ]] && { print_err "Brain venv nao encontrado em $SCRIPT_DIR"; exit 1; }
+
+    print_step "Consultando cerebro para instalacoes registradas..."
+
+    local paths
+    paths=$("$BRAIN_VENV" - "$SCRIPT_DIR" 2>/dev/null << 'PYEOF'
+import sys, os
+
+script_dir = sys.argv[1]
+os.chdir(script_dir)
+sys.path.insert(0, '.claude/brain')
+from brain_sqlite import BrainSQLite as Brain
+
+brain = Brain()
+brain.load()
+
+for node_id, node in brain.get_all_nodes().items():
+    if 'Installation' in node.get('labels', []):
+        path = node.get('props', {}).get('path', '')
+        if path and os.path.isdir(os.path.join(path, '.claude')):
+            print(path)
+PYEOF
+    )
+
+    if [[ -z "$paths" ]]; then
+        print_warn "Nenhuma instalacao valida encontrada."
+        echo -e "  Rode ${BOLD}setup.sh${NC} ou ${BOLD}update.sh${NC} em projetos para registra-los."
+        exit 0
+    fi
+
+    local count=0
+    local total
+    total=$(echo "$paths" | wc -l | tr -d ' ')
+
+    echo ""
+    echo -e "${BOLD}  Processando $total projeto(s):${NC}"
+    echo ""
+
+    while IFS= read -r project_path; do
+        count=$((count + 1))
+        local project_name
+        project_name=$(basename "$project_path")
+
+        # Skip self
+        if [[ "$project_path" == "$SCRIPT_DIR" ]]; then
+            echo -e "  [${count}/${total}] ${YELLOW}${project_name}${NC} (self — skipped)"
+            continue
+        fi
+
+        echo -e "  [${count}/${total}] ${BOLD}${project_name}${NC} (${project_path})"
+
+        local sub_args=()
+        if $CHECK_ONLY; then
+            sub_args+=("--check")
+        else
+            sub_args+=("--force")
+        fi
+        sub_args+=("$project_path")
+
+        # Run update on this project (suppress interactive prompts)
+        bash "$SCRIPT_DIR/update.sh" "${sub_args[@]}" 2>&1 | sed 's/^/    /'
+        echo ""
+    done <<< "$paths"
+
+    echo -e "${GREEN}  Concluido: $count projeto(s) processado(s).${NC}"
+    echo ""
+}
+
+# ═══════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════
 
 main() {
+    # ── Special modes (no TARGET_DIR needed) ──
+    [[ "$MODE" == "list" ]] && list_installations && exit 0
+    [[ "$MODE" == "all" ]] && update_all && exit 0
+
+    # ── Single-project modes ──
     preflight
     detect_drift
     report_drift
@@ -447,7 +652,7 @@ main() {
         read -p "  Continuar? (S/n): " -n 1 -r
         echo ""
         [[ $REPLY =~ ^[Nn]$ ]] && echo "  Cancelado." && exit 0
-    elif [[ $DRIFT_COUNT -eq 0 ]]; then
+    elif [[ $DRIFT_COUNT -eq 0 ]] && ! $FORCE; then
         echo -e "  Nenhuma atualizacao necessaria."
         echo ""
         read -p "  Forcar update mesmo assim? (s/N): " -n 1 -r
@@ -466,6 +671,9 @@ main() {
     update_manifest
     update_version
     handle_regenerate
+
+    # ── Register installation in brain ──
+    register_installation "$TARGET_DIR" "$VERSION"
 
     # ── Final report ──
     echo ""
