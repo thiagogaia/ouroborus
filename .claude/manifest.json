@@ -1,7 +1,7 @@
 {
   "engram_version": "4.0.0",
   "installed_at": "2026-02-03T16:22:02-03:00",
-  "last_updated": "2026-02-12T20:07:27.025930-03:00",
+  "last_updated": "2026-02-12T23:21:34.785017",
   "components": {
     "skills": {
       "engram-genesis": {
@@ -36,8 +36,8 @@
         "source": "seed",
         "created_at": "2026-02-03T21:55:00.000000",
         "updated_at": "2026-02-03T21:55:00.000000",
-        "activations": 6,
-        "last_used": "2026-02-12T17:01:00.808726",
+        "activations": 7,
+        "last_used": "2026-02-12T23:21:34.785006",
         "health": "active"
       },
       "domain-expert": {
